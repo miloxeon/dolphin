@@ -23,16 +23,16 @@ var default_theme = {
 var custom_theme = {
 	padding: [15, 10],
 
-	border_color: 'orange',
-	border_width: 5,
+	border_color: 'pink',
+	border_width: 2,
 	border_radius: 4,
 	
-	color: 'orange',
-	font_family: 'Verdana',
+	color: 'pink',
+	font_family: 'Comic Sans',
 	font_size: 14,
-	line_height: 1.9,
-	font_style: 'normal',
-	font_weight: 'bold',
+	line_height: 1.25,
+	font_style: 'italic',
+	font_weight: 'normal',
 	text_align: 'center',
 
 	background_color: 'white'
@@ -43,25 +43,80 @@ var elements = [
 		id: Math.floor(Math.random() * new Date()),
 		position: [35, 20],
 		type: {type: 'simple'},
-		text: 'Hello world'
+		text: 'Harder, Ivan',
+		theme: custom_theme
 	},
 	{
 		id: Math.floor(Math.random() * new Date()),
-		position: [80, 90],
+		position: [280, 90],
 		type: {type: 'simple'},
 		text: 'Lorem ipsum dolor sit amet consectetur. Cras sodales imperdiet auctor.'
 	}
 ];
 
+var rendered_elements = [];
 
 elements.forEach(function (element) {
-	_drawElement(element);
+	rendered_elements.push(_drawElement(element));
 });
 
-function _drawElement(element) {
-	_drawElement_unthemed(element, default_theme);
+// var c1 = rendered_elements[0].sockets[4].cx() + Math.abs((rendered_elements[0].sockets[4].cx() - rendered_elements[1].sockets[3].cx())) / 2;
+
+// diagram.path(
+// 	'M ' + 
+// 	rendered_elements[0].sockets[4].cx().toString() + ' ' + 
+// 	rendered_elements[0].sockets[4].cy().toString() + ' ' + 
+// 	'C ' +
+// 	c1.toString() + ' ' + 
+// 	rendered_elements[0].sockets[4].cy().toString() + ' ' +
+// 	c1.toString() + ' ' + 
+// 	rendered_elements[1].sockets[3].cy().toString() + 
+// 	' ' + 
+// 	rendered_elements[1].sockets[3].cx().toString() + ' ' + 
+// 	rendered_elements[1].sockets[3].cy().toString()
+// ).attr({
+// 	'stroke': 'black',
+// 	'stroke-width': '1',
+// 	'fill': 'none',
+// 	'stroke-linecap': "round",
+// 	'stroke-dasharray': "5,5"
+// });
+
+_connectElements(rendered_elements[0], rendered_elements[1]);
+
+function _connectElements(element_1, element_2) {
+	var element_1_socket = 3;
+	var element_2_socket = 3;
+
+	var socket_1 = [element_1.sockets[element_1_socket].cx(), element_1.sockets[element_1_socket].cy()];
+	var socket_2 = [element_2.sockets[element_2_socket].cx(), element_2.sockets[element_2_socket].cy()];
+
+	var x_between_elements = socket_1[0] + Math.abs(socket_1[0] - socket_2[0]) / 2;
+
+	diagram.path(
+		'M ' + 
+		socket_1[0].toString() + ' ' + 
+		socket_1[1].toString() + ' ' + 
+		'C ' +
+		x_between_elements.toString() + ' ' + 
+		socket_1[1].toString() + ' ' +
+		x_between_elements.toString() + ' ' + 
+		socket_2[1].toString() + 
+		' ' + 
+		socket_2[0].toString() + ' ' + 
+		socket_2[1].toString()
+	).attr({
+		'stroke': 'black',
+		'stroke-width': '1',
+		'fill': 'none',
+		'stroke-linecap': "round",
+		'stroke-dasharray': "5,5"
+	});
 }
 
+function _drawElement(element) {
+	return _drawElement_unthemed(element, default_theme);
+}
 
 function _drawElement_unthemed(element, default_style) {
 	var position = element.position;
@@ -119,7 +174,6 @@ function _drawElement_unthemed(element, default_style) {
 		position[1] + padding[1] + border_width / 2
 	];
 
-
 	if (text_align == 'left') {
 		element_text.font('anchor', 'start');
 		element_text.move(text_position[0], text_position[1]);
@@ -130,6 +184,19 @@ function _drawElement_unthemed(element, default_style) {
 		element_text.font('anchor', 'end');
 		element_text.move(text_position[0] + text_size[0], text_position[1]);
 	}
+
+	element.sockets = [
+		element.circle(5).center(position[0], 						position[1])					.fill('red'),
+		element.circle(5).center(position[0] + rect_size[0] / 2, 	position[1])					.fill('green'),
+		element.circle(5).center(position[0] + rect_size[0], 		position[1])					.fill('blue'),
+		element.circle(5).center(position[0], 						position[1] + rect_size[1] / 2)	.fill('black'),
+		element.circle(5).center(position[0] + rect_size[0], 		position[1] + rect_size[1] / 2)	.fill('orange'),
+		element.circle(5).center(position[0], 						position[1] + rect_size[1])		.fill('purple'),
+		element.circle(5).center(position[0] + rect_size[0] / 2, 	position[1] + rect_size[1])		.fill('grey'),
+		element.circle(5).center(position[0] + rect_size[0], 		position[1] + rect_size[1])		.fill('hotpink')
+	];
+
+	return element;
 }
 
 function fitText(text) {
