@@ -58,19 +58,40 @@ var rendered_elements = blueprints.map(function (blueprint) {
 	return element;
 });
 
-setInterval(function () {
-	var rendered_connection = _drawConnection(createConnection({
+// setInterval(function () {
+// 	var rendered_connection = _drawConnection(createConnection({
+// 		from: rendered_elements[0].sockets(5),
+// 		to: rendered_elements[1].sockets(4),
+// 		style: custom_line_style
+// 	}));
+
+// 	setTimeout(function () {
+// 		rendered_connection.remove();
+// 	}, 1);
+
+// 	// console.log(rendered_elements[0].sockets(1));
+
+// // }, 2);
+
+var rendered_connection = _drawConnection(createConnection({
+	from: rendered_elements[0].sockets(5),
+	to: rendered_elements[1].sockets(4),
+	style: custom_line_style
+}));
+
+
+rendered_elements.forEach(function (element) {
+	element.origin.on('dragmove', handleDrag);
+});
+
+function handleDrag() {
+	rendered_connection.remove();
+	rendered_connection = _drawConnection(createConnection({
 		from: rendered_elements[0].sockets(5),
-		to: rendered_elements[1].sockets(4)
+		to: rendered_elements[1].sockets(4),
+		style: custom_line_style
 	}));
-
-	setTimeout(function () {
-		rendered_connection.remove();
-	}, 1);
-
-	console.log(rendered_elements[0].sockets(1));
-
-}, 2);
+}
 
 // console.log(rendered_elements[0].sockets(5));
 
