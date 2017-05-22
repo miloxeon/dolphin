@@ -3,21 +3,13 @@
 var diagram = SVG('diagram');
 
 var custom_theme = {
-	padding: [15, 10],
-
 	border_color: 'pink',
-	border_width: 2,
-	border_radius: 4,
-	
-	color: 'pink',
+	color: 'white',
 	font_family: 'Comic Sans',
 	font_size: 14,
-	line_height: 1.25,
 	font_style: 'italic',
-	font_weight: 'normal',
 	text_align: 'center',
-
-	background_color: 'white'
+	background_color: 'pink'
 };
 
 var blueprints = [
@@ -177,17 +169,28 @@ function _drawElement(virtual_element) {
 function generateSockets(rendered_element) {
 	var tester = generateTestMethods(rendered_element)();
 
+	var colors = [
+		'red',
+		'green',
+		'blue',
+		'black',
+		'orange',
+		'purple',
+		'grey',
+		'hotpink'
+	];
+
 	var sockets = [
-		_generateSocket(rendered_element, 0, 			0, 'red'),		// socket 1: top left
-		_generateSocket(rendered_element, tester.w / 2, 0, 'green'),	// socket 2: top center
-		_generateSocket(rendered_element, tester.w, 	0, 'blue'),		// socket 3: top right
+		_generateSocket(rendered_element, 0, 			0, colors[0]),	// socket 1: top left
+		_generateSocket(rendered_element, tester.w / 2, 0, colors[1]),	// socket 2: top center
+		_generateSocket(rendered_element, tester.w, 	0, colors[2]),	// socket 3: top right
 
-		_generateSocket(rendered_element, 0, 			tester.h / 2, 'black'),		// socket 4: middle left
-		_generateSocket(rendered_element, tester.w, 	tester.h / 2, 'orange'),	// socket 5: middle right
+		_generateSocket(rendered_element, 0, 			tester.h / 2, colors[3]),	// socket 4: middle left
+		_generateSocket(rendered_element, tester.w, 	tester.h / 2, colors[4]),	// socket 5: middle right
 
-		_generateSocket(rendered_element, 0, 			tester.h, 'purple'),	// socket 6: bottom left
-		_generateSocket(rendered_element, tester.w / 2, tester.h, 'grey'),		// socket 7: bottom center
-		_generateSocket(rendered_element, tester.w, 	tester.h, 'hotpink')	// socket 8: bottom right
+		_generateSocket(rendered_element, 0, 			tester.h, colors[5]),	// socket 6: bottom left
+		_generateSocket(rendered_element, tester.w / 2, tester.h, colors[6]),	// socket 7: bottom center
+		_generateSocket(rendered_element, tester.w, 	tester.h, colors[7])	// socket 8: bottom right
 	]
 
 	return function (number) {
