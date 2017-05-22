@@ -27,7 +27,7 @@ var blueprints = [
 var custom_line_style = {
 	'stroke': 'red',
 	'stroke-width': '3',
-	'stroke-dasharray': '5,5'
+	'stroke-dasharray': '1,5'
 }
 
 var connections = [
@@ -50,32 +50,74 @@ var rendered_elements = blueprints.map(function (blueprint) {
 	return element;
 });
 
-var rendered_connection = _drawConnection(createConnection({
-	from: rendered_elements[0].sockets(5),
-	to: rendered_elements[1].sockets(4),
-	style: custom_line_style
-}));
+var sockets = defineSockets(rendered_elements[0], rendered_elements[1]);
+var rendered_connection = _drawConnection(connectElements(
+	createAddress(rendered_elements[0], sockets[0]),
+	createAddress(rendered_elements[1], sockets[1]),
+	custom_line_style
+));
 
 rendered_elements.forEach(function (element) {
 	element.snapshot.on('dragmove', function () {
 		if (rendered_connection) {
 			_destroyConnection(rendered_connection);
-			
 		}
 
 		var sockets = defineSockets(rendered_elements[0], rendered_elements[1]);
 
-		// console.log(sockets);
-
 		if (sockets.length > 0) {
-			rendered_connection = _drawConnection(createConnection({
-				from: rendered_elements[0].sockets(sockets[0]),
-				to: rendered_elements[1].sockets(sockets[1]),
-				style: custom_line_style
-			}));
+			rendered_connection = _drawConnection(connectElements(
+				createAddress(rendered_elements[0], sockets[0]),
+				createAddress(rendered_elements[1], sockets[1]),
+				custom_line_style
+			));
 		}
 	});
 });
+
+function createAddress(element, socket) {
+	return {
+		rendered_element: element,
+		socket: socket
+	}
+}
+
+
+function connectElements(from, to, style, connection_type) {
+	var type = (!connection_type || connection_type == {}) ? {type: 'simple'} : connection_type;
+	var attributes = style || {};
+
+	var elem_1 = from.rendered_element;
+	var socket_1 = from.socket;
+
+	var elem_2 = to.rendered_element;
+	var socket_2 = to.socket;
+
+
+	var sockets = [socket_1, socket_2].map(function (a) {
+		return parseInt(a);
+	}).sort(function (a, b) {
+		return a - b;
+	}).join('');
+
+	var connection = createConnection({
+		from: elem_1.sockets(socket_1),
+		to: elem_2.sockets(socket_2),
+		type: type,
+		style: attributes
+	})
+
+	if ((sockets == '24') ||
+		(sockets == '25') ||
+		(sockets == '57') ||
+		(sockets == '47')
+		) {
+
+		connection.type.shape = 'arc';
+	}
+
+	return connection;
+}
 
 
 function defineSockets(rendered_element_1, rendered_element_2) {
@@ -131,19 +173,19 @@ function checkOverlap(rendered_element_1, rendered_element_2) {
 	var bbox_1 = rendered_element_1.tester();
 	var bbox_2 = rendered_element_2.tester();
 
-	return checkInside(rendered_element_1, [bbox_2.x, bbox_2.y]) || 
-		checkInside(rendered_element_1, [bbox_2.x2, bbox_2.y]) || 
-		checkInside(rendered_element_1, [bbox_2.x, bbox_2.y2]) || 
-		checkInside(rendered_element_1, [bbox_2.x2, bbox_2.y2]) ||
+	return checkIfInside(rendered_element_1, [bbox_2.x, bbox_2.y]) || 
+		checkIfInside(rendered_element_1, [bbox_2.x2, bbox_2.y]) || 
+		checkIfInside(rendered_element_1, [bbox_2.x, bbox_2.y2]) || 
+		checkIfInside(rendered_element_1, [bbox_2.x2, bbox_2.y2]) ||
 
-		checkInside(rendered_element_2, [bbox_1.x, bbox_1.y]) || 
-		checkInside(rendered_element_2, [bbox_1.x2, bbox_1.y]) || 
-		checkInside(rendered_element_2, [bbox_1.x, bbox_1.y2]) || 
-		checkInside(rendered_element_2, [bbox_1.x2, bbox_1.y2]);
+		checkIfInside(rendered_element_2, [bbox_1.x, bbox_1.y]) || 
+		checkIfInside(rendered_element_2, [bbox_1.x2, bbox_1.y]) || 
+		checkIfInside(rendered_element_2, [bbox_1.x, bbox_1.y2]) || 
+		checkIfInside(rendered_element_2, [bbox_1.x2, bbox_1.y2]);
 
 }
 
-function checkInside(rendered_element, dot_coordinates) {
+function checkIfInside(rendered_element, dot_coordinates) {
 	var x = dot_coordinates[0];
 	var y = dot_coordinates[1];
 
@@ -257,33 +299,33 @@ function _drawConnection(virtual_connection) {
 	var from = virtual_connection.from;
 	var to = virtual_connection.to;
 
-	if (virtual_connection.from[0] <= virtual_connection.to[0]) {
-		var direction = 'normal';
-		var pos1 = virtual_connection.from;
-		var pos2 = virtual_connection.to;
 
-	} else {
-		var direction = 'reverse';
+	if (virtual_connection.type.shape && virtual_connection.type.shape == 'arc') {
+
+		if (virtual_connection.from[0] <= virtual_connection.to[0]) {
+			var direction = 'normal';
+		} else {
+			var direction = 'reverse';
+		}
 		var pos1 = virtual_connection.to;
 		var pos2 = virtual_connection.from;
+
+		var line = _arcTo(pos1, pos2).attr(virtual_connection.style);
+
+	} else {
+
+		if (virtual_connection.from[0] <= virtual_connection.to[0]) {
+			var direction = 'normal';
+			var pos1 = virtual_connection.from;
+			var pos2 = virtual_connection.to;
+
+		} else {
+			var direction = 'reverse';
+			var pos1 = virtual_connection.to;
+			var pos2 = virtual_connection.from;
+		}
+		var line = _cubicTo(pos1, pos2).attr(virtual_connection.style);
 	}
-
-
-	var x_between_elements = pos1[0] + Math.abs(pos1[0] - pos2[0]) / 2;
-
-	var line = diagram.path(
-		'M ' + 
-		pos1[0].toString() + ' ' + 
-		pos1[1].toString() + ' ' + 
-		'C ' +
-		x_between_elements.toString() + ' ' + 
-		pos1[1].toString() + ' ' +
-		x_between_elements.toString() + ' ' + 
-		pos2[1].toString() + 
-		' ' + 
-		pos2[0].toString() + ' ' + 
-		pos2[1].toString()
-	).attr(virtual_connection.style);
 
 	return {
 		blueprint: virtual_connection.blueprint,
@@ -291,6 +333,55 @@ function _drawConnection(virtual_connection) {
 		snapshot: line,
 		tester: generateTestMethods(line)
 	}
+}
+
+function _apply_params(element, params) {
+	return element.attr(params);
+}
+
+function _arcTo(from, to, style) {
+
+	var x_between_from_and_to = from[0] + Math.abs(from[0] - to[0]) / 2;
+
+	var bias = [
+		from[0],
+		to[1]
+	];
+
+	return _cubic(from, to, bias, bias);
+}
+
+function _cubicTo(from, to) {
+
+	var x_between_from_and_to = from[0] + Math.abs(from[0] - to[0]) / 2;
+
+	var bias_1 = [
+		x_between_from_and_to,
+		from[1]
+	];
+
+	var bias_2 = [
+		x_between_from_and_to,
+		to[1]
+	];
+
+	return _cubic(from, to, bias_1, bias_2);
+}
+
+function _cubic(from, to, bias_1, bias_2) {
+	return diagram.path(
+		'M ' + 
+		from[0].toString() + ' ' + 
+		from[1].toString() + ' ' + 
+		'C ' +
+		bias_1[0].toString() + ' ' + 
+		bias_1[1].toString() + ' ' +
+		bias_2[0].toString() + ' ' + 
+		bias_2[1].toString() + 
+		' ' + 
+		to[0].toString() + ' ' + 
+		to[1].toString()
+	);
 }
 
 function _destroyConnection(rendered_connection) {
@@ -312,7 +403,7 @@ function createConnection (connection_blueprint) {
 
 	var default_style = {
 		'stroke': 'black',
-		'stroke-width': '1',
+		'stroke-width': '2',
 		'fill': 'none',
 		'stroke-linecap': 'round',
 		'stroke-dasharray': 'none'
@@ -374,27 +465,27 @@ function _drawElement(virtual_element) {
 function generateSockets(rendered_element) {
 	var tester = generateTestMethods(rendered_element)();
 
-	var colors = [
-		'red',
-		'green',
-		'blue',
-		'black',
-		'orange',
-		'purple',
-		'grey',
-		'hotpink'
-	];
-
 	// var colors = [
-	// 	'transparent',
-	// 	'transparent',
-	// 	'transparent',
-	// 	'transparent',
-	// 	'transparent',
-	// 	'transparent',
-	// 	'transparent',
-	// 	'transparent'
+	// 	'red',
+	// 	'green',
+	// 	'blue',
+	// 	'black',
+	// 	'orange',
+	// 	'purple',
+	// 	'grey',
+	// 	'hotpink'
 	// ];
+
+	var colors = [
+		'transparent',
+		'transparent',
+		'transparent',
+		'transparent',
+		'transparent',
+		'transparent',
+		'transparent',
+		'transparent'
+	];
 
 	var sockets = [
 		_generateSocket(rendered_element, 0, 			0, colors[0]),	// socket 1: top left
