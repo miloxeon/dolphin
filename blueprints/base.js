@@ -46,7 +46,7 @@ var connections = [
 
 var rendered_elements = blueprints.map(function (blueprint) {
 	var element = _drawElement(createElement(blueprint));
-	element.origin.draggy();
+	element.snapshot.draggy();
 	return element;
 });
 
@@ -56,10 +56,9 @@ var rendered_connection = _drawConnection(createConnection({
 	style: custom_line_style
 }));
 
-
 rendered_elements.forEach(function (element) {
-	element.origin.on('dragmove', function () {
-		rendered_connection.remove();
+	element.snapshot.on('dragmove', function () {
+		_destroyConnection(rendered_connection);
 		rendered_connection = _drawConnection(createConnection({
 			from: rendered_elements[0].sockets(5),
 			to: rendered_elements[1].sockets(4),
@@ -74,7 +73,7 @@ function _drawConnection(virtual_connection) {
 
 	var x_between_elements = pos1[0] + Math.abs(pos1[0] - pos2[0]) / 2;
 
-	return diagram.path(
+	var line = diagram.path(
 		'M ' + 
 		pos1[0].toString() + ' ' + 
 		pos1[1].toString() + ' ' + 
@@ -87,10 +86,17 @@ function _drawConnection(virtual_connection) {
 		pos2[0].toString() + ' ' + 
 		pos2[1].toString()
 	).attr(virtual_connection.style);
+
+	return {
+		blueprint: virtual_connection.blueprint,
+		origin: virtual_connection,
+		snapshot: line,
+		tester: generateTestMethods(line)
+	}
 }
 
 function _destroyConnection(rendered_connection) {
-
+	rendered_connection.snapshot.remove();
 }
 
 function createConnection (connection_blueprint) {
@@ -127,7 +133,8 @@ function createConnection (connection_blueprint) {
 		type: type,
 		from: from,
 		to: to,
-		style: style
+		style: style,
+		blueprint: connection_blueprint
 	}
 }
 
@@ -156,9 +163,9 @@ function _drawElement(virtual_element) {
 	element_text.move(text_position[0], text_position[1]);
 
 	var rendered_element = {
-		rect: element_rect,
-		text: element_text,
-		origin: element,
+		blueprint: virtual_element.blueprint,
+		origin: virtual_element,
+		snapshot: element,
 		tester: generateTestMethods(element_rect),
 		sockets: generateSockets(element)
 	}
@@ -179,6 +186,17 @@ function generateSockets(rendered_element) {
 		'grey',
 		'hotpink'
 	];
+
+	// var colors = [
+	// 	'transparent',
+	// 	'transparent',
+	// 	'transparent',
+	// 	'transparent',
+	// 	'transparent',
+	// 	'transparent',
+	// 	'transparent',
+	// 	'transparent'
+	// ];
 
 	var sockets = [
 		_generateSocket(rendered_element, 0, 			0, colors[0]),	// socket 1: top left
@@ -332,7 +350,8 @@ function createElement(blueprint) {
 		position: position,
 		type: type,
 		text: text,
-		style: style
+		style: style,
+		blueprint: blueprint
 	}
 }
 
