@@ -89,13 +89,13 @@ function defineSockets(rendered_element_1, rendered_element_2) {
 		'7': '45',
 		'8': '25',
 
-		'12': '54',
+		'12': '24',
 		'23': '54',
-		'34': '54',
+		'34': '74',
 		'45': '72',
-		'56': '45',
+		'56': '75',
 		'67': '45',
-		'78': '45',
+		'78': '25',
 		'18': '27',
 
 		'123': '54',
@@ -117,14 +117,13 @@ function defineSockets(rendered_element_1, rendered_element_2) {
 		'1238': ''
 	}
 
-	var sockets = decision_matrix[defineRelativePosition(rendered_element_1, rendered_element_2)];
-
+	var sockets = decision_matrix[defineRelativePosition(rendered_element_2, rendered_element_1)];
 	var is_overlap = checkOverlap(rendered_element_1, rendered_element_2);
 
 	if (is_overlap) {
 		return [];
 	} else {
-		return sockets ? sockets.split('') : [];
+		return sockets ? sockets.split('').reverse() : [];
 	}
 }
 
@@ -255,8 +254,20 @@ function defineDotRelativePosition(bbox, x, y) {
 }
 
 function _drawConnection(virtual_connection) {
-	var pos1 = virtual_connection.from;
-	var pos2 = virtual_connection.to;
+	var from = virtual_connection.from;
+	var to = virtual_connection.to;
+
+	if (virtual_connection.from[0] <= virtual_connection.to[0]) {
+		var direction = 'normal';
+		var pos1 = virtual_connection.from;
+		var pos2 = virtual_connection.to;
+
+	} else {
+		var direction = 'reverse';
+		var pos1 = virtual_connection.to;
+		var pos2 = virtual_connection.from;
+	}
+
 
 	var x_between_elements = pos1[0] + Math.abs(pos1[0] - pos2[0]) / 2;
 
