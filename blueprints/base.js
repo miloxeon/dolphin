@@ -79,16 +79,16 @@ function generateSockets(rendered_element) {
 	var tester = generateTestMethods(rendered_element)();
 
 	var sockets = [
-		generateSocket(rendered_element, 0, 			0, 'red'),		// socket 1: top left
-		generateSocket(rendered_element, tester.w / 2, 	0, 'green'),	// socket 2: top center
-		generateSocket(rendered_element, tester.w, 		0, 'blue'),		// socket 3: top right
+		_generateSocket(rendered_element, 0, 			0, 'red'),		// socket 1: top left
+		_generateSocket(rendered_element, tester.w / 2, 0, 'green'),	// socket 2: top center
+		_generateSocket(rendered_element, tester.w, 	0, 'blue'),		// socket 3: top right
 
-		generateSocket(rendered_element, 0, 			tester.h / 2, 'black'),		// socket 4: middle left
-		generateSocket(rendered_element, tester.w, 		tester.h / 2, 'orange'),	// socket 5: middle right
+		_generateSocket(rendered_element, 0, 			tester.h / 2, 'black'),		// socket 4: middle left
+		_generateSocket(rendered_element, tester.w, 	tester.h / 2, 'orange'),	// socket 5: middle right
 
-		generateSocket(rendered_element, 0, 			tester.h, 'purple'),	// socket 6: bottom left
-		generateSocket(rendered_element, tester.w / 2, 	tester.h, 'grey'),		// socket 7: bottom center
-		generateSocket(rendered_element, tester.w, 		tester.h, 'hotpink')	// socket 8: bottom right
+		_generateSocket(rendered_element, 0, 			tester.h, 'purple'),	// socket 6: bottom left
+		_generateSocket(rendered_element, tester.w / 2, tester.h, 'grey'),		// socket 7: bottom center
+		_generateSocket(rendered_element, tester.w, 	tester.h, 'hotpink')	// socket 8: bottom right
 	]
 
 	return function (number) {
@@ -96,7 +96,7 @@ function generateSockets(rendered_element) {
 	}
 }
 
-function generateSocket(rendered_element, cx, cy, color) {
+function _generateSocket(rendered_element, cx, cy, color) {
 	var socket = rendered_element.circle(5).center(cx, cy).fill(color);
 	var tester = generateTestMethods(socket)();
 
@@ -240,7 +240,7 @@ function fitText(text, max_length) {
 	var line = '';
 
 	words.forEach(function (word) {
-		if (line.length + word.length >= getLongestWordLength(words)) {
+		if (line.length + word.length >= getLongestWordLength(words, max_word_length)) {
 			lines.push(line);
 			line = '';
 		}
@@ -256,13 +256,12 @@ function fitText(text, max_length) {
 	});
 
 	return lines.join('');
+}
 
+function getLongestWordLength(words, max_word_length) {
+	var real_max_word_length = words.concat().sort(function (a, b) {
+		return b.length - a.length;
+	})[0].length;
 
-	function getLongestWordLength(words) {
-		var real_max_word_length = words.concat().sort(function (a, b) {
-			return b.length - a.length;
-		})[0].length;
-
-		return (max_word_length > real_max_word_length) ? max_word_length : real_max_word_length;
-	}
+	return Math.max(real_max_word_length, max_word_length);
 }
