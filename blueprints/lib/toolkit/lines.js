@@ -1,6 +1,8 @@
 'use strict';
 
-function createConnection (connection_blueprint) {
+import {getHash} from './common';
+
+export function createConnection (connection_blueprint) {
 	var id = 'connection_' + getHash();
 	
 	if (connection_blueprint.from && connection_blueprint.to) {
@@ -40,7 +42,7 @@ function createConnection (connection_blueprint) {
 	}
 }
 
-function checkConnectionType(type) {
+export function checkConnectionType(type) {
 	var defaults = {
 		type: 'simple',
 		shape: 'cubic',
@@ -58,7 +60,7 @@ function checkConnectionType(type) {
 	return new_type;
 }
 
-function defineLineShape(socket_1, socket_2) {
+export function defineLineShape(socket_1, socket_2) {
 	var sockets = [socket_1, socket_2].map(function (a) {
 		return parseInt(a);
 	}).sort(function (a, b) {

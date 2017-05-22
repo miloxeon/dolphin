@@ -1,5 +1,5 @@
 'use strict';
 
-function getHash() {
+export function getHash() {
 	return Math.floor(Math.random() * new Date()).toString();
 }
