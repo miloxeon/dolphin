@@ -58,14 +58,201 @@ var rendered_connection = _drawConnection(createConnection({
 
 rendered_elements.forEach(function (element) {
 	element.snapshot.on('dragmove', function () {
-		_destroyConnection(rendered_connection);
-		rendered_connection = _drawConnection(createConnection({
-			from: rendered_elements[0].sockets(5),
-			to: rendered_elements[1].sockets(4),
-			style: custom_line_style
-		}));
+		if (rendered_connection) {
+			_destroyConnection(rendered_connection);
+			
+		}
+
+		var sockets = defineSockets(rendered_elements[0], rendered_elements[1]);
+
+		// console.log(sockets);
+
+		if (sockets.length > 0) {
+			rendered_connection = _drawConnection(createConnection({
+				from: rendered_elements[0].sockets(sockets[0]),
+				to: rendered_elements[1].sockets(sockets[1]),
+				style: custom_line_style
+			}));
+		}
 	});
 });
+
+
+function defineSockets(rendered_element_1, rendered_element_2) {
+	var decision_matrix = {
+		'1': '24',
+		'2': '54',
+		'3': '54',
+		'4': '74',
+		'5': '75',
+		'6': '45',
+		'7': '45',
+		'8': '25',
+
+		'12': '54',
+		'23': '54',
+		'34': '54',
+		'45': '72',
+		'56': '45',
+		'67': '45',
+		'78': '45',
+		'18': '27',
+
+		'123': '54',
+		'234': '54',
+		'345': '72',
+		'456': '72',
+		'567': '45',
+		'678': '45',
+		'178': '27',
+		'128': '27',
+
+		'1234': '54',
+		'2345': '',		//overlaps are empty (no line required)
+		'3456': '72',
+		'4567': '',
+		'5678': '45',
+		'1678': '',
+		'1278': '27',
+		'1238': ''
+	}
+
+	var sockets = decision_matrix[defineRelativePosition(rendered_element_1, rendered_element_2)];
+
+	var is_overlap = checkOverlap(rendered_element_1, rendered_element_2);
+
+	if (is_overlap) {
+		return [];
+	} else {
+		return sockets ? sockets.split('') : [];
+	}
+}
+
+function checkOverlap(rendered_element_1, rendered_element_2) {
+	var bbox_1 = rendered_element_1.tester();
+	var bbox_2 = rendered_element_2.tester();
+
+	return checkInside(rendered_element_1, [bbox_2.x, bbox_2.y]) || 
+		checkInside(rendered_element_1, [bbox_2.x2, bbox_2.y]) || 
+		checkInside(rendered_element_1, [bbox_2.x, bbox_2.y2]) || 
+		checkInside(rendered_element_1, [bbox_2.x2, bbox_2.y2]) ||
+
+		checkInside(rendered_element_2, [bbox_1.x, bbox_1.y]) || 
+		checkInside(rendered_element_2, [bbox_1.x2, bbox_1.y]) || 
+		checkInside(rendered_element_2, [bbox_1.x, bbox_1.y2]) || 
+		checkInside(rendered_element_2, [bbox_1.x2, bbox_1.y2]);
+
+}
+
+function checkInside(rendered_element, dot_coordinates) {
+	var x = dot_coordinates[0];
+	var y = dot_coordinates[1];
+
+	var bbox = rendered_element.tester();
+
+	return (x > bbox.x) && 
+		(x < bbox.x2) && 
+		(y > bbox.y) && 
+		(y < bbox.y2);
+}
+
+function defineRelativePosition(rendered_element_1, rendered_element_2) {
+	// how element_2 relates to element_1
+
+	var bbox_1 = rendered_element_1.tester();
+	var bbox_2 = rendered_element_2.tester();
+
+	// more is rigter
+	var horizontal_offset = bbox_2.x - bbox_1.x;
+
+	// more is lower
+	var vertical_offset = bbox_2.y - bbox_1.y;
+
+	var sectors = [];
+
+	var bbox_2_relative_x = bbox_2.x - bbox_1.cx;
+	var bbox_2_relative_y = bbox_2.y - bbox_1.cy;
+
+	sectors.push(defineDotRelativePosition(bbox_1, bbox_2.x, bbox_2.y));	// top left
+	sectors.push(defineDotRelativePosition(bbox_1, bbox_2.x2, bbox_2.y));	// top right
+	sectors.push(defineDotRelativePosition(bbox_1, bbox_2.x, bbox_2.y2));	// bottom left
+	sectors.push(defineDotRelativePosition(bbox_1, bbox_2.x2, bbox_2.y2));	// bottom right
+
+	var unique_sectors = []
+
+	sectors.forEach(function (sector) {
+		if (unique_sectors.indexOf(sector) == -1) {
+			unique_sectors.push(sector);
+		}
+	})
+
+	unique_sectors.sort(function (a, b) {
+		return a - b;
+	});
+
+	return unique_sectors.join('');
+
+}
+
+function defineDotRelativePosition(bbox, x, y) {
+
+	var relative_x = Math.abs(bbox.cx - x);
+	var relative_y = Math.abs(bbox.cy - y);
+
+
+	if (x >= bbox.cx) {
+		// righter: sectors 1, 2, 3, 4
+
+		if (y <= bbox.cy) {
+			// above: sectors 1 or 2
+
+			if (relative_x >= relative_y) {
+				// sector 2
+				return 2;
+			} else {
+				// sector 1
+				return 1;
+			}
+
+		} else {
+			// under: sectors 3 or 4
+
+			if (relative_x >= relative_y) {
+				// sector 3
+				return 3;
+			} else {
+				// sector 4
+				return 4;
+			}
+		}
+
+	} else {
+		// lefter: sectors 5, 6, 7, 8
+
+		if (y <= bbox.cy) {
+			// above: sectors 7 or 8
+
+			if (relative_x >= relative_y) {
+				// sector 7
+				return 7;
+			} else {
+				// sector 8
+				return 8;
+			}
+
+		} else {
+			// under: sectors 5 or 6
+
+			if (relative_x >= relative_y) {
+				// sector 6
+				return 6;
+			} else {
+				// sector 5
+				return 5;
+			}
+		}
+	}
+}
 
 function _drawConnection(virtual_connection) {
 	var pos1 = virtual_connection.from;
