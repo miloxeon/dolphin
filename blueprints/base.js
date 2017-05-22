@@ -51,11 +51,12 @@ var rendered_elements = blueprints.map(function (blueprint) {
 });
 
 var sockets = defineSockets(rendered_elements[0], rendered_elements[1]);
-var rendered_connection = _drawConnection(connectElements(
-	createAddress(rendered_elements[0], sockets[0]),
-	createAddress(rendered_elements[1], sockets[1]),
-	custom_line_style
-));
+
+var rendered_connection = _drawConnection(connectElements({
+	from: createAddress(rendered_elements[0], sockets[0]),
+	to: createAddress(rendered_elements[1], sockets[1]),
+	style: custom_line_style
+}))
 
 rendered_elements.forEach(function (element) {
 	element.snapshot.on('dragmove', function () {
@@ -66,58 +67,95 @@ rendered_elements.forEach(function (element) {
 		var sockets = defineSockets(rendered_elements[0], rendered_elements[1]);
 
 		if (sockets.length > 0) {
-			rendered_connection = _drawConnection(connectElements(
-				createAddress(rendered_elements[0], sockets[0]),
-				createAddress(rendered_elements[1], sockets[1]),
-				custom_line_style
-			));
+
+			rendered_connection = _drawConnection(connectElements({
+				from: createAddress(rendered_elements[0], sockets[0]),
+				to: createAddress(rendered_elements[1], sockets[1]),
+				style: custom_line_style,
+				type: {
+					roughness: 'soft'
+				}
+			}))
+
+			// console.log(rendered_connection);
 		}
 	});
 });
 
-function createAddress(element, socket) {
-	return {
-		rendered_element: element,
-		socket: socket
-	}
-}
 
+// function createAddress(element, socket) {
+// 	// moved
+// 	return {
+// 		rendered_element: element,
+// 		socket: socket
+// 	}
+// }
 
-function connectElements(from, to, style, connection_type) {
-	var type = (!connection_type || connection_type == {}) ? {type: 'simple'} : connection_type;
-	var attributes = style || {};
+// function checkConnectionType(type) {
+// 	// moved
+// 	var defaults = {
+// 		type: 'simple',
+// 		shape: 'cubic',
+// 		roughness: 'soft'
+// 	}
 
-	var elem_1 = from.rendered_element;
-	var socket_1 = from.socket;
+// 	var new_type = Object.assign({}, type);
 
-	var elem_2 = to.rendered_element;
-	var socket_2 = to.socket;
+// 	for (var param in defaults) {
+// 		if (!new_type[param]) {
+// 			new_type[param] = defaults[param];
+// 		}
+// 	}
 
+// 	return new_type;
+// }
 
-	var sockets = [socket_1, socket_2].map(function (a) {
-		return parseInt(a);
-	}).sort(function (a, b) {
-		return a - b;
-	}).join('');
+// function defineLineShape(socket_1, socket_2) {
+// 	// moved
+// 	var sockets = [socket_1, socket_2].map(function (a) {
+// 		return parseInt(a);
+// 	}).sort(function (a, b) {
+// 		return a - b;
+// 	}).join('');
 
-	var connection = createConnection({
-		from: elem_1.sockets(socket_1),
-		to: elem_2.sockets(socket_2),
-		type: type,
-		style: attributes
-	})
+// 	switch (sockets) {
+// 		case '24':
+// 		case '25':
+// 		case '47':
+// 		case '57':
+// 			return 'arc';
+// 			break;
 
-	if ((sockets == '24') ||
-		(sockets == '25') ||
-		(sockets == '57') ||
-		(sockets == '47')
-		) {
+// 		default:
+// 			return 'cubic';
+// 			break;
+// 	}
+// }
 
-		connection.type.shape = 'arc';
-	}
+// function connectElements(strict_connection_blueprint) {
 
-	return connection;
-}
+// 	var from = strict_connection_blueprint.from;
+// 	var to = strict_connection_blueprint.to;
+
+// 	var from_coords = from.rendered_element.sockets(from.socket);
+// 	var to_coords = to.rendered_element.sockets(to.socket);
+
+// 	var connection_blueprint = Object.assign({}, strict_connection_blueprint);
+// 	delete connection_blueprint.from;
+// 	delete connection_blueprint.to;
+
+// 	var type = checkConnectionType(connection_blueprint.type);
+
+// 	type.shape = defineLineShape(from.socket, to.socket);
+
+// 	delete connection_blueprint.type;
+
+// 	return createConnection(Object.assign({}, {
+// 		from: from_coords,
+// 		to: to_coords,
+// 		type: type
+// 	}, connection_blueprint));
+// }
 
 
 function defineSockets(rendered_element_1, rendered_element_2) {
@@ -185,120 +223,122 @@ function checkOverlap(rendered_element_1, rendered_element_2) {
 
 }
 
-function checkIfInside(rendered_element, dot_coordinates) {
-	var x = dot_coordinates[0];
-	var y = dot_coordinates[1];
+// function checkIfInside(rendered_element, dot_coordinates) {
+// 	// moved
+// 	var x = dot_coordinates[0];
+// 	var y = dot_coordinates[1];
 
-	var bbox = rendered_element.tester();
+// 	var bbox = rendered_element.tester();
 
-	return (x > bbox.x) && 
-		(x < bbox.x2) && 
-		(y > bbox.y) && 
-		(y < bbox.y2);
-}
+// 	return (x > bbox.x) && 
+// 		(x < bbox.x2) && 
+// 		(y > bbox.y) && 
+// 		(y < bbox.y2);
+// }
 
-function defineRelativePosition(rendered_element_1, rendered_element_2) {
-	// how element_2 relates to element_1
+// function defineRelativePosition(rendered_element_1, rendered_element_2) {
+// 	// moved
+// 	// how element_2 relates to element_1
 
-	var bbox_1 = rendered_element_1.tester();
-	var bbox_2 = rendered_element_2.tester();
+// 	var bbox_1 = rendered_element_1.tester();
+// 	var bbox_2 = rendered_element_2.tester();
 
-	// more is rigter
-	var horizontal_offset = bbox_2.x - bbox_1.x;
+// 	// more is rigter
+// 	var horizontal_offset = bbox_2.x - bbox_1.x;
 
-	// more is lower
-	var vertical_offset = bbox_2.y - bbox_1.y;
+// 	// more is lower
+// 	var vertical_offset = bbox_2.y - bbox_1.y;
 
-	var sectors = [];
+// 	var sectors = [];
 
-	var bbox_2_relative_x = bbox_2.x - bbox_1.cx;
-	var bbox_2_relative_y = bbox_2.y - bbox_1.cy;
+// 	var bbox_2_relative_x = bbox_2.x - bbox_1.cx;
+// 	var bbox_2_relative_y = bbox_2.y - bbox_1.cy;
 
-	sectors.push(defineDotRelativePosition(bbox_1, bbox_2.x, bbox_2.y));	// top left
-	sectors.push(defineDotRelativePosition(bbox_1, bbox_2.x2, bbox_2.y));	// top right
-	sectors.push(defineDotRelativePosition(bbox_1, bbox_2.x, bbox_2.y2));	// bottom left
-	sectors.push(defineDotRelativePosition(bbox_1, bbox_2.x2, bbox_2.y2));	// bottom right
+// 	sectors.push(defineDotRelativePosition(bbox_1, bbox_2.x, bbox_2.y));	// top left
+// 	sectors.push(defineDotRelativePosition(bbox_1, bbox_2.x2, bbox_2.y));	// top right
+// 	sectors.push(defineDotRelativePosition(bbox_1, bbox_2.x, bbox_2.y2));	// bottom left
+// 	sectors.push(defineDotRelativePosition(bbox_1, bbox_2.x2, bbox_2.y2));	// bottom right
 
-	var unique_sectors = []
+// 	var unique_sectors = []
 
-	sectors.forEach(function (sector) {
-		if (unique_sectors.indexOf(sector) == -1) {
-			unique_sectors.push(sector);
-		}
-	})
+// 	sectors.forEach(function (sector) {
+// 		if (unique_sectors.indexOf(sector) == -1) {
+// 			unique_sectors.push(sector);
+// 		}
+// 	})
 
-	unique_sectors.sort(function (a, b) {
-		return a - b;
-	});
+// 	unique_sectors.sort(function (a, b) {
+// 		return a - b;
+// 	});
 
-	return unique_sectors.join('');
+// 	return unique_sectors.join('');
 
-}
+// }
 
-function defineDotRelativePosition(bbox, x, y) {
+// function defineDotRelativePosition(bbox, x, y) {
+// 	// moved
 
-	var relative_x = Math.abs(bbox.cx - x);
-	var relative_y = Math.abs(bbox.cy - y);
+// 	var relative_x = Math.abs(bbox.cx - x);
+// 	var relative_y = Math.abs(bbox.cy - y);
 
 
-	if (x >= bbox.cx) {
-		// righter: sectors 1, 2, 3, 4
+// 	if (x >= bbox.cx) {
+// 		// righter: sectors 1, 2, 3, 4
 
-		if (y <= bbox.cy) {
-			// above: sectors 1 or 2
+// 		if (y <= bbox.cy) {
+// 			// above: sectors 1 or 2
 
-			if (relative_x >= relative_y) {
-				// sector 2
-				return 2;
-			} else {
-				// sector 1
-				return 1;
-			}
+// 			if (relative_x >= relative_y) {
+// 				// sector 2
+// 				return 2;
+// 			} else {
+// 				// sector 1
+// 				return 1;
+// 			}
 
-		} else {
-			// under: sectors 3 or 4
+// 		} else {
+// 			// under: sectors 3 or 4
 
-			if (relative_x >= relative_y) {
-				// sector 3
-				return 3;
-			} else {
-				// sector 4
-				return 4;
-			}
-		}
+// 			if (relative_x >= relative_y) {
+// 				// sector 3
+// 				return 3;
+// 			} else {
+// 				// sector 4
+// 				return 4;
+// 			}
+// 		}
 
-	} else {
-		// lefter: sectors 5, 6, 7, 8
+// 	} else {
+// 		// lefter: sectors 5, 6, 7, 8
 
-		if (y <= bbox.cy) {
-			// above: sectors 7 or 8
+// 		if (y <= bbox.cy) {
+// 			// above: sectors 7 or 8
 
-			if (relative_x >= relative_y) {
-				// sector 7
-				return 7;
-			} else {
-				// sector 8
-				return 8;
-			}
+// 			if (relative_x >= relative_y) {
+// 				// sector 7
+// 				return 7;
+// 			} else {
+// 				// sector 8
+// 				return 8;
+// 			}
 
-		} else {
-			// under: sectors 5 or 6
+// 		} else {
+// 			// under: sectors 5 or 6
 
-			if (relative_x >= relative_y) {
-				// sector 6
-				return 6;
-			} else {
-				// sector 5
-				return 5;
-			}
-		}
-	}
-}
+// 			if (relative_x >= relative_y) {
+// 				// sector 6
+// 				return 6;
+// 			} else {
+// 				// sector 5
+// 				return 5;
+// 			}
+// 		}
+// 	}
+// }
 
 function _drawConnection(virtual_connection) {
 	var from = virtual_connection.from;
 	var to = virtual_connection.to;
-
 
 	if (virtual_connection.type.shape && virtual_connection.type.shape == 'arc') {
 
@@ -331,7 +371,7 @@ function _drawConnection(virtual_connection) {
 		blueprint: virtual_connection.blueprint,
 		origin: virtual_connection,
 		snapshot: line,
-		tester: generateTestMethods(line)
+		tester: _generateTestMethods(line)
 	}
 }
 
@@ -398,7 +438,8 @@ function createConnection (connection_blueprint) {
 		// error
 	}
 
-	var type = (!connection_blueprint.type || connection_blueprint.type == {}) ? {type: 'simple'} : connection_blueprint.type;
+	var type = checkConnectionType(connection_blueprint.type);
+
 	var blueprint_style = connection_blueprint.style || {};
 
 	var default_style = {
@@ -455,7 +496,7 @@ function _drawElement(virtual_element) {
 		blueprint: virtual_element.blueprint,
 		origin: virtual_element,
 		snapshot: element,
-		tester: generateTestMethods(element_rect),
+		tester: _generateTestMethods(element_rect),
 		sockets: generateSockets(element)
 	}
 
@@ -463,7 +504,7 @@ function _drawElement(virtual_element) {
 }
 
 function generateSockets(rendered_element) {
-	var tester = generateTestMethods(rendered_element)();
+	var tester = _generateTestMethods(rendered_element)();
 
 	// var colors = [
 	// 	'red',
@@ -507,12 +548,12 @@ function generateSockets(rendered_element) {
 
 function _generateSocket(rendered_element, cx, cy, color) {
 	var socket = rendered_element.circle(5).center(cx, cy).fill(color);
-	var tester = generateTestMethods(socket);
+	var tester = _generateTestMethods(socket);
 
 	return tester;
 }
 
-function generateTestMethods(rendered_element) {
+function _generateTestMethods(rendered_element) {
 	return function () {
 		var rbox = rendered_element.rbox();
 		var diagram_rbox = diagram.rbox();
@@ -533,148 +574,169 @@ function generateTestMethods(rendered_element) {
 	}
 }
 
-function computeRectSize(rendered_label, virtual_element) {
-	return [
-		rendered_label.bbox().w + 
-			virtual_element.style.element_style.padding[0] * 2 +
-			virtual_element.style.rect_style['stroke-width'],
+// function computeRectSize(rendered_label, virtual_element) {
+// 	// moved
+// 	return [
+// 		rendered_label.bbox().w + 
+// 			virtual_element.style.element_style.padding[0] * 2 +
+// 			virtual_element.style.rect_style['stroke-width'],
 
-		rendered_label.bbox().h + 
-			virtual_element.style.element_style.padding[1] * 2 + 
-			virtual_element.style.rect_style['stroke-width']
-	]
-}
+// 		rendered_label.bbox().h + 
+// 			virtual_element.style.element_style.padding[1] * 2 + 
+// 			virtual_element.style.rect_style['stroke-width']
+// 	]
+// }
 
-function computeTextPosition(rendered_label, virtual_element) {
-	return [
-		virtual_element.style.element_style.padding[0] + 
-			virtual_element.style.rect_style['stroke-width'] / 2 + 
-			(function () {
-				if (virtual_element.style.text_style.anchor == 'start') {
-					return 0;
-				} else if (virtual_element.style.text_style.anchor == 'middle') {
-					return rendered_label.bbox().w / 2;
-				} else if (virtual_element.style.text_style.anchor == 'end') {
-					return rendered_label.bbox().w;
-				} else {
-					// error
-				}
-			})(),
+// function computeTextPosition(rendered_label, virtual_element) {
+// 	// moved
+// 	return [
+// 		virtual_element.style.element_style.padding[0] + 
+// 			virtual_element.style.rect_style['stroke-width'] / 2 + 
+// 			(function () {
+// 				if (virtual_element.style.text_style.anchor == 'start') {
+// 					return 0;
+// 				} else if (virtual_element.style.text_style.anchor == 'middle') {
+// 					return rendered_label.bbox().w / 2;
+// 				} else if (virtual_element.style.text_style.anchor == 'end') {
+// 					return rendered_label.bbox().w;
+// 				} else {
+// 					// error
+// 				}
+// 			})(),
 
-		virtual_element.style.element_style.padding[1] + 
-			virtual_element.style.rect_style['stroke-width'] / 2
-	];
-}
+// 		virtual_element.style.element_style.padding[1] + 
+// 			virtual_element.style.rect_style['stroke-width'] / 2
+// 	];
+// }
+
+// function checkElementType(type) {
+// 	// moved
+// 	var defaults = {
+// 		type: 'simple'
+// 	}
+
+// 	var new_type = Object.assign({}, type);
+
+// 	for (var param in defaults) {
+// 		if (!new_type.param) {
+// 			new_type.param = param;
+// 		}
+// 	}
+
+// 	return new_type;
+// }
 
 
+// function createElement(blueprint) {
+// 	// moved
+// 	var id = 'element_' + Math.floor(Math.random() * new Date()).toString();
+// 	var position = blueprint.position || [0, 0];
+// 	var type = checkElementType(blueprint.type);
+// 	var blueprint_style = blueprint.theme || {};
 
-function createElement(blueprint) {
-	var id = 'element_' + Math.floor(Math.random() * new Date()).toString();
-	var position = blueprint.position || [0, 0];
-	var type = (!blueprint.type || blueprint.type == {}) ? {type: 'simple'} : blueprint.type;
-	var blueprint_style = blueprint.theme || {};
+// 	var default_theme = {
+// 		padding: [15, 10],
 
-	var default_theme = {
-		padding: [15, 10],
-
-		border_color: 'black',
-		border_width: 2,
-		border_radius: 4,
+// 		border_color: 'black',
+// 		border_width: 2,
+// 		border_radius: 4,
 		
-		color: 'black',
-		font_family: 'Arial',
-		font_size: 14,
-		line_height: 1.25,
-		font_style: 'normal',
-		font_weight: 'normal',
-		text_align: 'left',
+// 		color: 'black',
+// 		font_family: 'Arial',
+// 		font_size: 14,
+// 		line_height: 1.25,
+// 		font_style: 'normal',
+// 		font_weight: 'normal',
+// 		text_align: 'left',
 
-		background_color: 'white'
-	};
+// 		background_color: 'white'
+// 	};
 
-	var style = {
-		text_style: {
-			'leading': blueprint_style.line_height || default_theme.line_height,
-			'family': blueprint_style.font_family || default_theme.font_family,
-			'size': blueprint_style.font_size || default_theme.font_size,
-			'style': blueprint_style.font_style || default_theme.font_style,
-			'weight': blueprint_style.font_weight || default_theme.font_weight,
-			'fill': blueprint_style.color || default_theme.color,
-			'anchor': (function () {
-				var text_align = blueprint_style.text_align || default_theme.text_align;
+// 	var style = {
+// 		text_style: {
+// 			'leading': blueprint_style.line_height || default_theme.line_height,
+// 			'family': blueprint_style.font_family || default_theme.font_family,
+// 			'size': blueprint_style.font_size || default_theme.font_size,
+// 			'style': blueprint_style.font_style || default_theme.font_style,
+// 			'weight': blueprint_style.font_weight || default_theme.font_weight,
+// 			'fill': blueprint_style.color || default_theme.color,
+// 			'anchor': (function () {
+// 				var text_align = blueprint_style.text_align || default_theme.text_align;
 
-				if (text_align == 'left') {
-					return 'start';
-				} else if (text_align == 'center') {
-					return 'middle';
-				} else if (text_align == 'right') {
-					return 'end';
-				} else {
-					// error
-				}
-			})()
-		},
-		rect_style: {
-			'fill': blueprint_style.background_color || default_theme.background_color,
-			'stroke': blueprint_style.border_color || default_theme.border_color,
-			'stroke-width': blueprint_style.border_width || default_theme.border_width,
-			'rx': blueprint_style.border_radius || default_theme.border_radius,
-			'ry': blueprint_style.border_radius || default_theme.border_radius
-		},
-		element_style: {
-			'padding' : blueprint_style.padding || default_theme.padding
-		}
-	}
+// 				if (text_align == 'left') {
+// 					return 'start';
+// 				} else if (text_align == 'center') {
+// 					return 'middle';
+// 				} else if (text_align == 'right') {
+// 					return 'end';
+// 				} else {
+// 					// error
+// 				}
+// 			})()
+// 		},
+// 		rect_style: {
+// 			'fill': blueprint_style.background_color || default_theme.background_color,
+// 			'stroke': blueprint_style.border_color || default_theme.border_color,
+// 			'stroke-width': blueprint_style.border_width || default_theme.border_width,
+// 			'rx': blueprint_style.border_radius || default_theme.border_radius,
+// 			'ry': blueprint_style.border_radius || default_theme.border_radius
+// 		},
+// 		element_style: {
+// 			'padding' : blueprint_style.padding || default_theme.padding
+// 		}
+// 	}
 
-	var text = {
-		text: fitText(blueprint.text),
-		position: [
-			style.element_style.padding[0] + style.rect_style['stroke-width'] / 2,
-			style.element_style.padding[1] + style.rect_style['stroke-width'] / 2
-		]
-	}
+// 	var text = {
+// 		text: fitText(blueprint.text),
+// 		position: [
+// 			style.element_style.padding[0] + style.rect_style['stroke-width'] / 2,
+// 			style.element_style.padding[1] + style.rect_style['stroke-width'] / 2
+// 		]
+// 	}
 
-	return {
-		id: id,
-		position: position,
-		type: type,
-		text: text,
-		style: style,
-		blueprint: blueprint
-	}
-}
+// 	return {
+// 		id: id,
+// 		position: position,
+// 		type: type,
+// 		text: text,
+// 		style: style,
+// 		blueprint: blueprint
+// 	}
+// }
 
-function fitText(text, max_length) {
-	var max_word_length = max_length || 20;
+// function fitText(text, max_length) {
+// 	// moved
+// 	var max_word_length = max_length || 20;
 
-	var words = text.split(' ');	
+// 	var words = text.split(' ');	
 
-	var lines = [];
-	var line = '';
+// 	var lines = [];
+// 	var line = '';
 
-	words.forEach(function (word) {
-		if (line.length + word.length >= getLongestWordLength(words, max_word_length)) {
-			lines.push(line);
-			line = '';
-		}
-		line += word + ' ';
-	});
+// 	words.forEach(function (word) {
+// 		if (line.length + word.length >= getLongestWordLength(words, max_word_length)) {
+// 			lines.push(line);
+// 			line = '';
+// 		}
+// 		line += word + ' ';
+// 	});
 
-	if (line) {
-		lines.push(line);
-	}
+// 	if (line) {
+// 		lines.push(line);
+// 	}
 
-	lines = lines.map(function (line) {
-		return line.slice(0, -1) + '\n';
-	});
+// 	lines = lines.map(function (line) {
+// 		return line.slice(0, -1) + '\n';
+// 	});
 
-	return lines.join('');
-}
+// 	return lines.join('');
+// }
 
-function getLongestWordLength(words, max_word_length) {
-	var real_max_word_length = words.concat().sort(function (a, b) {
-		return b.length - a.length;
-	})[0].length;
+// function getLongestWordLength(words, max_word_length) {
+// 	// moved
+// 	var real_max_word_length = words.concat().sort(function (a, b) {
+// 		return b.length - a.length;
+// 	})[0].length;
 
-	return Math.max(real_max_word_length, max_word_length);
-}
+// 	return Math.max(real_max_word_length, max_word_length);
+// }
