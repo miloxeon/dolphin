@@ -1,6 +1,9 @@
 'use strict';
 
-function connectElements(strict_connection_blueprint) {
+import {getHash} from './common';
+import {checkConnectionType, defineLineShape, createConnection} from './lines';
+
+export function connectElements(strict_connection_blueprint) {
 
 	var from = strict_connection_blueprint.from;
 	var to = strict_connection_blueprint.to;
@@ -25,7 +28,7 @@ function connectElements(strict_connection_blueprint) {
 	}, connection_blueprint));
 }
 
-function createElement(blueprint) {
+export function createElement(blueprint) {
 	var id = 'element_' + getHash();
 	var position = blueprint.position || [0, 0];
 	var type = checkElementType(blueprint.type);
@@ -101,14 +104,30 @@ function createElement(blueprint) {
 	}
 }
 
-function createAddress(element, socket) {
+export function createAddress(element, socket) {
 	return {
 		rendered_element: element,
 		socket: socket
 	}
 }
 
-function computeRectSize(rendered_label, virtual_element) {
+export function checkElementType(type) {
+	var defaults = {
+		type: 'simple'
+	}
+
+	var new_type = Object.assign({}, type);
+
+	for (var param in defaults) {
+		if (!new_type.param) {
+			new_type.param = param;
+		}
+	}
+
+	return new_type;
+}
+
+export function computeRectSize(rendered_label, virtual_element) {
 	return [
 		rendered_label.bbox().w + 
 			virtual_element.style.element_style.padding[0] * 2 +
@@ -120,7 +139,7 @@ function computeRectSize(rendered_label, virtual_element) {
 	]
 }
 
-function computeTextPosition(rendered_label, virtual_element) {
+export function computeTextPosition(rendered_label, virtual_element) {
 	return [
 		virtual_element.style.element_style.padding[0] + 
 			virtual_element.style.rect_style['stroke-width'] / 2 + 
@@ -139,22 +158,6 @@ function computeTextPosition(rendered_label, virtual_element) {
 		virtual_element.style.element_style.padding[1] + 
 			virtual_element.style.rect_style['stroke-width'] / 2
 	];
-}
-
-function checkElementType(type) {
-	var defaults = {
-		type: 'simple'
-	}
-
-	var new_type = Object.assign({}, type);
-
-	for (var param in defaults) {
-		if (!new_type.param) {
-			new_type.param = param;
-		}
-	}
-
-	return new_type;
 }
 
 function fitText(text, max_length) {

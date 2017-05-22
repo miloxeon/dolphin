@@ -1,6 +1,6 @@
 'use strict';
 
-function checkIfInside(rendered_element, dot_coordinates) {
+export function checkIfInside(rendered_element, dot_coordinates) {
 	var x = dot_coordinates[0];
 	var y = dot_coordinates[1];
 
@@ -12,7 +12,7 @@ function checkIfInside(rendered_element, dot_coordinates) {
 		(y < bbox.y2);
 }
 
-function defineRelativePosition(rendered_element_1, rendered_element_2) {
+export function defineRelativePosition(rendered_element_1, rendered_element_2) {
 	// how element_2 relates to element_1
 
 	var bbox_1 = rendered_element_1.tester();
