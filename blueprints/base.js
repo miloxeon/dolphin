@@ -27,18 +27,123 @@ var blueprints = [
 		theme: custom_theme
 	},
 	{
-		position: [50, 100],
+		position: [450, 100],
 		text: 'Lorem ipsum dolor sit amet consectetur. Cras sodales imperdiet auctor.'
 	}
 ];
 
+var custom_line_style = {
+	'stroke': 'red',
+	'stroke-width': '3',
+	'stroke-dasharray': '5,5'
+}
 
-var rendered_element = _drawElement(createElement(blueprints[1]));
-rendered_element.rendered_element.draggy();
+var connections = [
+	{
+		from: [50, 50],
+		to: [100, 100],
+		type: {type: 'simple'},
+		style: custom_line_style
+	},
+	{
+		from: [70, 50],
+		to: [100, 120]
+	}
+];
+
+
+var rendered_elements = blueprints.map(function (blueprint) {
+	var element = _drawElement(createElement(blueprint));
+	element.origin.draggy();
+	return element;
+});
+
+setInterval(function () {
+	var rendered_connection = _drawConnection(createConnection({
+		from: rendered_elements[0].sockets(5),
+		to: rendered_elements[1].sockets(4)
+	}));
+
+	setTimeout(function () {
+		rendered_connection.remove();
+	}, 1);
+
+	console.log(rendered_elements[0].sockets(1));
+
+}, 2);
+
+// console.log(rendered_elements[0].sockets(5));
+
+
+
 
 // setInterval(function () {
 	// console.log(rendered_element.tester())
 // }, 500);
+
+
+function _drawConnection(virtual_connection) {
+	var pos1 = virtual_connection.from;
+	var pos2 = virtual_connection.to;
+
+	var x_between_elements = pos1[0] + Math.abs(pos1[0] - pos2[0]) / 2;
+
+	return diagram.path(
+		'M ' + 
+		pos1[0].toString() + ' ' + 
+		pos1[1].toString() + ' ' + 
+		'C ' +
+		x_between_elements.toString() + ' ' + 
+		pos1[1].toString() + ' ' +
+		x_between_elements.toString() + ' ' + 
+		pos2[1].toString() + 
+		' ' + 
+		pos2[0].toString() + ' ' + 
+		pos2[1].toString()
+	).attr(virtual_connection.style);
+}
+
+function _destroyConnection(rendered_connection) {
+
+}
+
+function createConnection (connection_blueprint) {
+	var id = 'connection_' + Math.floor(Math.random() * new Date()).toString();
+	
+	if (connection_blueprint.from && connection_blueprint.to) {
+		var from = connection_blueprint.from;
+		var to = connection_blueprint.to;
+	} else {
+		// error
+	}
+
+	var type = (!connection_blueprint.type || connection_blueprint.type == {}) ? {type: 'simple'} : connection_blueprint.type;
+	var blueprint_style = connection_blueprint.style || {};
+
+	var default_style = {
+		'stroke': 'black',
+		'stroke-width': '1',
+		'fill': 'none',
+		'stroke-linecap': 'round',
+		'stroke-dasharray': 'none'
+	}
+
+	var style = {
+		'stroke': blueprint_style['stroke'] || default_style['stroke'],
+		'stroke-width': blueprint_style['stroke-width'] || default_style['stroke-width'],
+		'fill': blueprint_style['fill'] || default_style['fill'],
+		'stroke-linecap': blueprint_style['stroke-linecap'] || default_style['stroke-linecap'],
+		'stroke-dasharray': blueprint_style['stroke-dasharray'] || default_style['stroke-dasharray']
+	}
+
+	return {
+		id: id,
+		type: type,
+		from: from,
+		to: to,
+		style: style
+	}
+}
 
 
 function _drawElement(virtual_element) {
@@ -67,7 +172,7 @@ function _drawElement(virtual_element) {
 	var rendered_element = {
 		rect: element_rect,
 		text: element_text,
-		rendered_element: element,
+		origin: element,
 		tester: generateTestMethods(element_rect),
 		sockets: generateSockets(element)
 	}
@@ -92,15 +197,15 @@ function generateSockets(rendered_element) {
 	]
 
 	return function (number) {
-		return sockets[number - 1];
+		return [sockets[number - 1]().cx, sockets[number - 1]().cy];
 	}
 }
 
 function _generateSocket(rendered_element, cx, cy, color) {
 	var socket = rendered_element.circle(5).center(cx, cy).fill(color);
-	var tester = generateTestMethods(socket)();
+	var tester = generateTestMethods(socket);
 
-	return [tester.cx, tester.cy];
+	return tester;
 }
 
 function generateTestMethods(rendered_element) {
@@ -108,13 +213,16 @@ function generateTestMethods(rendered_element) {
 		var rbox = rendered_element.rbox();
 		var diagram_rbox = diagram.rbox();
 
+		var x = rbox.x - diagram_rbox.x;
+		var y = rbox.y - diagram_rbox.y;
+
 		return {
-			'x': rbox.x - diagram_rbox.x,
-			'y': rbox.y - diagram_rbox.y,
-			'x2': rbox.x + rbox.w,
-			'y2': rbox.y + rbox.h,
-			'cx': rbox.x + rbox.w / 2,
-			'cy': rbox.y + rbox.h / 2,
+			'x': x,
+			'y': y,
+			'x2': x + rbox.w,
+			'y2': y + rbox.h,
+			'cx': x + rbox.w / 2,
+			'cy': y + rbox.h / 2,
 			'w': rbox.w,
 			'h': rbox.h
 		}
@@ -157,7 +265,7 @@ function computeTextPosition(rendered_label, virtual_element) {
 
 
 function createElement(blueprint) {
-	var id = Math.floor(Math.random() * new Date());
+	var id = 'element_' + Math.floor(Math.random() * new Date()).toString();
 	var position = blueprint.position || [0, 0];
 	var type = (!blueprint.type || blueprint.type == {}) ? {type: 'simple'} : blueprint.type;
 	var blueprint_style = blueprint.theme || {};
