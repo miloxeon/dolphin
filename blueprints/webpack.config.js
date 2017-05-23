@@ -3,7 +3,7 @@ var path = require('path');
 module.exports = {
     devtool: 'source-map',
     entry: [
-        './js/base.js'
+        './stagezero/base.js'
     ],
     output: {
         path: path.join(__dirname, 'js'),

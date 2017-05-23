@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "/static/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 5);
+/******/ 	return __webpack_require__(__webpack_require__.s = 6);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -72,10 +72,25 @@
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = getHash;
+/* harmony export (immutable) */ __webpack_exports__["b"] = fillObject;
 
 
-function getHash() {
-	return Math.floor(Math.random() * new Date()).toString();
+// set of handy pure functions
+
+function getHash(object_type) {
+	return object_type.toString() + '_' + Math.floor(Math.random() * new Date()).toString();
+}
+
+function fillObject(object, defaults) {
+	var new_object = Object.assign({}, object || {});
+
+	for (var param in defaults || {}) {
+		if (!new_object[param]) {
+			new_object[param] = defaults[param];
+		}
+	}
+
+	return new_object;
 }
 
 
@@ -85,323 +100,211 @@ function getHash() {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lib_toolkit_elements__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__lib_toolkit_geometry__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__elements__ = __webpack_require__(3);
 
 
 
 
+var stage = SVG('diagram');
+var layer = stage.group();
 
-var diagram = SVG('diagram');
-
-var custom_theme = {
-	border_color: 'pink',
-	color: 'white',
-	font_family: 'Comic Sans',
-	font_size: 14,
-	font_style: 'italic',
-	text_align: 'center',
-	background_color: 'pink'
-};
-
-var blueprints = [
-	{
-		position: [150, 90],
-		text: 'Harder, Ivan',
-		theme: custom_theme
+layer = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__elements__["a" /* drawElement */])(layer, {
+	position: {
+		x: 150,
+		y: 200
 	},
-	{
-		position: [450, 100],
-		text: 'Lorem ipsum dolor sit amet consectetur. Cras sodales imperdiet auctor.'
-	}
-];
-
-var custom_line_style = {
-	'stroke': 'red',
-	'stroke-width': '3',
-	'stroke-dasharray': '1,5'
-}
-
-var connections = [
-	{
-		from: [50, 50],
-		to: [100, 100],
-		type: {type: 'simple'},
-		style: custom_line_style
-	},
-	{
-		from: [70, 50],
-		to: [100, 120]
-	}
-];
-
-
-var rendered_elements = blueprints.map(function (blueprint) {
-	var element = _drawElement(__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__lib_toolkit_elements__["a" /* createElement */])(blueprint));
-	element.snapshot.draggy();
-	return element;
+	text: 'Hello'
 });
 
-var sockets = defineSockets(rendered_elements[0], rendered_elements[1]);
 
-var rendered_connection = _drawConnection(__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__lib_toolkit_elements__["b" /* connectElements */])({
-	from: __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__lib_toolkit_elements__["c" /* createAddress */])(rendered_elements[0], sockets[0]),
-	to: __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__lib_toolkit_elements__["c" /* createAddress */])(rendered_elements[1], sockets[1]),
-	style: custom_line_style
-}))
-
-rendered_elements.forEach(function (element) {
-	element.snapshot.on('dragmove', function () {
-		if (rendered_connection) {
-			_destroyConnection(rendered_connection);
-		}
-
-		var sockets = defineSockets(rendered_elements[0], rendered_elements[1]);
-
-		if (sockets.length > 0) {
-
-			rendered_connection = _drawConnection(__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__lib_toolkit_elements__["b" /* connectElements */])({
-				from: __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__lib_toolkit_elements__["c" /* createAddress */])(rendered_elements[0], sockets[0]),
-				to: __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__lib_toolkit_elements__["c" /* createAddress */])(rendered_elements[1], sockets[1]),
-				style: custom_line_style,
-				type: {
-					roughness: 'soft'
-				}
-			}))
-		}
-	});
+layer = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__elements__["a" /* drawElement */])(layer, {
+	position: {
+		x: 300,
+		y: 200
+	},
+	text: 'Harder, Ivan',
+	style: {
+		background_color: 'pink'
+	}
 });
 
-function defineSockets(rendered_element_1, rendered_element_2) {
-	var decision_matrix = {
-		'1': '24',
-		'2': '54',
-		'3': '54',
-		'4': '74',
-		'5': '75',
-		'6': '45',
-		'7': '45',
-		'8': '25',
-
-		'12': '24',
-		'23': '54',
-		'34': '74',
-		'45': '72',
-		'56': '75',
-		'67': '45',
-		'78': '25',
-		'18': '27',
-
-		'123': '54',
-		'234': '54',
-		'345': '72',
-		'456': '72',
-		'567': '45',
-		'678': '45',
-		'178': '27',
-		'128': '27',
-
-		'1234': '54',
-		'2345': '',		//overlaps are empty (no line required)
-		'3456': '72',
-		'4567': '',
-		'5678': '45',
-		'1678': '',
-		'1278': '27',
-		'1238': ''
+layer = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__elements__["a" /* drawElement */])(layer, {
+	position: {
+		x: 300,
+		y: 300
+	},
+	text: 'Harder, Ivan',
+	style: {
+		background_color: 'pink'
 	}
+});
 
-	var sockets = decision_matrix[__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__lib_toolkit_geometry__["a" /* defineRelativePosition */])(rendered_element_2, rendered_element_1)];
-	var is_overlap = checkOverlap(rendered_element_1, rendered_element_2);
+console.log(layer.elements);
 
-	if (is_overlap) {
-		return [];
-	} else {
-		return sockets ? sockets.split('').reverse() : [];
+// console.log('it works!');
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = computeRectSize;
+/* harmony export (immutable) */ __webpack_exports__["b"] = computeTextPosition;
+
+
+// methods for computing element's geometry
+
+function computeRectSize(rendered_label, style) {
+	return {
+		w: rendered_label.bbox().w + 
+			style.additional_style.text_offset.x * 2 +
+			style.rect_style['stroke-width'],
+
+		h: rendered_label.bbox().h + 
+			style.additional_style.text_offset.y * 2 + 
+			style.rect_style['stroke-width'] 
 	}
 }
 
-function checkOverlap(rendered_element_1, rendered_element_2) {
-	var bbox_1 = rendered_element_1.tester();
-	var bbox_2 = rendered_element_2.tester();
+function computeTextPosition(rendered_label, style) {
 
-	return __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__lib_toolkit_geometry__["b" /* checkIfInside */])(rendered_element_1, [bbox_2.x, bbox_2.y]) || 
-		__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__lib_toolkit_geometry__["b" /* checkIfInside */])(rendered_element_1, [bbox_2.x2, bbox_2.y]) || 
-		__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__lib_toolkit_geometry__["b" /* checkIfInside */])(rendered_element_1, [bbox_2.x, bbox_2.y2]) || 
-		__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__lib_toolkit_geometry__["b" /* checkIfInside */])(rendered_element_1, [bbox_2.x2, bbox_2.y2]) ||
-
-		__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__lib_toolkit_geometry__["b" /* checkIfInside */])(rendered_element_2, [bbox_1.x, bbox_1.y]) || 
-		__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__lib_toolkit_geometry__["b" /* checkIfInside */])(rendered_element_2, [bbox_1.x2, bbox_1.y]) || 
-		__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__lib_toolkit_geometry__["b" /* checkIfInside */])(rendered_element_2, [bbox_1.x, bbox_1.y2]) || 
-		__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__lib_toolkit_geometry__["b" /* checkIfInside */])(rendered_element_2, [bbox_1.x2, bbox_1.y2]);
-
-}
-
-function _drawConnection(virtual_connection) {
-	var from = virtual_connection.from;
-	var to = virtual_connection.to;
-
-	if (virtual_connection.type.shape && virtual_connection.type.shape == 'arc') {
-
-		if (virtual_connection.from[0] <= virtual_connection.to[0]) {
-			var direction = 'normal';
-		} else {
-			var direction = 'reverse';
-		}
-		var pos1 = virtual_connection.to;
-		var pos2 = virtual_connection.from;
-
-		var line = _arcTo(pos1, pos2).attr(virtual_connection.style);
-
-	} else {
-
-		if (virtual_connection.from[0] <= virtual_connection.to[0]) {
-			var direction = 'normal';
-			var pos1 = virtual_connection.from;
-			var pos2 = virtual_connection.to;
-
-		} else {
-			var direction = 'reverse';
-			var pos1 = virtual_connection.to;
-			var pos2 = virtual_connection.from;
-		}
-		var line = _cubicTo(pos1, pos2).attr(virtual_connection.style);
-	}
+	var text_offset = style.additional_style.text_offset;
+	var stroke_offset = style.rect_style['stroke-width'] / 2;
 
 	return {
-		blueprint: virtual_connection.blueprint,
-		origin: virtual_connection,
-		snapshot: line,
-		tester: _generateTestMethods(line)
+		x: text_offset.x + stroke_offset + 
+			computeAnchorOffset(rendered_label, style.text_style.anchor),
+
+		y: text_offset.y + stroke_offset
 	}
 }
 
-function _apply_params(element, params) {
-	return element.attr(params);
-}
+function computeAnchorOffset(rendered_label, anchor) {
+	switch (anchor) {
+		case 'start':
+			return 0;
+			break;
 
-function _arcTo(from, to, style) {
+		case 'middle':
+			return rendered_label.bbox().w / 2;
+			break;
 
-	var x_between_from_and_to = from[0] + Math.abs(from[0] - to[0]) / 2;
+		case 'end':
+			return rendered_label.bbox().w;
+			break;
 
-	var bias = [
-		from[0],
-		to[1]
-	];
-
-	return _cubic(from, to, bias, bias);
-}
-
-function _cubicTo(from, to) {
-
-	var x_between_from_and_to = from[0] + Math.abs(from[0] - to[0]) / 2;
-
-	var bias_1 = [
-		x_between_from_and_to,
-		from[1]
-	];
-
-	var bias_2 = [
-		x_between_from_and_to,
-		to[1]
-	];
-
-	return _cubic(from, to, bias_1, bias_2);
-}
-
-function _cubic(from, to, bias_1, bias_2) {
-	return diagram.path(
-		'M ' + 
-		from[0].toString() + ' ' + 
-		from[1].toString() + ' ' + 
-		'C ' +
-		bias_1[0].toString() + ' ' + 
-		bias_1[1].toString() + ' ' +
-		bias_2[0].toString() + ' ' + 
-		bias_2[1].toString() + 
-		' ' + 
-		to[0].toString() + ' ' + 
-		to[1].toString()
-	);
-}
-
-function _destroyConnection(rendered_connection) {
-	rendered_connection.snapshot.remove();
-}
-
-function createConnection (connection_blueprint) {
-	var id = 'connection_' + Math.floor(Math.random() * new Date()).toString();
-	
-	if (connection_blueprint.from && connection_blueprint.to) {
-		var from = connection_blueprint.from;
-		var to = connection_blueprint.to;
-	} else {
-		// error
-	}
-
-	var type = checkConnectionType(connection_blueprint.type);
-
-	var blueprint_style = connection_blueprint.style || {};
-
-	var default_style = {
-		'stroke': 'black',
-		'stroke-width': '2',
-		'fill': 'none',
-		'stroke-linecap': 'round',
-		'stroke-dasharray': 'none'
-	}
-
-	var style = {
-		'stroke': blueprint_style['stroke'] || default_style['stroke'],
-		'stroke-width': blueprint_style['stroke-width'] || default_style['stroke-width'],
-		'fill': blueprint_style['fill'] || default_style['fill'],
-		'stroke-linecap': blueprint_style['stroke-linecap'] || default_style['stroke-linecap'],
-		'stroke-dasharray': blueprint_style['stroke-dasharray'] || default_style['stroke-dasharray']
-	}
-
-	return {
-		id: id,
-		type: type,
-		from: from,
-		to: to,
-		style: style,
-		blueprint: connection_blueprint
+		default:
+			// error
+			break;
 	}
 }
 
 
-function _drawElement(virtual_element) {
-	// init element
-	var element = diagram.group();
+/***/ }),
+/* 3 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-	// create text and rect
-	var element_text = element.text(virtual_element.text.text)
-		.font(virtual_element.style.text_style);
-
-	var rect_size = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__lib_toolkit_elements__["d" /* computeRectSize */])(element_text, virtual_element);
-
-	var element_rect = element.rect(rect_size[0], rect_size[1])
-		.attr(virtual_element.style.rect_style);
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = drawElement;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__text__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__style__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__geometry__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__tools__ = __webpack_require__(0);
 
 
-	// position everything
+// everything needed to work with elements
+
+//	element_type:
+//		type: object of { type: 'simple' } by default, needs for Dolphin to be extendable
+//	
+//	element_blueprint:
+//		id
+//		position: {x, y}
+//		type: element_type
+//		text: element text as a single line
+//		style: element_style (just like default_element_style but you may omit unused field like you are in CSS)
+//
+//	
+//	address:
+//		rendered_element,
+//		socket
+//	
+//	rendered_element:
+//		id
+//		representation: actual element on the layer
+//		tester
+//		socket: function to get socket's coordinates by its number
+//
+//	sockets: TODO
+//	tester: TODO
+
+
+// 	element_style = {
+// 		padding: [15, 10],
+//
+// 		border_color: 'black',
+// 		border_width: 2,
+// 		border_radius: 4,
+//
+// 		color: 'black',
+// 		font_family: 'Arial',
+// 		font_size: 14,
+// 		line_height: 1.25,
+// 		font_style: 'normal',
+// 		font_weight: 'normal',
+// 		text_align: 'left',
+//
+// 		background_color: 'white'
+// 	}
+
+
+
+
+
+
+
+
+function drawElement(layer, element_blueprint) {
+	var new_layer = layer.clone();
+
+	var element = new_layer.group();
+	var style = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__style__["a" /* convertElementStyle */])(element_blueprint.style);
+
+	var element_text = element.text(
+			__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__text__["a" /* fitText */])(element_blueprint.text)
+		)
+		.font(style.text_style);
+
+	var rect_size = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__geometry__["a" /* computeRectSize */])(element_text, style);
+	var element_rect = element.rect(rect_size.w, rect_size.h)
+		.attr(style.rect_style);
+
+	var text_position = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__geometry__["b" /* computeTextPosition */])(element_text, style);
+	element_text.move(text_position.x, text_position.y);
 	element_text.front();
 
-	var position = virtual_element.position;
-	element.move(position[0], position[1]);
+	element.move(element_blueprint.position.x, element_blueprint.position.y);
 
-	var text_position = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__lib_toolkit_elements__["e" /* computeTextPosition */])(element_text, virtual_element);
-	element_text.move(text_position[0], text_position[1]);
+	element.attr({
+		id: __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["a" /* getHash */])('element')
+	})
 
-	var rendered_element = {
-		blueprint: virtual_element.blueprint,
-		origin: virtual_element,
-		snapshot: element,
-		tester: _generateTestMethods(element_rect),
-		sockets: generateSockets(element)
-	}
+	element.data({
+		blueprint: element_blueprint//,
+		// tester: generateTestMethods(element_rect, new_layer),
+		// sockets: generateSockets(element, new_layer)
+	});
 
-	return rendered_element;
+	var element_with_id = {};
+	element_with_id[__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["a" /* getHash */])('element')] = element;
+
+	new_layer.elements = Object.assign({}, 
+		layer.elements,
+		element_with_id
+	);
+
+	return new_layer;
 }
 
 function generateSockets(rendered_element) {
@@ -476,56 +379,64 @@ function _generateTestMethods(rendered_element) {
 }
 
 
+
 /***/ }),
-/* 2 */
+/* 4 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["b"] = connectElements;
-/* harmony export (immutable) */ __webpack_exports__["a"] = createElement;
-/* harmony export (immutable) */ __webpack_exports__["c"] = createAddress;
-/* unused harmony export checkElementType */
-/* harmony export (immutable) */ __webpack_exports__["d"] = computeRectSize;
-/* harmony export (immutable) */ __webpack_exports__["e"] = computeTextPosition;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__lines__ = __webpack_require__(4);
+/* harmony export (immutable) */ __webpack_exports__["a"] = convertElementStyle;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__tools__ = __webpack_require__(0);
+
+
+// convert CSS-like style to SVG-like:
+
+// this:
+// 	{
+// 		padding
+// 		border_color
+// 		border_width
+// 		border_radius
+//	
+// 		color
+// 		font_family
+// 		font_size
+// 		line_height
+// 		font_style
+// 		font_weight
+// 		text_align
+//
+// 		background_color
+// 	}
+//
+//	to this:
+//	{
+//		rect_style: {
+//			fill
+//			stroke
+//			stroke-width
+//			rx
+//			ry
+//		},
+//		text_style: {
+//			leading
+//			family
+//			size
+//			style
+//			weight
+//			fill
+//			anchor
+//		},
+//		additional_style: {
+//			horizontal_text_offset,
+//			vertical_text_offset
+//		}
+//	}
 
 
 
-
-
-function connectElements(strict_connection_blueprint) {
-
-	var from = strict_connection_blueprint.from;
-	var to = strict_connection_blueprint.to;
-
-	var from_coords = from.rendered_element.sockets(from.socket);
-	var to_coords = to.rendered_element.sockets(to.socket);
-
-	var connection_blueprint = Object.assign({}, strict_connection_blueprint);
-	delete connection_blueprint.from;
-	delete connection_blueprint.to;
-
-	var type = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__lines__["a" /* checkConnectionType */])(connection_blueprint.type);
-
-	type.shape = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__lines__["b" /* defineLineShape */])(from.socket, to.socket);
-
-	delete connection_blueprint.type;
-
-	return __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__lines__["c" /* createConnection */])(Object.assign({}, {
-		from: from_coords,
-		to: to_coords,
-		type: type
-	}, connection_blueprint));
-}
-
-function createElement(blueprint) {
-	var id = 'element_' + __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__common__["a" /* getHash */])();
-	var position = blueprint.position || [0, 0];
-	var type = checkElementType(blueprint.type);
-	var blueprint_style = blueprint.theme || {};
-
-	var default_theme = {
+function convertElementStyle(element_style) {
+	var default_element_style = {
 		padding: [15, 10],
 
 		border_color: 'black',
@@ -543,115 +454,66 @@ function createElement(blueprint) {
 		background_color: 'white'
 	};
 
-	var style = {
-		text_style: {
-			'leading': blueprint_style.line_height || default_theme.line_height,
-			'family': blueprint_style.font_family || default_theme.font_family,
-			'size': blueprint_style.font_size || default_theme.font_size,
-			'style': blueprint_style.font_style || default_theme.font_style,
-			'weight': blueprint_style.font_weight || default_theme.font_weight,
-			'fill': blueprint_style.color || default_theme.color,
-			'anchor': (function () {
-				var text_align = blueprint_style.text_align || default_theme.text_align;
+	var passed_style = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__tools__["b" /* fillObject */])(element_style, default_element_style);
 
-				if (text_align == 'left') {
-					return 'start';
-				} else if (text_align == 'center') {
-					return 'middle';
-				} else if (text_align == 'right') {
-					return 'end';
-				} else {
-					// error
-				}
-			})()
-		},
-		rect_style: {
-			'fill': blueprint_style.background_color || default_theme.background_color,
-			'stroke': blueprint_style.border_color || default_theme.border_color,
-			'stroke-width': blueprint_style.border_width || default_theme.border_width,
-			'rx': blueprint_style.border_radius || default_theme.border_radius,
-			'ry': blueprint_style.border_radius || default_theme.border_radius
-		},
-		element_style: {
-			'padding' : blueprint_style.padding || default_theme.padding
+	var rect_style = {
+		'fill': passed_style.background_color,
+		'stroke': passed_style.border_color,
+		'stroke-width': passed_style.border_width,
+		'rx': passed_style.border_radius,
+		'ry': passed_style.border_radius
+	}
+
+	var text_style = {
+		'leading': passed_style.line_height,
+		'family': passed_style.font_family,
+		'size': passed_style.font_size,
+		'style': passed_style.font_style,
+		'weight': passed_style.font_weight,
+		'fill': passed_style.color,
+		'anchor': (function () {
+			var text_align = passed_style.text_align;
+			if (text_align == 'left') {
+				return 'start';
+			} else if (text_align == 'center') {
+				return 'middle';
+			} else if (text_align == 'right') {
+				return 'end';
+			} else {
+				// error
+			}
+		})()
+	}
+
+	var additional_style = {
+		text_offset: {
+			x: passed_style.padding[1],
+			y: passed_style.padding[0]
 		}
 	}
 
-	var text = {
-		text: fitText(blueprint.text),
-		position: [
-			style.element_style.padding[0] + style.rect_style['stroke-width'] / 2,
-			style.element_style.padding[1] + style.rect_style['stroke-width'] / 2
-		]
-	}
-
 	return {
-		id: id,
-		position: position,
-		type: type,
-		text: text,
-		style: style,
-		blueprint: blueprint
+		rect_style: rect_style,
+		text_style: text_style,
+		additional_style: additional_style
 	}
 }
 
-function createAddress(element, socket) {
-	return {
-		rendered_element: element,
-		socket: socket
-	}
-}
 
-function checkElementType(type) {
-	var defaults = {
-		type: 'simple'
-	}
+/***/ }),
+/* 5 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-	var new_type = Object.assign({}, type);
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = fitText;
 
-	for (var param in defaults) {
-		if (!new_type.param) {
-			new_type.param = param;
-		}
-	}
 
-	return new_type;
-}
-
-function computeRectSize(rendered_label, virtual_element) {
-	return [
-		rendered_label.bbox().w + 
-			virtual_element.style.element_style.padding[0] * 2 +
-			virtual_element.style.rect_style['stroke-width'],
-
-		rendered_label.bbox().h + 
-			virtual_element.style.element_style.padding[1] * 2 + 
-			virtual_element.style.rect_style['stroke-width']
-	]
-}
-
-function computeTextPosition(rendered_label, virtual_element) {
-	return [
-		virtual_element.style.element_style.padding[0] + 
-			virtual_element.style.rect_style['stroke-width'] / 2 + 
-			(function () {
-				if (virtual_element.style.text_style.anchor == 'start') {
-					return 0;
-				} else if (virtual_element.style.text_style.anchor == 'middle') {
-					return rendered_label.bbox().w / 2;
-				} else if (virtual_element.style.text_style.anchor == 'end') {
-					return rendered_label.bbox().w;
-				} else {
-					// error
-				}
-			})(),
-
-		virtual_element.style.element_style.padding[1] + 
-			virtual_element.style.rect_style['stroke-width'] / 2
-	];
-}
+// element text processing methods
 
 function fitText(text, max_length) {
+
+	// split text to lines because SVG doesn't support HTML-like line wrap
+
 	var max_word_length = max_length || 20;
 
 	var words = text.split(' ');	
@@ -688,221 +550,7 @@ function getLongestWordLength(words, max_word_length) {
 
 
 /***/ }),
-/* 3 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (immutable) */ __webpack_exports__["b"] = checkIfInside;
-/* harmony export (immutable) */ __webpack_exports__["a"] = defineRelativePosition;
-
-
-function checkIfInside(rendered_element, dot_coordinates) {
-	var x = dot_coordinates[0];
-	var y = dot_coordinates[1];
-
-	var bbox = rendered_element.tester();
-
-	return (x > bbox.x) && 
-		(x < bbox.x2) && 
-		(y > bbox.y) && 
-		(y < bbox.y2);
-}
-
-function defineRelativePosition(rendered_element_1, rendered_element_2) {
-	// how element_2 relates to element_1
-
-	var bbox_1 = rendered_element_1.tester();
-	var bbox_2 = rendered_element_2.tester();
-
-	// more is rigter
-	var horizontal_offset = bbox_2.x - bbox_1.x;
-
-	// more is lower
-	var vertical_offset = bbox_2.y - bbox_1.y;
-
-	var sectors = [];
-
-	var bbox_2_relative_x = bbox_2.x - bbox_1.cx;
-	var bbox_2_relative_y = bbox_2.y - bbox_1.cy;
-
-	sectors.push(defineDotRelativePosition(bbox_1, bbox_2.x, bbox_2.y));	// top left
-	sectors.push(defineDotRelativePosition(bbox_1, bbox_2.x2, bbox_2.y));	// top right
-	sectors.push(defineDotRelativePosition(bbox_1, bbox_2.x, bbox_2.y2));	// bottom left
-	sectors.push(defineDotRelativePosition(bbox_1, bbox_2.x2, bbox_2.y2));	// bottom right
-
-	var unique_sectors = []
-
-	sectors.forEach(function (sector) {
-		if (unique_sectors.indexOf(sector) == -1) {
-			unique_sectors.push(sector);
-		}
-	})
-
-	unique_sectors.sort(function (a, b) {
-		return a - b;
-	});
-
-	return unique_sectors.join('');
-
-}
-
-function defineDotRelativePosition(bbox, x, y) {
-
-	var relative_x = Math.abs(bbox.cx - x);
-	var relative_y = Math.abs(bbox.cy - y);
-
-
-	if (x >= bbox.cx) {
-		// righter: sectors 1, 2, 3, 4
-
-		if (y <= bbox.cy) {
-			// above: sectors 1 or 2
-
-			if (relative_x >= relative_y) {
-				// sector 2
-				return 2;
-			} else {
-				// sector 1
-				return 1;
-			}
-
-		} else {
-			// under: sectors 3 or 4
-
-			if (relative_x >= relative_y) {
-				// sector 3
-				return 3;
-			} else {
-				// sector 4
-				return 4;
-			}
-		}
-
-	} else {
-		// lefter: sectors 5, 6, 7, 8
-
-		if (y <= bbox.cy) {
-			// above: sectors 7 or 8
-
-			if (relative_x >= relative_y) {
-				// sector 7
-				return 7;
-			} else {
-				// sector 8
-				return 8;
-			}
-
-		} else {
-			// under: sectors 5 or 6
-
-			if (relative_x >= relative_y) {
-				// sector 6
-				return 6;
-			} else {
-				// sector 5
-				return 5;
-			}
-		}
-	}
-}
-
-
-
-/***/ }),
-/* 4 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (immutable) */ __webpack_exports__["c"] = createConnection;
-/* harmony export (immutable) */ __webpack_exports__["a"] = checkConnectionType;
-/* harmony export (immutable) */ __webpack_exports__["b"] = defineLineShape;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common__ = __webpack_require__(0);
-
-
-
-
-function createConnection (connection_blueprint) {
-	var id = 'connection_' + __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__common__["a" /* getHash */])();
-	
-	if (connection_blueprint.from && connection_blueprint.to) {
-		var from = connection_blueprint.from;
-		var to = connection_blueprint.to;
-	} else {
-		// error
-	}
-
-	var type = checkConnectionType(connection_blueprint.type);
-
-	var blueprint_style = connection_blueprint.style || {};
-
-	var default_style = {
-		'stroke': 'black',
-		'stroke-width': '2',
-		'fill': 'none',
-		'stroke-linecap': 'round',
-		'stroke-dasharray': 'none'
-	}
-
-	var style = {
-		'stroke': blueprint_style['stroke'] || default_style['stroke'],
-		'stroke-width': blueprint_style['stroke-width'] || default_style['stroke-width'],
-		'fill': blueprint_style['fill'] || default_style['fill'],
-		'stroke-linecap': blueprint_style['stroke-linecap'] || default_style['stroke-linecap'],
-		'stroke-dasharray': blueprint_style['stroke-dasharray'] || default_style['stroke-dasharray']
-	}
-
-	return {
-		id: id,
-		type: type,
-		from: from,
-		to: to,
-		style: style,
-		blueprint: connection_blueprint
-	}
-}
-
-function checkConnectionType(type) {
-	var defaults = {
-		type: 'simple',
-		shape: 'cubic',
-		roughness: 'soft'
-	}
-
-	var new_type = Object.assign({}, type);
-
-	for (var param in defaults) {
-		if (!new_type[param]) {
-			new_type[param] = defaults[param];
-		}
-	}
-
-	return new_type;
-}
-
-function defineLineShape(socket_1, socket_2) {
-	var sockets = [socket_1, socket_2].map(function (a) {
-		return parseInt(a);
-	}).sort(function (a, b) {
-		return a - b;
-	}).join('');
-
-	switch (sockets) {
-		case '24':
-		case '25':
-		case '47':
-		case '57':
-			return 'arc';
-			break;
-
-		default:
-			return 'cubic';
-			break;
-	}
-}
-
-
-/***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(1);
