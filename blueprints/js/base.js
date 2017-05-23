@@ -3,7 +3,43 @@
 import {createElement, connectElements, computeRectSize, computeTextPosition, createAddress} from '../lib/toolkit/elements';
 import {defineRelativePosition, checkIfInside} from '../lib/toolkit/geometry';
 
-var diagram = SVG('diagram');
+var diagram = SVG('diagram').group();
+
+var layer = {
+	id,
+	origin
+}
+
+var connection_type = {
+	type,
+	shape,
+	roughness
+}
+
+var line_blueprint = {
+	id,
+	from,
+	to,
+	type,
+	style
+}
+
+var connection_blueprint = {
+	id,
+	from,	// addresses
+	to,
+	type,
+	style
+}
+
+
+
+
+var address = {
+	rendered_element,
+	socket
+}
+
 
 var custom_theme = {
 	border_color: 'pink',
