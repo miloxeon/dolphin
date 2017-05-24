@@ -19,6 +19,8 @@
 
 import {getElementById, cloneLayer} from '../layers';
 import {arcTo, cubicTo} from './lines';
+import {convertLineStyle} from './style';
+import {getHash} from '../tools';
 
 export function connectElements(layer, connection_blueprint) {
 	var new_layer = cloneLayer(layer);
@@ -43,7 +45,22 @@ export function connectElements(layer, connection_blueprint) {
 			break;
 	}
 
-	new_layer.path(line_path);
+	var line_style = convertLineStyle(connection_blueprint.style).line_style;
+
+	var connection = new_layer.path(line_path).attr(line_style);
+	var connection_id = getHash('connection');
+
+	connection.attr({
+		id: connection_id
+	})
+
+	var connection_with_id = {};
+	connection_with_id[connection_id] = connection;
+
+	new_layer.connections = Object.assign({}, 
+		layer.connections,
+		connection_with_id
+	);
 
 	return new_layer;
 }

@@ -63,57 +63,11 @@
 /******/ 	__webpack_require__.p = "/static/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 9);
+/******/ 	return __webpack_require__(__webpack_require__.s = 10);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = _createLayer;
-/* unused harmony export getElements */
-/* harmony export (immutable) */ __webpack_exports__["b"] = getElementsAsArray;
-/* harmony export (immutable) */ __webpack_exports__["d"] = getElementById;
-/* harmony export (immutable) */ __webpack_exports__["c"] = cloneLayer;
-
-
-// layers api
-
-function _createLayer(stage) {
-	return stage.group();
-}
-
-function getElements(layer) {
-	return Object.assign({}, layer.elements);
-}
-
-function getElementsAsArray(layer) {
-	var elements = [];
-
-	var layer_elements = getElements(layer);
-
-	for (let element_id in layer_elements) {
-		elements.push(layer_elements[element_id]);
-	}
-
-	return elements;
-}
-
-function getElementById(layer, element_id) {
-	return getElements(layer)[element_id];
-}
-
-function cloneLayer(layer) {
-	var new_layer = layer.clone();
-	new_layer.elements = layer.elements;
-	
-	return new_layer;
-}
-
-
-/***/ }),
-/* 1 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -141,13 +95,89 @@ function fillObject(object, defaults) {
 
 
 /***/ }),
+/* 1 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = _createLayer;
+/* harmony export (immutable) */ __webpack_exports__["c"] = cloneLayer;
+/* unused harmony export getElements */
+/* harmony export (immutable) */ __webpack_exports__["b"] = getElementsAsArray;
+/* harmony export (immutable) */ __webpack_exports__["d"] = getElementById;
+/* unused harmony export getConnections */
+/* unused harmony export getConnectionsAsArray */
+/* unused harmony export getConnectionById */
+
+
+// layers api
+
+function _createLayer(stage) {
+	return stage.group();
+}
+
+function cloneLayer(layer) {
+	var new_layer = layer.clone();
+	
+	new_layer.elements = layer.elements;
+	new_layer.connections = layer.connections;
+
+	return new_layer;
+}
+
+
+// elements
+function getElements(layer) {
+	return Object.assign({}, layer.elements);
+}
+
+function getElementsAsArray(layer) {
+	var elements = [];
+
+	var layer_elements = getElements(layer);
+
+	for (let element_id in layer_elements) {
+		elements.push(layer_elements[element_id]);
+	}
+
+	return elements;
+}
+
+function getElementById(layer, element_id) {
+	return getElements(layer)[element_id];
+}
+
+
+//connections
+function getConnections(layer) {
+	return Object.assign({}, layer.connections);
+}
+
+function getConnectionsAsArray(layer) {
+	var connections = [];
+
+	var layer_connections = getConnections(layer);
+
+	for (let connection_id in layer_connections) {
+		connections.push(layer_connections[connection_id]);
+	}
+
+	return connections;
+}
+
+function getConnectionById(layer, connection_id) {
+	return getConnections(layer)[connection_id];
+}
+
+
+
+/***/ }),
 /* 2 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__elements__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__layers__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__elements__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__layers__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__connections__ = __webpack_require__(3);
 
 
@@ -158,38 +188,48 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 var stage = SVG('diagram');
 var layer = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__layers__["a" /* _createLayer */])(stage);
 
-layer = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__elements__["a" /* drawElement */])(layer, {
+// layer = drawElement(layer, {
+// 	position: {
+// 		x: 150,
+// 		y: 200
+// 	},
+// 	text: 'Hello'
+// });
+
+// layer = drawElement(layer, {
+// 	position: {
+// 		x: 300,
+// 		y: 200
+// 	},
+// 	text: 'Harder, Ivan',
+// 	style: {
+// 		background_color: 'pink'
+// 	}
+// });
+
+// layer = drawElement(layer, {
+// 	position: {
+// 		x: 300,
+// 		y: 300
+// 	},
+// 	text: 'Harder, Ivan',
+// 	style: {
+// 		background_color: 'pink'
+// 	}
+// });
+
+layer.replace(__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__elements__["a" /* drawElement */])(layer, {
 	position: {
 		x: 150,
 		y: 200
 	},
 	text: 'Hello'
-});
-
-layer = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__elements__["a" /* drawElement */])(layer, {
-	position: {
-		x: 300,
-		y: 200
-	},
-	text: 'Harder, Ivan',
-	style: {
-		background_color: 'pink'
-	}
-});
-
-layer = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__elements__["a" /* drawElement */])(layer, {
-	position: {
-		x: 300,
-		y: 300
-	},
-	text: 'Harder, Ivan',
-	style: {
-		background_color: 'pink'
-	}
-});
-
+}));
 
 var elements = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__layers__["b" /* getElementsAsArray */])(layer);
+console.log(elements);
+
+layer.draggy();
 
 
 // console.log(elements[0].extensions.socket(1));
@@ -198,19 +238,31 @@ var elements = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__layers__["b" /
 // 	console.log(layer.elements[element_id].extensions.socket(1));
 // }
 
-layer = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__connections__["a" /* connectElements */])(layer, {
-	from: {
-		element_id: elements[0].id(),
-		socket: 2
-	},
-	to: {
-		element_id: elements[1].id(),
-		socket: 4
-	}
-});
+// layer = connectElements(layer, {
+// 	from: {
+// 		element_id: elements[0].id(),
+// 		socket: 4
+// 	},
+// 	to: {
+// 		element_id: elements[2].id(),
+// 		socket: 4
+// 	},
+// 	style: {
+// 		'stroke': 'red',
+// 		'stroke-dasharray': '5, 4'
+// 	}
+// });
+
+// elements[0].draggy();
+
+
 
 // for (let element_id in layer.elements) {
 // 	console.log(layer.elements[element_id].extensions.socket(1));
+// }
+
+// for (let connection_id in layer.connections) {
+// 	console.log(layer.connections[connection_id]);
 // }
 
 // console.log(layer.elements[0]);
@@ -225,9 +277,11 @@ layer = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__connections__["a" /* 
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = connectElements;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__layers__ = __webpack_require__(0);
+/* unused harmony export connectElements */
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__layers__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__lines__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__style__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__tools__ = __webpack_require__(0);
 
 
 // everything needed to work with connections between elements
@@ -250,6 +304,8 @@ layer = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__connections__["a" /* 
 
 
 
+
+
 function connectElements(layer, connection_blueprint) {
 	var new_layer = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__layers__["c" /* cloneLayer */])(layer);
 
@@ -258,7 +314,6 @@ function connectElements(layer, connection_blueprint) {
 
 	var line_shape = defineLineShape(connection_blueprint.from, connection_blueprint.to);
 	var line_path = '';
-
 
 	switch (line_shape) {
 		case 'arc':
@@ -274,7 +329,22 @@ function connectElements(layer, connection_blueprint) {
 			break;
 	}
 
-	new_layer.path(line_path);
+	var line_style = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__style__["a" /* convertLineStyle */])(connection_blueprint.style).line_style;
+
+	var connection = new_layer.path(line_path).attr(line_style);
+	var connection_id = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["a" /* getHash */])('connection');
+
+	connection.attr({
+		id: connection_id
+	})
+
+	var connection_with_id = {};
+	connection_with_id[connection_id] = connection;
+
+	new_layer.connections = Object.assign({}, 
+		layer.connections,
+		connection_with_id
+	);
 
 	return new_layer;
 }
@@ -359,6 +429,44 @@ function cubic(from, to, bias_1, bias_2) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = convertLineStyle;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__tools__ = __webpack_require__(0);
+
+
+// connection line styling
+
+// 	line_style:
+// 		stroke
+// 		stroke-width
+// 		fill
+// 		stroke-linecap
+// 		stroke-dasharray
+
+
+
+
+function convertLineStyle(line_style) {
+	var default_line_style = {
+		'stroke': 'black',
+		'stroke-width': '2',
+		'fill': 'none',
+		'stroke-linecap': 'round',
+		'stroke-dasharray': 'none'
+	}
+
+	var passed_style = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__tools__["b" /* fillObject */])(line_style, default_line_style);
+
+	return {
+		line_style: passed_style
+	}
+}
+
+
+/***/ }),
+/* 6 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = computeRectSize;
 /* harmony export (immutable) */ __webpack_exports__["b"] = computeTextPosition;
 
@@ -412,16 +520,16 @@ function computeAnchorOffset(rendered_label, anchor) {
 
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = drawElement;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__text__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__style__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__geometry__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__tools__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__layers__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__text__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__style__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__geometry__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__tools__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__layers__ = __webpack_require__(1);
 
 
 // everything needed to work with elements
@@ -721,12 +829,12 @@ function _generateSockets(tester) {
 
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = convertElementStyle;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__tools__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__tools__ = __webpack_require__(0);
 
 
 // convert CSS-like style to SVG-like:
@@ -841,7 +949,7 @@ function convertElementStyle(element_style) {
 
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -890,7 +998,7 @@ function getLongestWordLength(words, max_word_length) {
 
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(2);
