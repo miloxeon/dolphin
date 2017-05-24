@@ -50,13 +50,14 @@ import {fitText} from './text';
 import {convertElementStyle} from './style';
 import {computeRectSize, computeTextPosition} from './geometry';
 import {getHash} from '../tools';
+import {cloneLayer} from '../layers';
 
 
 export function drawElement(layer, element_blueprint) {
-	var new_layer = layer.clone();
-
+	var new_layer = cloneLayer(layer);
+	
 	// create the element itself
-	var element = new_layer.group();
+	var element = _createElement(new_layer);
 	var style = convertElementStyle(element_blueprint.style);
 
 	// console.log(element_blueprint);
@@ -103,6 +104,10 @@ export function drawElement(layer, element_blueprint) {
 	return new_layer;
 }
 
+function _createElement(layer) {
+	return layer.group();
+}
+
 function cloneElement(element) {
 	var new_element = element.clone();
 
@@ -136,59 +141,60 @@ function _generateTestMethods(element, layer) {
 }
 
 function _generateSockets(tester) {
-	var activated_tester = tester();
-
-	var socket_offsets = [
-		{
-			// socket 1: top left
-			x: 0,
-			y: 0
-		},
-		{
-			// socket 2: top center
-			x: activated_tester.w / 2,
-			y: 0
-		},
-		{
-			// socket 3: top right
-			x: activated_tester.w,
-			y: 0
-		},
-		{
-			// socket 4: middle left
-			x: 0,
-			y: activated_tester.h / 2
-		},
-		{
-			// socket 5: middle right
-			x: activated_tester.w,
-			y: activated_tester.h / 2
-		},
-		{
-			// socket 6: bottom left
-			x: 0,
-			y: activated_tester.h
-		},
-		{
-			// socket 7: bottom center
-			x: activated_tester.w / 2,
-			y: activated_tester.h
-		},
-		{
-			// socket 8: bottom right
-			x: activated_tester.w,
-			y: activated_tester.h
-		},
-	];
-
-	var socket_positions = socket_offsets.map(function (offset) {
-		return {
-			x: offset.x + activated_tester.x,
-			y: offset.y + activated_tester.y
-		}
-	});
-
 	return function (number) {
+
+		var activated_tester = tester();
+
+		var socket_offsets = [
+			{
+				// socket 1: top left
+				x: 0,
+				y: 0
+			},
+			{
+				// socket 2: top center
+				x: activated_tester.w / 2,
+				y: 0
+			},
+			{
+				// socket 3: top right
+				x: activated_tester.w,
+				y: 0
+			},
+			{
+				// socket 4: middle left
+				x: 0,
+				y: activated_tester.h / 2
+			},
+			{
+				// socket 5: middle right
+				x: activated_tester.w,
+				y: activated_tester.h / 2
+			},
+			{
+				// socket 6: bottom left
+				x: 0,
+				y: activated_tester.h
+			},
+			{
+				// socket 7: bottom center
+				x: activated_tester.w / 2,
+				y: activated_tester.h
+			},
+			{
+				// socket 8: bottom right
+				x: activated_tester.w,
+				y: activated_tester.h
+			},
+		];
+
+		var socket_positions = socket_offsets.map(function (offset) {
+			return {
+				x: offset.x + activated_tester.x,
+				y: offset.y + activated_tester.y
+			}
+		});
+		
 		return socket_positions[number - 1];
 	}
 }

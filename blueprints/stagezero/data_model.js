@@ -37,7 +37,6 @@
 // var rendered_connection = {
 // 	id,
 // 	representation,
-// 	virtual_connection,
 // 	tester
 // }
 
