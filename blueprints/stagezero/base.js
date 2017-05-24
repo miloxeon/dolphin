@@ -36,6 +36,12 @@ layer = drawElement(layer, {
 	}
 });
 
-console.log(layer.elements);
+for (let element_id in layer.elements) {
+	console.log(layer.elements[element_id].extensions.socket(1));
+}
+
+// console.log(layer.elements[0]);
+
+// console.log(layer.elements);
 
 // console.log('it works!');
