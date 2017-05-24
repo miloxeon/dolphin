@@ -139,7 +139,13 @@ layer = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__elements__["a" /* dra
 	}
 });
 
-console.log(layer.elements);
+for (let element_id in layer.elements) {
+	console.log(layer.elements[element_id].extensions.socket(1));
+}
+
+// console.log(layer.elements[0]);
+
+// console.log(layer.elements);
 
 // console.log('it works!');
 
@@ -268,8 +274,11 @@ function computeAnchorOffset(rendered_label, anchor) {
 function drawElement(layer, element_blueprint) {
 	var new_layer = layer.clone();
 
+	// create the element itself
 	var element = new_layer.group();
 	var style = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__style__["a" /* convertElementStyle */])(element_blueprint.style);
+
+	// console.log(element_blueprint);
 
 	var element_text = element.text(
 			__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__text__["a" /* fitText */])(element_blueprint.text)
@@ -286,18 +295,26 @@ function drawElement(layer, element_blueprint) {
 
 	element.move(element_blueprint.position.x, element_blueprint.position.y);
 
+	// assign element's data
+
+	var element_tester = _generateTestMethods(element_rect, new_layer);
+
+	element.extensions = {
+		blueprint: element_blueprint,
+		tester: element_tester,
+		socket: _generateSockets(element_tester)
+	}
+	// element = _generateSockets(layer, element);
+
+
+	var element_id = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["a" /* getHash */])('element');
+
 	element.attr({
-		id: __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["a" /* getHash */])('element')
+		id: element_id
 	})
 
-	element.data({
-		blueprint: element_blueprint//,
-		// tester: generateTestMethods(element_rect, new_layer),
-		// sockets: generateSockets(element, new_layer)
-	});
-
 	var element_with_id = {};
-	element_with_id[__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["a" /* getHash */])('element')] = element;
+	element_with_id[element_id] = element;
 
 	new_layer.elements = Object.assign({}, 
 		layer.elements,
@@ -307,63 +324,24 @@ function drawElement(layer, element_blueprint) {
 	return new_layer;
 }
 
-function generateSockets(rendered_element) {
-	var tester = _generateTestMethods(rendered_element)();
+function cloneElement(element) {
+	var new_element = element.clone();
 
-	// var colors = [
-	// 	'red',
-	// 	'green',
-	// 	'blue',
-	// 	'black',
-	// 	'orange',
-	// 	'purple',
-	// 	'grey',
-	// 	'hotpink'
-	// ];
+	new_element.extensions = element.extensions;
+	new_element.attr({
+		id: element.attr('id')
+	});
 
-	var colors = [
-		'transparent',
-		'transparent',
-		'transparent',
-		'transparent',
-		'transparent',
-		'transparent',
-		'transparent',
-		'transparent'
-	];
-
-	var sockets = [
-		_generateSocket(rendered_element, 0, 			0, colors[0]),	// socket 1: top left
-		_generateSocket(rendered_element, tester.w / 2, 0, colors[1]),	// socket 2: top center
-		_generateSocket(rendered_element, tester.w, 	0, colors[2]),	// socket 3: top right
-
-		_generateSocket(rendered_element, 0, 			tester.h / 2, colors[3]),	// socket 4: middle left
-		_generateSocket(rendered_element, tester.w, 	tester.h / 2, colors[4]),	// socket 5: middle right
-
-		_generateSocket(rendered_element, 0, 			tester.h, colors[5]),	// socket 6: bottom left
-		_generateSocket(rendered_element, tester.w / 2, tester.h, colors[6]),	// socket 7: bottom center
-		_generateSocket(rendered_element, tester.w, 	tester.h, colors[7])	// socket 8: bottom right
-	]
-
-	return function (number) {
-		return [sockets[number - 1]().cx, sockets[number - 1]().cy];
-	}
+	return new_element;
 }
 
-function _generateSocket(rendered_element, cx, cy, color) {
-	var socket = rendered_element.circle(5).center(cx, cy).fill(color);
-	var tester = _generateTestMethods(socket);
-
-	return tester;
-}
-
-function _generateTestMethods(rendered_element) {
+function _generateTestMethods(element, layer) {
 	return function () {
-		var rbox = rendered_element.rbox();
-		var diagram_rbox = diagram.rbox();
+		var rbox = element.rbox();
+		var layer_rbox = layer.doc().rbox();
 
-		var x = rbox.x - diagram_rbox.x;
-		var y = rbox.y - diagram_rbox.y;
+		var x = rbox.x - layer_rbox.x;
+		var y = rbox.y - layer_rbox.y;
 
 		return {
 			'x': x,
@@ -378,6 +356,159 @@ function _generateTestMethods(rendered_element) {
 	}
 }
 
+function _generateSockets(tester) {
+	var activated_tester = tester();
+
+	var socket_offsets = [
+		{
+			// socket 1: top left
+			x: 0,
+			y: 0
+		},
+		{
+			// socket 2: top center
+			x: activated_tester.w / 2,
+			y: 0
+		},
+		{
+			// socket 3: top right
+			x: activated_tester.w,
+			y: 0
+		},
+		{
+			// socket 4: middle left
+			x: 0,
+			y: activated_tester.h / 2
+		},
+		{
+			// socket 5: middle right
+			x: activated_tester.w,
+			y: activated_tester.h / 2
+		},
+		{
+			// socket 6: bottom left
+			x: 0,
+			y: activated_tester.h
+		},
+		{
+			// socket 7: bottom center
+			x: activated_tester.w / 2,
+			y: activated_tester.h
+		},
+		{
+			// socket 8: bottom right
+			x: activated_tester.w,
+			y: activated_tester.h
+		},
+	];
+
+	var socket_positions = socket_offsets.map(function (offset) {
+		return {
+			x: offset.x + activated_tester.x,
+			y: offset.y + activated_tester.y
+		}
+	});
+
+	return function (number) {
+		return socket_positions[number - 1];
+	}
+}
+
+// function _generateSockets(layer, element) {
+// 	var new_element = cloneElement(element);
+
+// 	var tester = _generateTestMethods(new_element, layer)();
+
+// 	var colors = [
+// 		'red',
+// 		'green',
+// 		'blue',
+// 		'black',
+// 		'orange',
+// 		'purple',
+// 		'grey',
+// 		'hotpink'
+// 	];
+
+// 	// var colors = [
+// 	// 	'transparent',
+// 	// 	'transparent',
+// 	// 	'transparent',
+// 	// 	'transparent',
+// 	// 	'transparent',
+// 	// 	'transparent',
+// 	// 	'transparent',
+// 	// 	'transparent'
+// 	// ];
+
+// 	var socket_positions = [
+// 		{
+// 			// socket 1: top left
+// 			x: 0,
+// 			y: 0
+// 		},
+// 		{
+// 			// socket 2: top center
+// 			x: tester.w / 2,
+// 			y: 0
+// 		},
+// 		{
+// 			// socket 3: top right
+// 			x: tester.w,
+// 			y: 0
+// 		},
+// 		{
+// 			// socket 4: middle left
+// 			x: 0,
+// 			y: tester.h / 2
+// 		},
+// 		{
+// 			// socket 5: middle right
+// 			x: tester.w,
+// 			y: tester.h / 2
+// 		},
+// 		{
+// 			// socket 6: bottom left
+// 			x: 0,
+// 			y: tester.h
+// 		},
+// 		{
+// 			// socket 7: bottom center
+// 			x: tester.w / 2,
+// 			y: tester.h
+// 		},
+// 		{
+// 			// socket 8: bottom right
+// 			x: tester.w,
+// 			y: tester.h
+// 		},
+// 	];
+
+// 	// imperative dirty stuff begin. I feel so sorry about that
+// 	var current_color = 0;
+
+// 	for (let socket_position in socket_positions) {
+// 		new_element = generateSocket(new_element, socket_position, colors[current_color]);
+
+// 		if (current_color + 1 == colors.length) {
+// 			current_color = 0;
+// 		} else {
+// 			current_color++;
+// 		}
+// 	}
+// 	// imperative dirty stuff end
+
+// 	new_element['sockets'] = function(number) {
+// 		return socket_positions[number - 1];
+// 	}
+
+// 	return new_element;
+// }
+
+// function generateSocket(element, position, color) {
+// 	var new_element = cloneElement(element);
+// 	return new_element.circle(5).center(position.x, position.y).fill(color);
+// }
 
 
 /***/ }),
