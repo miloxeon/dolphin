@@ -10,7 +10,7 @@ export let default_style = {
 	'border-radius': '4',
 
 	'color': 'black',
-	'font-family': 'Tahoma',
+	'font-family': 'Verdana',
 	'font-size': '12',
 	'line-height': '1.25',
 	'font-style': 'normal',
