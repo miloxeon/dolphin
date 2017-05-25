@@ -3,7 +3,7 @@ var path = require('path');
 module.exports = {
     devtool: 'source-map',
     entry: [
-        './js/base.js'
+        './src/base.js'
     ],
     output: {
         path: path.join(__dirname, 'js'),
@@ -22,7 +22,7 @@ module.exports = {
             {
                 test: /\.js/,
                 loaders: ['babel-loader'],
-                include: path.join(__dirname, 'src')
+                include: path.join(__dirname, 'js')
             },
             {
                 test: /\.css/,
