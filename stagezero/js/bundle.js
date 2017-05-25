@@ -63,106 +63,11 @@
 /******/ 	__webpack_require__.p = "/static/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 3);
+/******/ 	return __webpack_require__(__webpack_require__.s = 4);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lib_element_model__ = __webpack_require__(2);
-
-
-let merge = __webpack_require__(1);
-
-
-var draw = SVG('diagram');
-
-let blueprint = {
-	id: 1,
-	position: {
-		x: 100,
-		y: 100
-	},
-	text: {
-		name: 'Person',
-		attributes: [
-			{
-				name: 'name',
-				type: 'string',
-				scope: 'public'
-			},
-			{
-				name: 'age'
-			}
-		],
-		methods: [
-
-		]
-	},
-	style: {
-		'background-color': 'pink',
-		'font-size': '12'
-	}
-}
-
-function fillBlueprint(blueprint) {
-	if (!blueprint.position) {
-		throw new TypeError('Invalid blueprint: coordinates are missing');
-		return;
-	} else {
-		let passed_blueprint = blueprint;
-		let desired_blueprint = merge(__WEBPACK_IMPORTED_MODULE_0__lib_element_model__["a" /* default_blueprint */], blueprint);
-
-		desired_blueprint.text.attributes = (desired_blueprint.text.attributes || []).map(function (attribute) {
-			return merge(__WEBPACK_IMPORTED_MODULE_0__lib_element_model__["b" /* default_attribute */], attribute);
-		});
-
-		desired_blueprint.text.methods = (desired_blueprint.text.methods || []).map(function (method) {
-			return merge(__WEBPACK_IMPORTED_MODULE_0__lib_element_model__["c" /* default_method */], method);
-		});
-
-		return desired_blueprint;		
-	}
-}
-
-fillBlueprint(blueprint);
-
-SVG.ClassDiagramNode = SVG.invent({
-	create: 'rect',
-	inherit: SVG.Shape,
-	extend: {
-		size: function (width, height) {
-			return this.attr({
-				width: width, 
-				height: height,
-				rx: height / 5,
-				ry: height / 5
-			});
-		},
-		abc: function (color) {
-			return this.attr({
-				fill: color
-			})
-		}
-	},
-	construct: {
-		classDiagramNode: function (blueprint) {
-			return this.put(new SVG.ClassDiagramNode).size(width, height);
-		}
-	}
-});
-
-// var element = draw.classDiagramNode(200, 100).abc('pink');
-
-
-
-
-
-/***/ }),
-/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (root, factory) {
@@ -256,11 +161,11 @@ return deepmerge
 
 
 /***/ }),
-/* 2 */
+/* 1 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* unused harmony export default_style */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return default_style; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return default_blueprint; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return default_attribute; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return default_method; });
@@ -276,15 +181,15 @@ let default_style = {
 	'border-radius': '4',
 
 	'color': 'black',
-	'font-family': 'Arial',
-	'font-size': '14',
+	'font-family': 'Tahoma',
+	'font-size': '12',
 	'line-height': '1.25',
 	'font-style': 'normal',
 	'font-weight': 'normal',
 	'text-align': 'left',
 
 	'background-color': 'white'
-}
+};
 
 let default_blueprint = {
 	id: 0,
@@ -298,27 +203,293 @@ let default_blueprint = {
 		methods: []
 	},
 	style: default_style
-}
+};
 
 let default_attribute = {
 	name: 'newElement',
 	value: '',
 	type: 'any',
 	scope: 'public'
-}
+};
 
 let default_method = {
 	name: 'newMethod',
 	type: 'any',
 	scope: 'public'
+};
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lib_element_model__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__lib_element_style__ = __webpack_require__(3);
+
+
+let merge = __webpack_require__(0);
+
+
+
+var draw = SVG('diagram');
+
+let blueprint = {
+	id: 1,
+	position: {
+		x: 200,
+		y: 100
+	},
+	text: {
+		name: 'Person',
+		attributes: [
+			{
+				name: 'name',
+				type: 'string',
+				value: 'Alex',
+				scope: 'public'
+			},
+			{
+				name: 'age',
+				type: 'int',
+				value: '100'
+			},
+			{
+				name: 'wife',
+				scope: 'private',
+				type: 'any'
+			}
+		],
+		methods: [
+			{
+				name: 'helloWorld',
+				type: 'int'
+			}
+
+		]
+	},
+	style: {
+		// 'background-color': 'pink'
+	}
 }
+
+function fillBlueprint(blueprint) {
+	if (!blueprint.position) {
+		throw new TypeError('Invalid blueprint: coordinates are missing');
+		return;
+	} else {
+		let passed_blueprint = blueprint;
+		let desired_blueprint = merge(__WEBPACK_IMPORTED_MODULE_0__lib_element_model__["a" /* default_blueprint */], blueprint);
+
+		desired_blueprint.text.attributes = (desired_blueprint.text.attributes || []).map(function (attribute) {
+			return merge(__WEBPACK_IMPORTED_MODULE_0__lib_element_model__["b" /* default_attribute */], attribute);
+		});
+
+		desired_blueprint.text.methods = (desired_blueprint.text.methods || []).map(function (method) {
+			return merge(__WEBPACK_IMPORTED_MODULE_0__lib_element_model__["c" /* default_method */], method);
+		});
+
+		return desired_blueprint;		
+	}
+}
+
+function getScopeSymbol(scope) {
+	switch (scope.toLowerCase()) {
+		case 'public':
+			return '+';
+			break;
+
+		case 'private':
+			return '-';
+			break;
+
+		case 'protected':
+			return '#';
+			break;
+
+		case 'derived':
+			return '/';
+			break;
+
+		case 'package':
+			return '~';
+			break;
+	}
+}
+
+function prepareText(element_text) {
+	var prepared_attributes = element_text.attributes.map(function (attribute) {
+
+		return [
+			getScopeSymbol(attribute.scope),
+			attribute.name,
+			(attribute.type === 'any') ? '' : ': ' + attribute.type
+		].join(' ') + 
+			((attribute.value !== '') ? [' =', attribute.value].join(' ') : '');
+	})
+
+	var prepared_methods = element_text.methods.map(function (method) {
+		return [
+			getScopeSymbol(method.scope),
+			(method.type === 'any') ? '' : method.type,
+			method.name + '()'
+		].join(' ');
+	})
+
+	// console.log(element_text.attributes);
+
+	return {
+		name: element_text.name,
+		attributes: prepared_attributes.join('\n'),
+		methods: prepared_methods.join('\n')
+	}
+}
+
+SVG.ClassDiagramNode = SVG.invent({
+	create: 'g',
+	inherit: SVG.G,
+	extend: {
+		applyBlueprint: function (blueprint) {
+			var checked_blueprint = fillBlueprint(blueprint);
+
+			let style = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__lib_element_style__["a" /* convertElementStyle */])(checked_blueprint.style || {});
+			let padding = style.additional_style.padding;
+
+			let text = this.text(prepareText(checked_blueprint.text).methods).font(style.text_style).move(padding.w, padding.h);
+
+			let rect_size = {
+				w: text.bbox().w + padding.w * 2,
+				h: text.bbox().h + padding.h * 2
+			}
+
+			let rect = this.rect(rect_size.w, rect_size.h).attr(style.rect_style).move(0, 0);
+			text.front();
+
+			return this;
+		}
+	},
+	construct: {
+		classDiagramNode: function (blueprint) {
+			return this.put(new SVG.ClassDiagramNode).applyBlueprint(blueprint).move(blueprint.position.x, blueprint.position.y);
+		}
+	}
+});
+
+var element = draw.classDiagramNode(blueprint);
+// draw.rounded(200, 200);
 
 
 /***/ }),
 /* 3 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = convertElementStyle;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__model__ = __webpack_require__(1);
+
+
+// convert CSS-like style to SVG-like:
+
+// this:
+// 	{
+// 		padding
+// 		border_color
+// 		border_width
+// 		border_radius
+//	
+// 		color
+// 		font_family
+// 		font_size
+// 		line_height
+// 		font_style
+// 		font_weight
+// 		text_align
+//
+// 		background_color
+// 	}
+//
+//	to this:
+//	{
+//		rect_style: {
+//			fill
+//			stroke
+//			stroke-width
+//			rx
+//			ry
+//		},
+//		text_style: {
+//			leading
+//			family
+//			size
+//			style
+//			weight
+//			fill
+//			anchor
+//		},
+//		additional_style: {
+//			horizontal_text_offset,
+//			vertical_text_offset
+//		}
+//	}
+
+let merge = __webpack_require__(0);
+
+
+function convertElementStyle(style) {
+	var passed_style = merge(__WEBPACK_IMPORTED_MODULE_0__model__["d" /* default_style */], style);
+
+	var rect_style = {
+		'fill': passed_style['background-color'],
+		'stroke': passed_style['border-color'],
+		'stroke-width': passed_style['border-width'],
+		'rx': passed_style['border-radius'],
+		'ry': passed_style['border-radius']
+	}
+
+	var text_style = {
+		'leading': parseFloat(passed_style['line-height']),
+		'family': passed_style['font-family'],
+		'size': parseInt(passed_style['font-size']),
+		'style': passed_style['font-style'],
+		'weight': passed_style['font-weight'],
+		'fill': passed_style['color'],
+		'anchor': (function () {
+			var text_align = passed_style['text-align'];
+			if (text_align == 'left') {
+				return 'start';
+			} else if (text_align == 'center') {
+				return 'middle';
+			} else if (text_align == 'right') {
+				return 'end';
+			} else {
+				// error
+			}
+		})()
+	}
+
+	let padding = passed_style['padding'].split(' ');
+
+	var additional_style = {
+		padding: {
+			w: parseInt(padding[1]),
+			h: parseInt(padding[0])
+		}
+	}
+
+	return {
+		rect_style: rect_style,
+		text_style: text_style,
+		additional_style: additional_style
+	}
+}
+
+
+/***/ }),
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(0);
+module.exports = __webpack_require__(2);
 
 
 /***/ })

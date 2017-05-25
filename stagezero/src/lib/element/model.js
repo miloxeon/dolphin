@@ -10,15 +10,15 @@ export let default_style = {
 	'border-radius': '4',
 
 	'color': 'black',
-	'font-family': 'Arial',
-	'font-size': '14',
+	'font-family': 'Tahoma',
+	'font-size': '12',
 	'line-height': '1.25',
 	'font-style': 'normal',
 	'font-weight': 'normal',
 	'text-align': 'left',
 
 	'background-color': 'white'
-}
+};
 
 export let default_blueprint = {
 	id: 0,
@@ -32,17 +32,17 @@ export let default_blueprint = {
 		methods: []
 	},
 	style: default_style
-}
+};
 
 export let default_attribute = {
 	name: 'newElement',
 	value: '',
 	type: 'any',
 	scope: 'public'
-}
+};
 
 export let default_method = {
 	name: 'newMethod',
 	type: 'any',
 	scope: 'public'
-}
+};
