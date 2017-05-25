@@ -181,7 +181,7 @@ let default_style = {
 	'border-radius': '4',
 
 	'color': 'black',
-	'font-family': 'Tahoma',
+	'font-family': 'Verdana',
 	'font-size': '12',
 	'line-height': '1.25',
 	'font-style': 'normal',
@@ -378,6 +378,11 @@ SVG.ClassDiagramNode = SVG.invent({
 
 var element = draw.classDiagramNode(blueprint);
 // draw.rounded(200, 200);
+// 
+// 
+
+
+console.log(draw.svg());
 
 
 /***/ }),

@@ -149,3 +149,8 @@ SVG.ClassDiagramNode = SVG.invent({
 
 var element = draw.classDiagramNode(blueprint);
 // draw.rounded(200, 200);
+// 
+// 
+
+
+console.log(draw.svg());
