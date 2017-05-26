@@ -43,7 +43,7 @@ export function getSocketCoords(number) {
 export function applyBlueprint(blueprint) {
 	var checked_blueprint = fillBlueprint(blueprint);
 
-	let id = getHash();
+	let id = checked_blueprint.id;
 
 	let style = convertElementStyle(checked_blueprint.style || {});
 	let padding = style.additional_style.padding;
@@ -163,7 +163,6 @@ export function applyBlueprint(blueprint) {
 				name_label.bbox().h + 
 				padding.h
 		};
-
 	}
 
 	let rect = this.rect(rect_size.w, rect_size.h)
@@ -178,6 +177,7 @@ export function applyBlueprint(blueprint) {
 		'id': getId('ClassDiagramNode', id),
 		'cursor': 'pointer'
 	});
+	this.blueprint = blueprint;
 
 	return this;
 }

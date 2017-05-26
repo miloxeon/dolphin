@@ -232,51 +232,80 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 var draw = SVG('diagram');
 
-let blueprint = {
-	id: 1,
-	position: {
-		x: 200,
-		y: 100
-	},
-	text: {
-		name: 'Person',
-		attributes: [
-			{
-				name: 'name',
-				type: 'string',
-				value: 'Alex',
-				scope: 'public'
-			},
-			{
-				name: 'age',
-				type: 'int',
-				value: '100'
-			},
-			{
-				name: 'wife',
-				scope: 'private',
-				type: 'any'
-			}
-		],
-		methods: [
-			{
-				name: 'helloWorld',
-				type: 'int'
-			}
+let element_blueprints = [
+	{
+		id: 1,
+		position: {
+			x: 200,
+			y: 100
+		},
+		text: {
+			name: 'Person',
+			attributes: [
+				{
+					name: 'name',
+					type: 'string',
+					value: 'Alex',
+					scope: 'public'
+				},
+				{
+					name: 'age',
+					type: 'int',
+					value: '100'
+				},
+				{
+					name: 'wife',
+					scope: 'private',
+					type: 'any'
+				}
+			],
+			methods: [
+				{
+					name: 'helloWorld',
+					type: 'int'
+				}
 
-		]
+			]
+		}
 	},
-	style: {
-		'text-align': 'right'
+	{
+		id: 2,
+		position: {
+			x: 400,
+			y: 300
+		},
+		text: {
+			name: 'Creature',
+			attributes: [
+				{
+					name: 'name',
+					type: 'string'
+				}
+			]
+		}
 	}
-}
+];
+
+let connection_blueprints = [
+	{
+		id: 1,
+		type: 'inheritance',
+		from: 1,
+		to: 2,
+		text: 'inherits',
+		style: {
+			'stroke-dasharray': '5,5'
+		}
+	}
+];
 
 SVG.ClassDiagramNode = SVG.invent({
 	create: 'g',
 	inherit: SVG.G,
 	extend: {
 		applyBlueprint: __WEBPACK_IMPORTED_MODULE_0__lib_element__["a" /* applyBlueprint */],
-		socket: __WEBPACK_IMPORTED_MODULE_0__lib_element__["b" /* getSocketCoords */]
+		socket: __WEBPACK_IMPORTED_MODULE_0__lib_element__["b" /* getSocketCoords */],
+		blueprint: null
 	},
 	construct: {
 		classDiagramNode: function (blueprint) {
@@ -287,9 +316,35 @@ SVG.ClassDiagramNode = SVG.invent({
 	}
 });
 
-var element = draw.classDiagramNode(blueprint);
-// console.log(element.socket(10));
-// console.log(draw.svg());
+SVG.Connection = SVG.invent({
+	create: 'path',
+	inherit: SVG.Shape,
+	extend: {
+		connect: function (blueprint) {
+			return this;
+		},
+		applyBlueprint: function (blueprint) {
+
+
+			return this;
+		},
+		blueprint: null
+	},
+	construct: {
+		connection: function (blueprint) {
+			return this.put(new SVG.Connection)
+				.applyBlueprint(blueprint);
+		}
+	}
+});
+
+element_blueprints.forEach(function (blueprint) {
+	draw.classDiagramNode(blueprint);
+});
+
+connection_blueprints.forEach(function (blueprint) {
+	draw.connection(blueprint);
+});
 
 
 /***/ }),
@@ -307,10 +362,7 @@ let merge = __webpack_require__(0);
 
 
 function fillBlueprint(blueprint) {
-	if (!blueprint.position) {
-		throw new TypeError('Invalid blueprint: coordinates are missing');
-		return;
-	} else {
+	if (checkBlueprint(blueprint)) {
 		let passed_blueprint = blueprint;
 		let desired_blueprint = merge(__WEBPACK_IMPORTED_MODULE_0__model__["b" /* default_blueprint */], blueprint);
 
@@ -322,7 +374,16 @@ function fillBlueprint(blueprint) {
 			return merge(__WEBPACK_IMPORTED_MODULE_0__model__["d" /* default_method */], method);
 		});
 
-		return desired_blueprint;		
+		return desired_blueprint;	
+	}
+}
+
+function checkBlueprint(blueprint) {
+	if (blueprint.position && blueprint.id) {
+		return true;
+	} else {
+		throw new TypeError('Blueprint error: id and/or coordinates are missing');
+		return false;
 	}
 }
 
@@ -383,7 +444,7 @@ function getSocketCoords(number) {
 function applyBlueprint(blueprint) {
 	var checked_blueprint = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__blueprint__["a" /* fillBlueprint */])(blueprint);
 
-	let id = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["a" /* getHash */])();
+	let id = checked_blueprint.id;
 
 	let style = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__style__["a" /* convertElementStyle */])(checked_blueprint.style || {});
 	let padding = style.additional_style.padding;
@@ -394,17 +455,17 @@ function applyBlueprint(blueprint) {
 
 	let name_label = this.text(text.name)
 		.font(style.text_style)
-		.attr('id', __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["b" /* getId */])('name-label', id));
+		.attr('id', __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["a" /* getId */])('name-label', id));
 
 	if (text.attributes && text.methods) {
 
 		var attributes_label = this.text(text.attributes)
 			.font(style.text_style)
-			.attr('id', __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["b" /* getId */])('attributes-label', id));
+			.attr('id', __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["a" /* getId */])('attributes-label', id));
 
 		var methods_label = this.text(text.methods)
 			.font(style.text_style)
-			.attr('id', __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["b" /* getId */])('methods-label', id));
+			.attr('id', __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["a" /* getId */])('methods-label', id));
 
 		var rect_size = {
 			w: Math.max(
@@ -441,7 +502,7 @@ function applyBlueprint(blueprint) {
 
 		var attributes_label = this.text(text.attributes)
 			.font(style.text_style)
-			.attr('id', __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["b" /* getId */])('attributes-label', id));
+			.attr('id', __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["a" /* getId */])('attributes-label', id));
 
 		var rect_size = {
 			w: Math.max(
@@ -470,7 +531,7 @@ function applyBlueprint(blueprint) {
 
 		var methods_label = this.text(text.methods)
 			.font(style.text_style)
-			.attr('id', __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["b" /* getId */])('methods-label', id));
+			.attr('id', __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["a" /* getId */])('methods-label', id));
 
 		var rect_size = {
 			w: Math.max(
@@ -503,21 +564,21 @@ function applyBlueprint(blueprint) {
 				name_label.bbox().h + 
 				padding.h
 		};
-
 	}
 
 	let rect = this.rect(rect_size.w, rect_size.h)
 		.attr(style.rect_style)
 		.move(0, 0)
-		.attr('id', __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["b" /* getId */])('rectangle', id));
+		.attr('id', __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["a" /* getId */])('rectangle', id));
 
 	rect.back();
 
 	this.move(checked_blueprint.position.x, checked_blueprint.position.y);
 	this.attr({
-		'id': __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["b" /* getId */])('ClassDiagramNode', id),
+		'id': __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["a" /* getId */])('ClassDiagramNode', id),
 		'cursor': 'pointer'
 	});
+	this.blueprint = blueprint;
 
 	return this;
 }
@@ -697,8 +758,8 @@ function getScopeSymbol(scope) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = getHash;
-/* harmony export (immutable) */ __webpack_exports__["b"] = getId;
+/* unused harmony export getHash */
+/* harmony export (immutable) */ __webpack_exports__["a"] = getId;
 
 
 function getHash(object_type) {

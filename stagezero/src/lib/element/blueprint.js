@@ -6,10 +6,7 @@ let merge = require('deepmerge');
 import {default_blueprint, default_attribute, default_method} from './model';
 
 export function fillBlueprint(blueprint) {
-	if (!blueprint.position) {
-		throw new TypeError('Invalid blueprint: coordinates are missing');
-		return;
-	} else {
+	if (checkBlueprint(blueprint)) {
 		let passed_blueprint = blueprint;
 		let desired_blueprint = merge(default_blueprint, blueprint);
 
@@ -21,6 +18,15 @@ export function fillBlueprint(blueprint) {
 			return merge(default_method, method);
 		});
 
-		return desired_blueprint;		
+		return desired_blueprint;	
+	}
+}
+
+function checkBlueprint(blueprint) {
+	if (blueprint.position && blueprint.id) {
+		return true;
+	} else {
+		throw new TypeError('Blueprint error: id and/or coordinates are missing');
+		return false;
 	}
 }
