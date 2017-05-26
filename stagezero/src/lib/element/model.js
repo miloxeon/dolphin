@@ -3,7 +3,7 @@
 // data models for element
 
 export let default_style = {
-	'padding': '15 10',
+	'padding': '11 11',
 
 	'border-color': 'black',
 	'border-width': '2',
