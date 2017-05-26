@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "/static/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 4);
+/******/ 	return __webpack_require__(__webpack_require__.s = 7);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -165,16 +165,16 @@ return deepmerge
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return default_style; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return default_blueprint; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return default_attribute; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return default_method; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return default_style; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return default_blueprint; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return default_attribute; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return default_method; });
 
 
 // data models for element
 
 let default_style = {
-	'padding': '15 10',
+	'padding': '11 11',
 
 	'border-color': 'black',
 	'border-width': '2',
@@ -225,11 +225,8 @@ let default_method = {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lib_element_model__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__lib_element_style__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lib_element__ = __webpack_require__(4);
 
-
-let merge = __webpack_require__(0);
 
 
 
@@ -270,108 +267,22 @@ let blueprint = {
 		]
 	},
 	style: {
-		// 'background-color': 'pink'
+		'text-align': 'right'
 	}
 }
 
-function fillBlueprint(blueprint) {
-	if (!blueprint.position) {
-		throw new TypeError('Invalid blueprint: coordinates are missing');
-		return;
-	} else {
-		let passed_blueprint = blueprint;
-		let desired_blueprint = merge(__WEBPACK_IMPORTED_MODULE_0__lib_element_model__["a" /* default_blueprint */], blueprint);
-
-		desired_blueprint.text.attributes = (desired_blueprint.text.attributes || []).map(function (attribute) {
-			return merge(__WEBPACK_IMPORTED_MODULE_0__lib_element_model__["b" /* default_attribute */], attribute);
-		});
-
-		desired_blueprint.text.methods = (desired_blueprint.text.methods || []).map(function (method) {
-			return merge(__WEBPACK_IMPORTED_MODULE_0__lib_element_model__["c" /* default_method */], method);
-		});
-
-		return desired_blueprint;		
-	}
-}
-
-function getScopeSymbol(scope) {
-	switch (scope.toLowerCase()) {
-		case 'public':
-			return '+';
-			break;
-
-		case 'private':
-			return '-';
-			break;
-
-		case 'protected':
-			return '#';
-			break;
-
-		case 'derived':
-			return '/';
-			break;
-
-		case 'package':
-			return '~';
-			break;
-	}
-}
-
-function prepareText(element_text) {
-	var prepared_attributes = element_text.attributes.map(function (attribute) {
-
-		return [
-			getScopeSymbol(attribute.scope),
-			attribute.name,
-			(attribute.type === 'any') ? '' : ': ' + attribute.type
-		].join(' ') + 
-			((attribute.value !== '') ? [' =', attribute.value].join(' ') : '');
-	})
-
-	var prepared_methods = element_text.methods.map(function (method) {
-		return [
-			getScopeSymbol(method.scope),
-			(method.type === 'any') ? '' : method.type,
-			method.name + '()'
-		].join(' ');
-	})
-
-	// console.log(element_text.attributes);
-
-	return {
-		name: element_text.name,
-		attributes: prepared_attributes.join('\n'),
-		methods: prepared_methods.join('\n')
-	}
-}
 
 SVG.ClassDiagramNode = SVG.invent({
 	create: 'g',
 	inherit: SVG.G,
 	extend: {
-		applyBlueprint: function (blueprint) {
-			var checked_blueprint = fillBlueprint(blueprint);
-
-			let style = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__lib_element_style__["a" /* convertElementStyle */])(checked_blueprint.style || {});
-			let padding = style.additional_style.padding;
-
-			let text = this.text(prepareText(checked_blueprint.text).methods).font(style.text_style).move(padding.w, padding.h);
-
-			let rect_size = {
-				w: text.bbox().w + padding.w * 2,
-				h: text.bbox().h + padding.h * 2
-			}
-
-			let rect = this.rect(rect_size.w, rect_size.h).attr(style.rect_style).move(0, 0);
-			text.front();
-
-			return this;
-		}
+		applyBlueprint: __WEBPACK_IMPORTED_MODULE_0__lib_element__["a" /* applyBlueprint */]
 	},
 	construct: {
 		classDiagramNode: function (blueprint) {
-			return this.put(new SVG.ClassDiagramNode).applyBlueprint(blueprint).move(blueprint.position.x, blueprint.position.y);
+			return this.put(new SVG.ClassDiagramNode)
+				.applyBlueprint(blueprint)
+				.draggy();
 		}
 	}
 });
@@ -382,11 +293,190 @@ var element = draw.classDiagramNode(blueprint);
 // 
 
 
-console.log(draw.svg());
+// console.log(draw.svg());
 
 
 /***/ }),
 /* 3 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = fillBlueprint;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__model__ = __webpack_require__(1);
+
+
+// Blueprints processing functions
+
+let merge = __webpack_require__(0);
+
+
+function fillBlueprint(blueprint) {
+	if (!blueprint.position) {
+		throw new TypeError('Invalid blueprint: coordinates are missing');
+		return;
+	} else {
+		let passed_blueprint = blueprint;
+		let desired_blueprint = merge(__WEBPACK_IMPORTED_MODULE_0__model__["b" /* default_blueprint */], blueprint);
+
+		desired_blueprint.text.attributes = (desired_blueprint.text.attributes || []).map(function (attribute) {
+			return merge(__WEBPACK_IMPORTED_MODULE_0__model__["c" /* default_attribute */], attribute);
+		});
+
+		desired_blueprint.text.methods = (desired_blueprint.text.methods || []).map(function (method) {
+			return merge(__WEBPACK_IMPORTED_MODULE_0__model__["d" /* default_method */], method);
+		});
+
+		return desired_blueprint;		
+	}
+}
+
+
+/***/ }),
+/* 4 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = applyBlueprint;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__style__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__text__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__blueprint__ = __webpack_require__(3);
+
+
+// Everything needed to construct an element
+
+
+
+
+
+function applyBlueprint(blueprint) {
+	var checked_blueprint = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__blueprint__["a" /* fillBlueprint */])(blueprint);
+
+	let style = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__style__["a" /* convertElementStyle */])(checked_blueprint.style || {});
+	let padding = style.additional_style.padding;
+
+	let text = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__text__["a" /* prepareText */])(checked_blueprint.text);
+
+	style.text_style['anchor'] = 'start';	// needed for class diagram
+
+	let name_label = this.text(text.name)
+		.font(style.text_style);
+
+	if (text.attributes && text.methods) {
+
+		var attributes_label = this.text(text.attributes)
+			.font(style.text_style);
+
+		var methods_label = this.text(text.methods)
+			.font(style.text_style);
+
+		var rect_size = {
+			w: Math.max(
+				name_label.bbox().w,
+				attributes_label.bbox().w,
+				methods_label.bbox().w
+			) + padding.w * 2,
+
+			h: padding.h + 
+				name_label.bbox().h + 
+				padding.h +
+				attributes_label.bbox().h + 
+				padding.h + 
+				methods_label.bbox().h +
+				padding.h
+		};
+
+		name_label.font({
+			'anchor': 'middle',
+			'weight': 'bold'})
+			.move(rect_size.w / 2, padding.h);
+
+		attributes_label.move(
+			padding.w,
+			name_label.bbox().y2 + padding.h
+		);
+
+		methods_label.move(
+			padding.w,
+			attributes_label.bbox().y2 + padding.h
+		);
+
+	} else if (text.attributes) {
+
+		var attributes_label = this.text(text.attributes).font(style.text_style);
+		var rect_size = {
+			w: Math.max(
+				name_label.bbox().w,
+				attributes_label.bbox().w,
+			) + padding.w * 2,
+
+			h: padding.h + 
+				name_label.bbox().h + 
+				padding.h +
+				attributes_label.bbox().h + 
+				padding.h
+		};
+
+		name_label.font({
+			'anchor': 'middle',
+			'weight': 'bold'})
+			.move(rect_size.w / 2, padding.h);
+
+		attributes_label.move(
+			padding.w,
+			name_label.bbox().y2 + padding.h
+		);
+
+	} else if (text.methods) {
+
+		var methods_label = this.text(text.methods).font(style.text_style);
+		var rect_size = {
+			w: Math.max(
+				name_label.bbox().w,
+				methods_label.bbox().w
+			) + padding.w * 2,
+
+			h: padding.h + 
+				name_label.bbox().h + 
+				padding.h +
+				methods_label.bbox().h +
+				padding.h
+		};
+
+		name_label.font({
+			'anchor': 'middle',
+			'weight': 'bold'})
+			.move(rect_size.w / 2, padding.h);
+
+		methods_label.move(
+			padding.w,
+			name_label.bbox().y2 + padding.h
+		);
+
+	} else {
+		var rect_size = {
+			w: name_label.bbox().w + padding.w * 2,
+
+			h: padding.h + 
+				name_label.bbox().h + 
+				padding.h
+		};
+
+	}
+
+	let rect = this.rect(rect_size.w, rect_size.h)
+		.attr(style.rect_style)
+		.move(0, 0);
+
+	rect.back();
+
+	this.move(checked_blueprint.position.x, checked_blueprint.position.y);
+
+	return this;
+}
+
+
+/***/ }),
+/* 5 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -442,7 +532,7 @@ let merge = __webpack_require__(0);
 
 
 function convertElementStyle(style) {
-	var passed_style = merge(__WEBPACK_IMPORTED_MODULE_0__model__["d" /* default_style */], style);
+	var passed_style = merge(__WEBPACK_IMPORTED_MODULE_0__model__["a" /* default_style */], style);
 
 	var rect_style = {
 		'fill': passed_style['background-color'],
@@ -491,7 +581,71 @@ function convertElementStyle(style) {
 
 
 /***/ }),
-/* 4 */
+/* 6 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = prepareText;
+
+
+// element text processing
+
+function prepareText(element_text) {
+
+	// split text to something like `+ variable : int = 0;`, which is used in UML
+	
+	var prepared_attributes = element_text.attributes.map(function (attribute) {
+
+		return [
+			getScopeSymbol(attribute.scope),
+			attribute.name,
+			(attribute.type === 'any') ? '' : ': ' + attribute.type
+		].join(' ') + 
+			((attribute.value !== '') ? [' =', attribute.value].join(' ') : '');
+	})
+
+	var prepared_methods = element_text.methods.map(function (method) {
+		return [
+			getScopeSymbol(method.scope),
+			(method.type === 'any') ? '' : method.type,
+			method.name + '()'
+		].join(' ');
+	})
+
+	return {
+		name: element_text.name,
+		attributes: prepared_attributes.join('\n'),
+		methods: prepared_methods.join('\n')
+	}
+}
+
+function getScopeSymbol(scope) {
+	switch (scope.toLowerCase()) {
+		case 'public':
+			return '+';
+			break;
+
+		case 'private':
+			return '-';
+			break;
+
+		case 'protected':
+			return '#';
+			break;
+
+		case 'derived':
+			return '/';
+			break;
+
+		case 'package':
+			return '~';
+			break;
+	}
+}
+
+
+/***/ }),
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(2);
