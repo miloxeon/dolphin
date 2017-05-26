@@ -1,6 +1,6 @@
 'use strict';
 
-import {applyBlueprint} from './lib/element';
+import {applyBlueprint, getSocketCoords} from './lib/element';
 
 var draw = SVG('diagram');
 
@@ -47,7 +47,8 @@ SVG.ClassDiagramNode = SVG.invent({
 	create: 'g',
 	inherit: SVG.G,
 	extend: {
-		applyBlueprint: applyBlueprint
+		applyBlueprint: applyBlueprint,
+		socket: getSocketCoords
 	},
 	construct: {
 		classDiagramNode: function (blueprint) {
@@ -59,3 +60,5 @@ SVG.ClassDiagramNode = SVG.invent({
 });
 
 var element = draw.classDiagramNode(blueprint);
+// console.log(element.socket(10));
+// console.log(draw.svg());

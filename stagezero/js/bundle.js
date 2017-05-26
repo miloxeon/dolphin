@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "/static/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 7);
+/******/ 	return __webpack_require__(__webpack_require__.s = 8);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -271,12 +271,12 @@ let blueprint = {
 	}
 }
 
-
 SVG.ClassDiagramNode = SVG.invent({
 	create: 'g',
 	inherit: SVG.G,
 	extend: {
-		applyBlueprint: __WEBPACK_IMPORTED_MODULE_0__lib_element__["a" /* applyBlueprint */]
+		applyBlueprint: __WEBPACK_IMPORTED_MODULE_0__lib_element__["a" /* applyBlueprint */],
+		socket: __WEBPACK_IMPORTED_MODULE_0__lib_element__["b" /* getSocketCoords */]
 	},
 	construct: {
 		classDiagramNode: function (blueprint) {
@@ -288,11 +288,7 @@ SVG.ClassDiagramNode = SVG.invent({
 });
 
 var element = draw.classDiagramNode(blueprint);
-// draw.rounded(200, 200);
-// 
-// 
-
-
+// console.log(element.socket(10));
 // console.log(draw.svg());
 
 
@@ -336,10 +332,12 @@ function fillBlueprint(blueprint) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony export (immutable) */ __webpack_exports__["b"] = getSocketCoords;
 /* harmony export (immutable) */ __webpack_exports__["a"] = applyBlueprint;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__style__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__text__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__blueprint__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__tools__ = __webpack_require__(7);
 
 
 // Everything needed to construct an element
@@ -348,8 +346,44 @@ function fillBlueprint(blueprint) {
 
 
 
+
+function getSocketCoords(number) {
+
+	let rect;
+
+	this.children().forEach(function (child) {
+		if (child.attr('id').split('_')[0] === 'rectangle') {
+			rect = child;
+		}
+	});
+
+	if (rect) {
+		var bbox = rect.bbox();
+	} else {
+		throw new ReferenceError("Element's rectangle is not defined, couldn't attach sockets");
+	}
+
+	switch (number) {
+		case 1: return {x: bbox.x, y: bbox.y};		// top left
+		case 2: return {x: bbox.cx, y: bbox.y};		// top center
+		case 3: return {x: bbox.x2, y: bbox.y};		// top right
+
+		case 4: return {x: bbox.x, y: bbox.cy};		// middle left
+		case 5: return {x: bbox.x2, y: bbox.cy};	// middle right
+
+		case 6: return {x: bbox.x, y: bbox.y2};		// bottom left
+		case 7: return {x: bbox.cx, y: bbox.y2};	// bottom center
+		case 8: return {x: bbox.x2, y: bbox.y2};	// bottom right
+
+		default:
+			throw new RangeError('Wrong socket number (must be from 1 to 8)');
+	}
+}
+
 function applyBlueprint(blueprint) {
 	var checked_blueprint = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__blueprint__["a" /* fillBlueprint */])(blueprint);
+
+	let id = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["a" /* getHash */])();
 
 	let style = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__style__["a" /* convertElementStyle */])(checked_blueprint.style || {});
 	let padding = style.additional_style.padding;
@@ -359,15 +393,18 @@ function applyBlueprint(blueprint) {
 	style.text_style['anchor'] = 'start';	// needed for class diagram
 
 	let name_label = this.text(text.name)
-		.font(style.text_style);
+		.font(style.text_style)
+		.attr('id', __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["b" /* getId */])('name-label', id));
 
 	if (text.attributes && text.methods) {
 
 		var attributes_label = this.text(text.attributes)
-			.font(style.text_style);
+			.font(style.text_style)
+			.attr('id', __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["b" /* getId */])('attributes-label', id));
 
 		var methods_label = this.text(text.methods)
-			.font(style.text_style);
+			.font(style.text_style)
+			.attr('id', __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["b" /* getId */])('methods-label', id));
 
 		var rect_size = {
 			w: Math.max(
@@ -402,7 +439,10 @@ function applyBlueprint(blueprint) {
 
 	} else if (text.attributes) {
 
-		var attributes_label = this.text(text.attributes).font(style.text_style);
+		var attributes_label = this.text(text.attributes)
+			.font(style.text_style)
+			.attr('id', __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["b" /* getId */])('attributes-label', id));
+
 		var rect_size = {
 			w: Math.max(
 				name_label.bbox().w,
@@ -428,7 +468,10 @@ function applyBlueprint(blueprint) {
 
 	} else if (text.methods) {
 
-		var methods_label = this.text(text.methods).font(style.text_style);
+		var methods_label = this.text(text.methods)
+			.font(style.text_style)
+			.attr('id', __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["b" /* getId */])('methods-label', id));
+
 		var rect_size = {
 			w: Math.max(
 				name_label.bbox().w,
@@ -465,11 +508,16 @@ function applyBlueprint(blueprint) {
 
 	let rect = this.rect(rect_size.w, rect_size.h)
 		.attr(style.rect_style)
-		.move(0, 0);
+		.move(0, 0)
+		.attr('id', __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["b" /* getId */])('rectangle', id));
 
 	rect.back();
 
 	this.move(checked_blueprint.position.x, checked_blueprint.position.y);
+	this.attr({
+		'id': __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["b" /* getId */])('ClassDiagramNode', id),
+		'cursor': 'pointer'
+	});
 
 	return this;
 }
@@ -646,6 +694,24 @@ function getScopeSymbol(scope) {
 
 /***/ }),
 /* 7 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = getHash;
+/* harmony export (immutable) */ __webpack_exports__["b"] = getId;
+
+
+function getHash(object_type) {
+	return Math.floor(Math.random() * new Date()).toString();
+}
+
+function getId(object_type, hash) {
+	return object_type.toString() + '_' + hash;
+}
+
+
+/***/ }),
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(2);
