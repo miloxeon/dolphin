@@ -48,7 +48,7 @@ export let class_theme = {
 				'font-style': 'italic'
 			},
 			symbol: {
-				
+				// '=' if there is default value
 			},
 			value: {
 				common: {
@@ -77,6 +77,7 @@ export let class_theme = {
 				'color': '#0000A2',
 			},
 			passed: {
+				// these styles will override everything applied to passed agruments
 				// 'color': 'dimgrey'
 			}
 		}

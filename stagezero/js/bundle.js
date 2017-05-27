@@ -387,7 +387,9 @@ SVG.ClassDiagram = SVG.invent({
 	inherit: SVG.G,
 	extend: {
 		applyTheme: function (theme) {
-			console.log(this.children());
+			this.children().forEach(function (child) {
+				child.applyTheme(theme);
+			});
 			return this;
 		}
 	},
@@ -406,9 +408,56 @@ element_blueprints.forEach(function (blueprint) {
 	diagram.classDiagramNode(blueprint);
 });
 
-connection_blueprints.forEach(function (blueprint) {
-	diagram.connection(blueprint);
-});
+// connection_blueprints.forEach(function (blueprint) {
+// 	diagram.connection(blueprint);
+// });
+// 
+let themes = [
+	{
+		text_style: {
+			common: {
+				'color': 'red'
+			},
+			attribute: {
+				type: {
+					'color': 'black',
+					'font-weight': 'bold'
+				}
+			}
+		}
+	},
+	{
+		rect_style: {
+			'background-color': 'rgba(255, 0, 0, .4)',
+			'border-radius': '18'
+		},
+		text_style: {
+			common: {
+				'color': 'yellow'
+			}
+		}
+	},
+	{
+		rect_style: {
+			'background-color': 'rgba(0, 255, 0, .4)',
+			'border-radius': '8',
+			'border-width': '1'
+		}
+	}
+];
+
+let i = 0;
+
+setInterval(function () {
+	diagram.applyTheme(themes[i]);
+
+	if (i === themes.length - 1) {
+		i = 0;
+	} else {
+		i++;
+	}
+
+}, 2000);
 
 console.log(diagram.children());
 
@@ -536,16 +585,26 @@ function setRichText() {
 		throw new EvalError("Couldn't apply rich text: no theme set");
 	}
 
-	let name_label = this.text(text.name)
-		.font(style.text_style.common)
-		.font(style.text_style.node.common)
-		.font(style.text_style.node.name)
-		.font('anchor', 'middle')
-		.attr('id', __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["a" /* getId */])('name-label', id));
+	var name_label = findChildElement(this, 'name-label');
+	var type_label = findChildElement(this, 'type-label');
+	var attributes_label = findChildElement(this, 'attributes-label');
+	var methods_label = findChildElement(this, 'methods-label');
 
-	let type_label;
-	let attributes_label;
-	let methods_label;
+	if (name_label) {
+		name_label.remove();
+	}
+
+	if (type_label) {
+		type_label.remove();
+	}
+
+	if (attributes_label) {
+		attributes_label.remove();
+	}
+
+	if (methods_label) {
+		methods_label.remove();
+	}
 
 	if (text.type !== 'normal') {
 		type_label = this.text('<' + text.type + '>')
@@ -555,6 +614,13 @@ function setRichText() {
 			.font('anchor', 'middle')
 			.attr('id', __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["a" /* getId */])('type-label', id));
 	}
+
+	name_label = this.text(text.name)
+		.font(style.text_style.common)
+		.font(style.text_style.node.common)
+		.font(style.text_style.node.name)
+		.font('anchor', 'middle')
+		.attr('id', __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["a" /* getId */])('name-label', id));
 
 	if (text.attributes) {
 		attributes_label = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__text__["a" /* addAttributes */])(this, text.attributes, style.text_style)
@@ -592,12 +658,19 @@ function setRichText() {
 function drawBorder() {
 	let id = getRawId(this.attr('id'));
 	let style = this.style;
-	let rect_size = computeRectSize(this);
 
-	let rect = this.rect(rect_size.w, rect_size.h)
-		.attr(style.rect_style)
-		.move(0, 0)
-		.attr('id', __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["a" /* getId */])('rectangle', id));
+	var rect = findChildElement(this, 'rectangle');
+	var rect_size = computeRectSize(this);
+	
+	if (rect) {
+		rect.size(rect_size.w, rect_size.h)
+			.attr(style.rect_style);
+	} else {
+		rect = this.rect(rect_size.w, rect_size.h)
+			.attr(style.rect_style)
+			.move(0, 0)
+			.attr('id', __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["a" /* getId */])('rectangle', id));
+	}
 
 	rect.back();
 	return this;
@@ -614,17 +687,17 @@ function applyBlueprint(blueprint) {
 	var checked_blueprint = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__blueprint__["a" /* fillBlueprint */])(blueprint);
 	let id = checked_blueprint.id;
 	let style = checked_blueprint.style;
+	this.attr({
+		'id': __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["a" /* getId */])('ClassDiagramNode', id),
+		'cursor': 'pointer'
+	});
 	
 	this.richText = checked_blueprint.text;
 	this.blueprint = checked_blueprint;
 
 	this.applyTheme(style);
 	this.move(checked_blueprint.position.x, checked_blueprint.position.y);
-	this.attr({
-		'id': __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["a" /* getId */])('ClassDiagramNode', id),
-		'cursor': 'pointer'
-	});
-	
+
 	return this;
 }
 
@@ -1096,13 +1169,16 @@ function getScopeSymbol(scope) {
 		case 'package':
 			return '~';
 			break;
+
+		default:
+			throw new TypeError('Unknown scope: ' + scope);
 	}
 }
 
 function capitalizeFirst(word) {
-	console.log(word);
 	return word.slice(0, 1).toUpperCase() + word.slice(1).toLowerCase();
 }
+
 
 /***/ }),
 /* 8 */
@@ -1160,7 +1236,7 @@ let class_theme = {
 				'font-style': 'italic'
 			},
 			symbol: {
-				
+				// '=' if there is default value
 			},
 			value: {
 				common: {
@@ -1189,6 +1265,7 @@ let class_theme = {
 				'color': '#0000A2',
 			},
 			passed: {
+				// these styles will override everything applied to passed agruments
 				// 'color': 'dimgrey'
 			}
 		}
