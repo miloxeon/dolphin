@@ -156,10 +156,12 @@ function getScopeSymbol(scope) {
 		case 'package':
 			return '~';
 			break;
+
+		default:
+			throw new TypeError('Unknown scope: ' + scope);
 	}
 }
 
 function capitalizeFirst(word) {
-	console.log(word);
 	return word.slice(0, 1).toUpperCase() + word.slice(1).toLowerCase();
 }

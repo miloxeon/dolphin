@@ -138,7 +138,9 @@ SVG.ClassDiagram = SVG.invent({
 	inherit: SVG.G,
 	extend: {
 		applyTheme: function (theme) {
-			console.log(this.children());
+			this.children().forEach(function (child) {
+				child.applyTheme(theme);
+			});
 			return this;
 		}
 	},
@@ -157,8 +159,55 @@ element_blueprints.forEach(function (blueprint) {
 	diagram.classDiagramNode(blueprint);
 });
 
-connection_blueprints.forEach(function (blueprint) {
-	diagram.connection(blueprint);
-});
+// connection_blueprints.forEach(function (blueprint) {
+// 	diagram.connection(blueprint);
+// });
+// 
+let themes = [
+	{
+		text_style: {
+			common: {
+				'color': 'red'
+			},
+			attribute: {
+				type: {
+					'color': 'black',
+					'font-weight': 'bold'
+				}
+			}
+		}
+	},
+	{
+		rect_style: {
+			'background-color': 'rgba(255, 0, 0, .4)',
+			'border-radius': '18'
+		},
+		text_style: {
+			common: {
+				'color': 'yellow'
+			}
+		}
+	},
+	{
+		rect_style: {
+			'background-color': 'rgba(0, 255, 0, .4)',
+			'border-radius': '8',
+			'border-width': '1'
+		}
+	}
+];
+
+let i = 0;
+
+setInterval(function () {
+	diagram.applyTheme(themes[i]);
+
+	if (i === themes.length - 1) {
+		i = 0;
+	} else {
+		i++;
+	}
+
+}, 2000);
 
 console.log(diagram.children());

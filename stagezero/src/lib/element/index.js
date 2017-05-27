@@ -54,16 +54,26 @@ export function setRichText() {
 		throw new EvalError("Couldn't apply rich text: no theme set");
 	}
 
-	let name_label = this.text(text.name)
-		.font(style.text_style.common)
-		.font(style.text_style.node.common)
-		.font(style.text_style.node.name)
-		.font('anchor', 'middle')
-		.attr('id', getId('name-label', id));
+	var name_label = findChildElement(this, 'name-label');
+	var type_label = findChildElement(this, 'type-label');
+	var attributes_label = findChildElement(this, 'attributes-label');
+	var methods_label = findChildElement(this, 'methods-label');
 
-	let type_label;
-	let attributes_label;
-	let methods_label;
+	if (name_label) {
+		name_label.remove();
+	}
+
+	if (type_label) {
+		type_label.remove();
+	}
+
+	if (attributes_label) {
+		attributes_label.remove();
+	}
+
+	if (methods_label) {
+		methods_label.remove();
+	}
 
 	if (text.type !== 'normal') {
 		type_label = this.text('<' + text.type + '>')
@@ -73,6 +83,13 @@ export function setRichText() {
 			.font('anchor', 'middle')
 			.attr('id', getId('type-label', id));
 	}
+
+	name_label = this.text(text.name)
+		.font(style.text_style.common)
+		.font(style.text_style.node.common)
+		.font(style.text_style.node.name)
+		.font('anchor', 'middle')
+		.attr('id', getId('name-label', id));
 
 	if (text.attributes) {
 		attributes_label = addAttributes(this, text.attributes, style.text_style)
@@ -110,12 +127,19 @@ export function setRichText() {
 export function drawBorder() {
 	let id = getRawId(this.attr('id'));
 	let style = this.style;
-	let rect_size = computeRectSize(this);
 
-	let rect = this.rect(rect_size.w, rect_size.h)
-		.attr(style.rect_style)
-		.move(0, 0)
-		.attr('id', getId('rectangle', id));
+	var rect = findChildElement(this, 'rectangle');
+	var rect_size = computeRectSize(this);
+	
+	if (rect) {
+		rect.size(rect_size.w, rect_size.h)
+			.attr(style.rect_style);
+	} else {
+		rect = this.rect(rect_size.w, rect_size.h)
+			.attr(style.rect_style)
+			.move(0, 0)
+			.attr('id', getId('rectangle', id));
+	}
 
 	rect.back();
 	return this;
@@ -132,17 +156,17 @@ export function applyBlueprint(blueprint) {
 	var checked_blueprint = fillBlueprint(blueprint);
 	let id = checked_blueprint.id;
 	let style = checked_blueprint.style;
+	this.attr({
+		'id': getId('ClassDiagramNode', id),
+		'cursor': 'pointer'
+	});
 	
 	this.richText = checked_blueprint.text;
 	this.blueprint = checked_blueprint;
 
 	this.applyTheme(style);
 	this.move(checked_blueprint.position.x, checked_blueprint.position.y);
-	this.attr({
-		'id': getId('ClassDiagramNode', id),
-		'cursor': 'pointer'
-	});
-	
+
 	return this;
 }
 
