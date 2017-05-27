@@ -3,7 +3,7 @@
 // Blueprints processing functions
 
 let merge = require('deepmerge');
-import {default_blueprint, default_attribute, default_method} from './model';
+import {default_blueprint, default_attribute, default_method, default_argument} from './model';
 
 export function fillBlueprint(blueprint) {
 	if (checkBlueprint(blueprint)) {
@@ -17,6 +17,18 @@ export function fillBlueprint(blueprint) {
 		desired_blueprint.text.methods = (desired_blueprint.text.methods || []).map(function (method) {
 			return merge(default_method, method);
 		});
+
+		if (desired_blueprint.text.methods !== []) {
+
+			desired_blueprint.text.methods = desired_blueprint.text.methods.map(function (method) {
+				if (method.args !== []) {
+					method.args = method.args.map(function (argument) {
+						return merge(default_argument, argument);
+					});
+				}
+				return method;
+			});
+		}
 
 		return desired_blueprint;	
 	}

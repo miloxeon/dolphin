@@ -2,24 +2,6 @@
 
 // data models for element
 
-export let default_style = {
-	'padding': '11 11',
-
-	'border-color': 'black',
-	'border-width': '2',
-	'border-radius': '4',
-
-	'color': 'black',
-	'font-family': 'Verdana',
-	'font-size': '12',
-	'line-height': '1.25',
-	'font-style': 'normal',
-	'font-weight': 'normal',
-	'text-align': 'left',
-
-	'background-color': 'white'
-};
-
 export let default_blueprint = {
 	id: 0,
 	position: {
@@ -28,10 +10,10 @@ export let default_blueprint = {
 	},
 	text: {
 		name: 'NewClass',
+		type: 'normal',
 		attributes: [],
 		methods: []
 	},
-	style: default_style
 };
 
 export let default_attribute = {
@@ -44,5 +26,12 @@ export let default_attribute = {
 export let default_method = {
 	name: 'newMethod',
 	type: 'any',
-	scope: 'public'
+	scope: 'public',
+	args: []
 };
+
+export let default_argument = {
+	name: 'newArgument',
+	type: 'any',
+	value: ''
+}
