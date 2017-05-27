@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "/static/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 9);
+/******/ 	return __webpack_require__(__webpack_require__.s = 12);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -246,12 +246,33 @@ function convertObject(object, converter) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lib_element__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__fixtures__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__lib_classes__ = __webpack_require__(4);
 
 
 
 
-var draw = SVG('diagram');
+
+let diagram = __WEBPACK_IMPORTED_MODULE_1__lib_classes__["a" /* draw */].classDiagram();
+
+__WEBPACK_IMPORTED_MODULE_0__fixtures__["a" /* element_blueprints */].forEach(function (blueprint) {
+	diagram.classDiagramNode(blueprint);
+});
+
+// connection_blueprints.forEach(function (blueprint) {
+// 	diagram.connection(blueprint);
+// });
+// 
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return element_blueprints; });
+/* unused harmony export connection_blueprints */
+
 
 let element_blueprints = [
 	{
@@ -277,7 +298,7 @@ let element_blueprints = [
 				},
 				{
 					name: 'wife',
-					scope: 'package',
+					scope: 'protected',
 					type: 'any'
 				}
 			],
@@ -340,15 +361,47 @@ let connection_blueprints = [
 	}
 ];
 
+
+/***/ }),
+/* 4 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return draw; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__element__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__diagram__ = __webpack_require__(5);
+
+
+
+
+
+let draw = SVG('diagram');
+
+SVG.ClassDiagram = SVG.invent({
+	create: 'g',
+	inherit: SVG.G,
+	extend: {
+		applyTheme: __WEBPACK_IMPORTED_MODULE_1__diagram__["a" /* applyTheme */]
+	},
+	construct: {
+		classDiagram: function (theme) {
+			return this.put(new SVG.ClassDiagram)
+				.applyTheme(theme)
+				.addClass('class_diagram')
+				.move(0, 0);
+		}
+	}
+});
+
 SVG.ClassDiagramNode = SVG.invent({
 	create: 'g',
 	inherit: SVG.G,
 	extend: {
-		setRichText: __WEBPACK_IMPORTED_MODULE_0__lib_element__["a" /* setRichText */],
-		drawBorder: __WEBPACK_IMPORTED_MODULE_0__lib_element__["b" /* drawBorder */],
-		applyTheme: __WEBPACK_IMPORTED_MODULE_0__lib_element__["c" /* applyTheme */],
-		applyBlueprint: __WEBPACK_IMPORTED_MODULE_0__lib_element__["d" /* applyBlueprint */],
-		socket: __WEBPACK_IMPORTED_MODULE_0__lib_element__["e" /* getSocketCoords */],
+		setRichText: __WEBPACK_IMPORTED_MODULE_0__element__["a" /* setRichText */],
+		drawBorder: __WEBPACK_IMPORTED_MODULE_0__element__["b" /* drawBorder */],
+		applyTheme: __WEBPACK_IMPORTED_MODULE_0__element__["c" /* applyTheme */],
+		applyBlueprint: __WEBPACK_IMPORTED_MODULE_0__element__["d" /* applyBlueprint */],
+		socket: __WEBPACK_IMPORTED_MODULE_0__element__["e" /* getSocketCoords */],
 		blueprint: null,
 		style: null,
 		richText: null
@@ -382,93 +435,30 @@ SVG.Connection = SVG.invent({
 	}
 });
 
-SVG.ClassDiagram = SVG.invent({
-	create: 'g',
-	inherit: SVG.G,
-	extend: {
-		applyTheme: function (theme) {
-			this.children().forEach(function (child) {
-				child.applyTheme(theme);
-			});
-			return this;
-		}
-	},
-	construct: {
-		classDiagram: function (theme) {
-			return this.put(new SVG.ClassDiagram)
-				.applyTheme(theme);
-				// .addClass('class_diagram');
-		}
-	}
-});
 
-let diagram = draw.classDiagram().move(0, 0);
+/***/ }),
+/* 5 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-element_blueprints.forEach(function (blueprint) {
-	diagram.classDiagramNode(blueprint);
-});
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = applyTheme;
 
-// connection_blueprints.forEach(function (blueprint) {
-// 	diagram.connection(blueprint);
-// });
-// 
-let themes = [
-	{
-		text_style: {
-			common: {
-				'color': 'red'
-			},
-			attribute: {
-				type: {
-					'color': 'black',
-					'font-weight': 'bold'
-				}
-			}
-		}
-	},
-	{
-		rect_style: {
-			'background-color': 'rgba(255, 0, 0, .4)',
-			'border-radius': '18'
-		},
-		text_style: {
-			common: {
-				'color': 'yellow'
-			}
-		}
-	},
-	{
-		rect_style: {
-			'background-color': 'rgba(0, 255, 0, .4)',
-			'border-radius': '8',
-			'border-width': '1'
-		}
-	}
-];
 
-let i = 0;
-
-setInterval(function () {
-	diagram.applyTheme(themes[i]);
-
-	if (i === themes.length - 1) {
-		i = 0;
-	} else {
-		i++;
-	}
-
-}, 2000);
-
-console.log(diagram.children());
+function applyTheme(theme) {
+	this.children().forEach(function (child) {
+		child.applyTheme(theme);
+	});
+	return this;
+}
 
 
 /***/ }),
-/* 3 */
+/* 6 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = fillBlueprint;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__model__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__model__ = __webpack_require__(8);
 
 
 // Blueprints processing functions
@@ -516,7 +506,7 @@ function checkBlueprint(blueprint) {
 
 
 /***/ }),
-/* 4 */
+/* 7 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -525,9 +515,9 @@ function checkBlueprint(blueprint) {
 /* harmony export (immutable) */ __webpack_exports__["b"] = drawBorder;
 /* harmony export (immutable) */ __webpack_exports__["c"] = applyTheme;
 /* harmony export (immutable) */ __webpack_exports__["d"] = applyBlueprint;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__style__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__text__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__blueprint__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__style__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__text__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__blueprint__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__tools__ = __webpack_require__(1);
 
 
@@ -808,7 +798,7 @@ function findChildElements(parent, type) {
 
 
 /***/ }),
-/* 5 */
+/* 8 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -856,12 +846,12 @@ let default_argument = {
 
 
 /***/ }),
-/* 6 */
+/* 9 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = convertElementStyle;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__theme_model__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__theme_model__ = __webpack_require__(11);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__tools__ = __webpack_require__(1);
 
 
@@ -1005,7 +995,7 @@ function convertStyle(style) {
 
 
 /***/ }),
-/* 7 */
+/* 10 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1084,7 +1074,7 @@ function addMethods(element, text, style) {
 
 			if (value.args) {	// if method has arguments
 
-				add.tspan('(').font(method_style.name);		// open the bracket
+				add.tspan('(');		// open the bracket
 
 				for (let arg in value.args) {
 					// get one argument
@@ -1136,13 +1126,13 @@ function addMethods(element, text, style) {
 							.font(arg_style.common)
 							.font(method_style.passed);
 					} else {
-						add.tspan(')').font(method_style.name);
+						add.tspan(')');
 					}
 				}
 
 			} else {
 				// otherwise just close the method with ()
-				add.tspan('()').font(method_style.name);
+				add.tspan('()');
 			}
 		}
 	}).font(method_style.common);
@@ -1181,7 +1171,7 @@ function capitalizeFirst(word) {
 
 
 /***/ }),
-/* 8 */
+/* 11 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1277,7 +1267,7 @@ let class_theme = {
 
 
 /***/ }),
-/* 9 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(2);

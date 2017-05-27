@@ -71,7 +71,7 @@ export function addMethods(element, text, style) {
 
 			if (value.args) {	// if method has arguments
 
-				add.tspan('(').font(method_style.name);		// open the bracket
+				add.tspan('(');		// open the bracket
 
 				for (let arg in value.args) {
 					// get one argument
@@ -123,13 +123,13 @@ export function addMethods(element, text, style) {
 							.font(arg_style.common)
 							.font(method_style.passed);
 					} else {
-						add.tspan(')').font(method_style.name);
+						add.tspan(')');
 					}
 				}
 
 			} else {
 				// otherwise just close the method with ()
-				add.tspan('()').font(method_style.name);
+				add.tspan('()');
 			}
 		}
 	}).font(method_style.common);
