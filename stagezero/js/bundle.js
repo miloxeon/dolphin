@@ -346,10 +346,12 @@ SVG.ClassDiagramNode = SVG.invent({
 	extend: {
 		setRichText: __WEBPACK_IMPORTED_MODULE_0__lib_element__["a" /* setRichText */],
 		drawBorder: __WEBPACK_IMPORTED_MODULE_0__lib_element__["b" /* drawBorder */],
-		applyBlueprint: __WEBPACK_IMPORTED_MODULE_0__lib_element__["c" /* applyBlueprint */],
-		socket: __WEBPACK_IMPORTED_MODULE_0__lib_element__["d" /* getSocketCoords */],
+		applyTheme: __WEBPACK_IMPORTED_MODULE_0__lib_element__["c" /* applyTheme */],
+		applyBlueprint: __WEBPACK_IMPORTED_MODULE_0__lib_element__["d" /* applyBlueprint */],
+		socket: __WEBPACK_IMPORTED_MODULE_0__lib_element__["e" /* getSocketCoords */],
 		blueprint: null,
-		style: null
+		style: null,
+		richText: null
 	},
 	construct: {
 		classDiagramNode: function (blueprint) {
@@ -368,8 +370,6 @@ SVG.Connection = SVG.invent({
 			return this;
 		},
 		applyBlueprint: function (blueprint) {
-
-
 			return this;
 		},
 		blueprint: null
@@ -387,25 +387,30 @@ SVG.ClassDiagram = SVG.invent({
 	inherit: SVG.G,
 	extend: {
 		applyTheme: function (theme) {
-
+			console.log(this.children());
+			return this;
 		}
 	},
 	construct: {
 		classDiagram: function (theme) {
 			return this.put(new SVG.ClassDiagram)
-			.applyTheme(theme)
-			.addClass('class_diagram');
+				.applyTheme(theme);
+				// .addClass('class_diagram');
 		}
 	}
 });
 
+let diagram = draw.classDiagram().move(0, 0);
+
 element_blueprints.forEach(function (blueprint) {
-	draw.classDiagramNode(blueprint);
+	diagram.classDiagramNode(blueprint);
 });
 
 connection_blueprints.forEach(function (blueprint) {
-	draw.connection(blueprint);
+	diagram.connection(blueprint);
 });
+
+console.log(diagram.children());
 
 
 /***/ }),
@@ -466,10 +471,11 @@ function checkBlueprint(blueprint) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["d"] = getSocketCoords;
+/* harmony export (immutable) */ __webpack_exports__["e"] = getSocketCoords;
 /* harmony export (immutable) */ __webpack_exports__["a"] = setRichText;
 /* harmony export (immutable) */ __webpack_exports__["b"] = drawBorder;
-/* harmony export (immutable) */ __webpack_exports__["c"] = applyBlueprint;
+/* harmony export (immutable) */ __webpack_exports__["c"] = applyTheme;
+/* harmony export (immutable) */ __webpack_exports__["d"] = applyBlueprint;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__style__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__text__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__blueprint__ = __webpack_require__(3);
@@ -517,9 +523,18 @@ function getSocketCoords(number) {
 	}
 }
 
-function setRichText(text) {
+function setRichText() {
 	let id = getRawId(this.attr('id'));
 	let style = this.style;
+	let text = this.richText;
+
+	if (!text) {
+		throw new EvalError("Couldn't apply rich text: no rich text set");
+	}
+
+	if (!style) {
+		throw new EvalError("Couldn't apply rich text: no theme set");
+	}
 
 	let name_label = this.text(text.name)
 		.font(style.text_style.common)
@@ -588,21 +603,28 @@ function drawBorder() {
 	return this;
 }
 
+function applyTheme(theme) {
+	this.style = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__style__["a" /* convertElementStyle */])(theme || {});
+	this.setRichText();
+	this.drawBorder();
+	return this;
+}
+
 function applyBlueprint(blueprint) {
 	var checked_blueprint = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__blueprint__["a" /* fillBlueprint */])(blueprint);
 	let id = checked_blueprint.id;
-	let style = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__style__["a" /* convertElementStyle */])(checked_blueprint.style || {});
-	let text = checked_blueprint.text;
-
+	let style = checked_blueprint.style;
+	
+	this.richText = checked_blueprint.text;
 	this.blueprint = checked_blueprint;
-	this.style = style;
+
+	this.applyTheme(style);
+	this.move(checked_blueprint.position.x, checked_blueprint.position.y);
 	this.attr({
 		'id': __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["a" /* getId */])('ClassDiagramNode', id),
 		'cursor': 'pointer'
 	});
-	this.setRichText(text);
-	this.drawBorder();
-	this.move(checked_blueprint.position.x, checked_blueprint.position.y);
+	
 	return this;
 }
 
@@ -929,39 +951,41 @@ function addAttributes(element, text, style) {
 
 	return element.text(function (add) {
 		for (let name in text) {
-			let value = text[name];
+			let value = text[name];		// one attribute
 
-			add.tspan(getScopeSymbol(value.scope)).font(attr_style.scope).newLine();
-
+			add.tspan(getScopeSymbol(value.scope)).font(attr_style.scope).newLine();	// add scope symbol
 			add.tspan(' ');
 
-			add.tspan(value.name + ' ').font(attr_style.name);
+			add.tspan(value.name).font(attr_style.name);	// add attibute's name
+			add.tspan(' ');
 
 			if (value.type !== 'any') {
+				// if attribute has type
 				add.tspan(' : ');
-				add.tspan(value.type + ' ').font(attr_style.type);
+				add.tspan(capitalizeFirst(value.type) + ' ').font(attr_style.type);		// add attribute's type
 			}
 
-
 			if (value.value) {
+				// if attribute has value
 
-				add.tspan('= ').font(attr_style.symbol);
+				add.tspan('=').font(attr_style.symbol);		// add '='
+				add.tspan(' ');
 
 				if (value.type === 'string') {
-
+					// if value's type is string, apply specific stypes
 					add.tspan('"' + value.value + '"').font(merge(attr_style.value.common, attr_style.value.string));
 
 				} else if (value.type === 'int') {
-
+					// the same kind of action for integers
 					add.tspan(value.value).font(merge(attr_style.value.common, attr_style.value.integer));
 
 				} else {
-
+					// any other value
 					add.tspan(value.value).font(attr_style.value.common);
 				}
 			}
 		}
-	}).font(attr_style.common);
+	}).font(attr_style.common);		// apply general font style
 }
 
 function addMethods(element, text, style) {
@@ -969,50 +993,51 @@ function addMethods(element, text, style) {
 	// 		bar: int,
 	// 		foo: string = "hello")
 	let method_style = style.method;
-	let attr_style = style.attribute;
+	let attr_style = style.attribute;	// needed to apply to passed parameters
 
 	return element.text(function (add) {
 		for (let name in text) {
 			let value = text[name];
 
-			add.tspan(getScopeSymbol(value.scope)).font(method_style.scope).newLine();
-
+			add.tspan(getScopeSymbol(value.scope)).font(method_style.scope).newLine();	// add scope symbol
 			add.tspan(' ');
 
 			if (value.type !== 'any') {
-				add.tspan(value.type + ' ').font(method_style.type);
+				add.tspan(capitalizeFirst(value.type)).font(method_style.type);	// add returned value type if needed
+				add.tspan(' ');
 			}
+			add.tspan(value.name).font(method_style.name);	// add method name
+			add.tspan(' ');
 
-			add.tspan(value.name + ' ').font(method_style.name);
+			if (value.args) {	// if method has arguments
 
-			if (value.args) {
-
-				add.tspan('(').font(method_style.name);
+				add.tspan('(').font(method_style.name);		// open the bracket
 
 				for (let arg in value.args) {
+					// get one argument
 
 					let argument = value.args[arg];
 					let arg_style = attr_style;
 
-					add.tspan(argument.name)
+					add.tspan(argument.name)	// add argument name
 						.font(arg_style.name)
-						.font(method_style.passed)
-						.newLine()
-						.dx(20);
+						.font(method_style.passed)	// override the style with special style for passed argument
+						.newLine()	// each passed argument should start with newline
+						.dx(20);	// ident
 					
 					if (argument.type !== 'any') {
 						add.tspan(' : ').font(method_style.passed);
-						add.tspan(argument.type)
+						add.tspan(capitalizeFirst(argument.type))	// add argument data type
 							.font(arg_style.type)
 							.font(method_style.passed);
 					}
 
 					if (argument.value !== '') {
-						add.tspan(' ').font(method_style.passed);;
-						add.tspan('=').font(arg_style.symbol).font(method_style.passed);
+						add.tspan(' ').font(method_style.passed);
+						add.tspan('=').font(arg_style.symbol).font(method_style.passed);	// add '='
 						add.tspan(' ').font(method_style.passed);;
 
-						if (argument.type === 'string') {
+						if (argument.type === 'string') {	// add default value just like we do it in attributes
 
 							add.tspan('"' + argument.value + '"')
 								.font(merge(arg_style.value.common, arg_style.value.string))
@@ -1034,7 +1059,7 @@ function addMethods(element, text, style) {
 					}
 
 					if (arg < value.args.length - 1) {
-						add.tspan(', ')
+						add.tspan(',')
 							.font(arg_style.common)
 							.font(method_style.passed);
 					} else {
@@ -1043,6 +1068,7 @@ function addMethods(element, text, style) {
 				}
 
 			} else {
+				// otherwise just close the method with ()
 				add.tspan('()').font(method_style.name);
 			}
 		}
@@ -1073,6 +1099,10 @@ function getScopeSymbol(scope) {
 	}
 }
 
+function capitalizeFirst(word) {
+	console.log(word);
+	return word.slice(0, 1).toUpperCase() + word.slice(1).toLowerCase();
+}
 
 /***/ }),
 /* 8 */
@@ -1130,7 +1160,7 @@ let class_theme = {
 				'font-style': 'italic'
 			},
 			symbol: {
-
+				
 			},
 			value: {
 				common: {
@@ -1156,7 +1186,7 @@ let class_theme = {
 				'color': 'blue'
 			},
 			name: {
-				'color': '#00002A',
+				'color': '#0000A2',
 			},
 			passed: {
 				// 'color': 'dimgrey'

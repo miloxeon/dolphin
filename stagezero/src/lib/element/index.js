@@ -41,9 +41,18 @@ export function getSocketCoords(number) {
 	}
 }
 
-export function setRichText(text) {
+export function setRichText() {
 	let id = getRawId(this.attr('id'));
 	let style = this.style;
+	let text = this.richText;
+
+	if (!text) {
+		throw new EvalError("Couldn't apply rich text: no rich text set");
+	}
+
+	if (!style) {
+		throw new EvalError("Couldn't apply rich text: no theme set");
+	}
 
 	let name_label = this.text(text.name)
 		.font(style.text_style.common)
@@ -112,21 +121,28 @@ export function drawBorder() {
 	return this;
 }
 
+export function applyTheme(theme) {
+	this.style = convertElementStyle(theme || {});
+	this.setRichText();
+	this.drawBorder();
+	return this;
+}
+
 export function applyBlueprint(blueprint) {
 	var checked_blueprint = fillBlueprint(blueprint);
 	let id = checked_blueprint.id;
-	let style = convertElementStyle(checked_blueprint.style || {});
-	let text = checked_blueprint.text;
-
+	let style = checked_blueprint.style;
+	
+	this.richText = checked_blueprint.text;
 	this.blueprint = checked_blueprint;
-	this.style = style;
+
+	this.applyTheme(style);
+	this.move(checked_blueprint.position.x, checked_blueprint.position.y);
 	this.attr({
 		'id': getId('ClassDiagramNode', id),
 		'cursor': 'pointer'
 	});
-	this.setRichText(text);
-	this.drawBorder();
-	this.move(checked_blueprint.position.x, checked_blueprint.position.y);
+	
 	return this;
 }
 
