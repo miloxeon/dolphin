@@ -1,6 +1,6 @@
 'use strict';
 
-import {applyBlueprint, getSocketCoords, setRichText, drawBorder} from './lib/element';
+import {applyBlueprint, getSocketCoords, setRichText, drawBorder, applyTheme} from './lib/element';
 
 var draw = SVG('diagram');
 
@@ -97,10 +97,12 @@ SVG.ClassDiagramNode = SVG.invent({
 	extend: {
 		setRichText: setRichText,
 		drawBorder: drawBorder,
+		applyTheme: applyTheme,
 		applyBlueprint: applyBlueprint,
 		socket: getSocketCoords,
 		blueprint: null,
-		style: null
+		style: null,
+		richText: null
 	},
 	construct: {
 		classDiagramNode: function (blueprint) {
@@ -119,8 +121,6 @@ SVG.Connection = SVG.invent({
 			return this;
 		},
 		applyBlueprint: function (blueprint) {
-
-
 			return this;
 		},
 		blueprint: null
@@ -138,22 +138,27 @@ SVG.ClassDiagram = SVG.invent({
 	inherit: SVG.G,
 	extend: {
 		applyTheme: function (theme) {
-
+			console.log(this.children());
+			return this;
 		}
 	},
 	construct: {
 		classDiagram: function (theme) {
 			return this.put(new SVG.ClassDiagram)
-			.applyTheme(theme)
-			.addClass('class_diagram');
+				.applyTheme(theme);
+				// .addClass('class_diagram');
 		}
 	}
 });
 
+let diagram = draw.classDiagram().move(0, 0);
+
 element_blueprints.forEach(function (blueprint) {
-	draw.classDiagramNode(blueprint);
+	diagram.classDiagramNode(blueprint);
 });
 
 connection_blueprints.forEach(function (blueprint) {
-	draw.connection(blueprint);
+	diagram.connection(blueprint);
 });
+
+console.log(diagram.children());

@@ -48,7 +48,7 @@ export let class_theme = {
 				'font-style': 'italic'
 			},
 			symbol: {
-
+				
 			},
 			value: {
 				common: {
@@ -74,7 +74,7 @@ export let class_theme = {
 				'color': 'blue'
 			},
 			name: {
-				'color': '#00002A',
+				'color': '#0000A2',
 			},
 			passed: {
 				// 'color': 'dimgrey'
