@@ -2,7 +2,7 @@
 
 import {getRawId} from './tools';
 
-export function dragController(node, model) {
+export function moveController(node, model) {
 	let new_model = Object.assign({}, model);
 	let node_id = getRawId(node.attr('id'));
 	let new_coords = {

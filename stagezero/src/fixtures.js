@@ -1,5 +1,7 @@
 'use strict';
 
+// mock elements and connections
+
 let element_blueprints = [
 	{
 		id: 1,
@@ -46,6 +48,10 @@ let element_blueprints = [
 							name: 'age',
 							type: 'int',
 							value: '100'
+						},
+						{
+							name: 'wife',
+							type: 'any'
 						},
 						{
 							name: 'wife',

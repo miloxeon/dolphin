@@ -1,5 +1,7 @@
 'use strict';
 
+// Get pathes for line drawing
+
 export function arcTo(from, to) {
 	var x_between_from_and_to = from.x + Math.abs(from.x - to.x) / 2;
 

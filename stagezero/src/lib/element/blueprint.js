@@ -6,6 +6,7 @@ let merge = require('deepmerge');
 import {default_blueprint, default_attribute, default_method, default_argument} from './model';
 
 export function fillBlueprint(blueprint) {
+	// get blueprint and fill it's empty fields with default values
 	if (checkBlueprint(blueprint)) {
 		let passed_blueprint = blueprint;
 		let desired_blueprint = merge(default_blueprint, blueprint);
@@ -35,6 +36,7 @@ export function fillBlueprint(blueprint) {
 }
 
 function checkBlueprint(blueprint) {
+	// check the required parameters
 	if (blueprint.position && blueprint.id) {
 		return true;
 	} else {

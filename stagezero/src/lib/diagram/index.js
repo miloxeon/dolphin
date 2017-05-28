@@ -1,25 +1,13 @@
 'use strict';
 
+// methods of ClassDiagram class
+
 import {getId, getRawId} from '../tools';
-import {convertTheme} from './style';
 
 export function setId(id) {
 	return this.attr({
 		'id': getId('ClassDiagram', id)
 	});
-}
-
-export function applyTheme(theme) {
-	if (!theme) {
-		console.warn('Missing diagram theme, loading default');
-	}
-
-	this.theme = convertTheme(theme);
-
-	this.children().forEach(function (child) {
-		child.refreshTheme();
-	});
-	return this;
 }
 
 export function clear() {

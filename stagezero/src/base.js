@@ -1,19 +1,33 @@
 'use strict';
 
+// entry point
+
 import {model as mock_model} from './fixtures';
-import {class_theme} from './lib/theme/model';
 import {draw} from './lib/classes';
-import {dragController} from './lib/controllers';
+import {moveController} from './lib/controllers';
 
 let diagram = draw.classDiagram();
 let model = Object.assign({}, mock_model);
 
 function bindControllers(diagram) {
 	diagram.children().forEach(function (child) {
+		
+		child.on('dragmove', function () {
+			redrawConnections();
+		})
+
 		child.on('mouseup', function () {
-			model = dragController(this, model);
+			model = moveController(this, model);
 			rebuild();
 		});
+	});
+}
+
+function redrawConnections() {
+	diagram.children().forEach(function (child) {
+		if (child.getType() === 'Connection') {
+			child.redraw();
+		}
 	});
 }
 
@@ -27,10 +41,4 @@ function rebuild() {
 	build(model);
 }
 
-//build(model);
-
-diagram.rect(100, 100).move(100, 100).addClass('dolphin rect');
-diagram.text('This is my text').move(200, 200).addClass('dolphin text');
-diagram.line(100, 100, 500, 500).addClass('dolphin line');
-
-console.log(diagram.children());
+build(model);

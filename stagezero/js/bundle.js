@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "/static/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 18);
+/******/ 	return __webpack_require__(__webpack_require__.s = 14);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -72,14 +72,12 @@
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["b"] = getHash;
-/* harmony export (immutable) */ __webpack_exports__["d"] = getId;
+/* harmony export (immutable) */ __webpack_exports__["c"] = getId;
 /* harmony export (immutable) */ __webpack_exports__["a"] = getRawId;
-/* unused harmony export xor */
-/* unused harmony export isComplexObject */
-/* unused harmony export isObject */
-/* unused harmony export isNested */
-/* harmony export (immutable) */ __webpack_exports__["c"] = convertObject;
+/* unused harmony export getTypeById */
 
+
+// handy functions used everywhere
 
 function getHash(object_type) {
 	return Math.floor(Math.random() * new Date()).toString();
@@ -93,65 +91,68 @@ function getRawId(element_id) {
 	return parseInt(element_id.split('_')[1]);
 }
 
-function xor(arr) {
-	var all_false = Array(arr.length).fill('0').join('');
-	var all_true = Array(arr.length).fill('1').join('');
-	var arr_str = arr.map(function (elem) {
-		return elem ? '1' : '0';
-	}).join('');
-
-	return (arr_str !== all_false && arr_str !== all_true);
-}
-
-function isComplexObject(object) {
-	var obj_str = [];
-	for (let name in object) {
-		if (isObject(object[name])) {
-			obj_str.push(true);
-		} else {
-			obj_str.push(false);
-		}
-	}
-	return xor(obj_str);
-}
-
-function isObject(variable) {
-	return (variable !== null) && (typeof variable === 'object');
-}
-
-function isNested(object) {
-	for (let name in object) {
-		if (!isObject(object[name])) {
-			return false;
-		}
-	}
-	return true;
-}
-
-function convertObject(object, converter) {
-	let new_object = {};
-
-	if (!isComplexObject(object)) {
-
-		if (isNested(object)) {
-			for (let name in object) {
-				new_object[name] = convertObject(object[name], converter);
-			}
-		} else {
-			new_object = converter(object);
-		}
-
-		return new_object;
-		
-	} else {
-		console.log(object);
-		throw new TypeError("Couldn't convert a complex object");
-	}
+function getTypeById(element_type) {
+	return parseInt(element_id.split('_')[0]);	
 }
 
 
 /***/ }),
 /* 1 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__fixtures__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__lib_classes__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__lib_controllers__ = __webpack_require__(8);
+
+
+// entry point
+
+
+
+
+
+let diagram = __WEBPACK_IMPORTED_MODULE_1__lib_classes__["a" /* draw */].classDiagram();
+let model = Object.assign({}, __WEBPACK_IMPORTED_MODULE_0__fixtures__["a" /* model */]);
+
+function bindControllers(diagram) {
+	diagram.children().forEach(function (child) {
+		
+		child.on('dragmove', function () {
+			redrawConnections();
+		})
+
+		child.on('mouseup', function () {
+			model = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__lib_controllers__["a" /* moveController */])(this, model);
+			rebuild();
+		});
+	});
+}
+
+function redrawConnections() {
+	diagram.children().forEach(function (child) {
+		if (child.getType() === 'Connection') {
+			child.redraw();
+		}
+	});
+}
+
+function build(model) {
+	diagram.fromModel(model);
+	bindControllers(diagram);
+}
+
+function rebuild() {
+	diagram.clear();
+	build(model);
+}
+
+build(model);
+
+
+/***/ }),
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (root, factory) {
@@ -245,364 +246,14 @@ return deepmerge
 
 
 /***/ }),
-/* 2 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return class_theme; });
-
-
-let class_theme = {
-	rect_style: {
-		'padding': '11 11',
-		'border-color': 'black',
-		'border-width': '2',
-		'border-radius': '4',
-		'background-color': 'white'
-	},
-	text_style: {
-		common: {
-			// styles applied to overall text
-			'color': 'black',
-			'font-family': 'Verdana, sans-serif',
-			'font-size': '12',
-			'line-height': '1.25',
-			'font-style': 'normal',
-			'font-weight': 'normal',
-			'text-align': 'left'
-		},
-		node: {
-			common: {
-			},
-			name: {
-				'font-weight': 'bold'
-			},
-			type: {
-				// for example, <<interface>>
-				'font-style': 'italic',
-				'font-size': '9'
-			}
-		},
-		attribute: {
-			common: {
-				// styles applied to overall attributes
-			},
-			scope: {
-				// +, -, /, ~ and so on
-				'font-family': 'Courier New, monospace',
-				'color': '#B90690'
-			},
-			name: {
-
-			},
-			type: {
-				'color': 'blue',
-				'font-style': 'italic'
-			},
-			symbol: {
-				// '=' if there is default value
-			},
-			value: {
-				common: {
-					'color': 'blue'
-				},
-				string: {
-					'color': '#036A07'
-				},
-				integer: {
-
-				}
-			}
-		},
-		method: {
-			common: {
-				
-			},
-			scope: {
-				'font-family': 'Courier New, monospace',
-				'color': '#B90690'
-			},
-			type: {
-				'color': 'blue'
-			},
-			name: {
-				'color': '#0000A2',
-			},
-			passed: {
-				// these styles will override everything applied to passed agruments
-				// 'color': 'dimgrey'
-			}
-		}
-	},
-	line_style: {
-		line: {
-			'stroke': 'black',
-			'stroke-opacity': '1',
-			'stroke-linecap': 'round',
-			'stroke-linejoin': 'round',
-			'fill': 'none'
-		},
-		text: {
-			// text on top of the line
-			'color': 'black',
-			'font-family': 'Verdana, sans-serif',
-			'font-size': '12',
-			'line-height': '1.25',
-			'font-style': 'normal',
-			'font-weight': 'normal',
-			'text-align': 'left'
-		}
-	}
-};
-
-
-/***/ }),
 /* 3 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = convertStyle;
-
-
-function convertStyle(style) {
-	let decision_matrix = {
-		'padding': {
-			name: 'padding',
-			converter: function (value) {
-				let split_value = value.split(' ');
-				return {
-					w: parseInt(split_value[1]),
-					h: parseInt(split_value[0])
-				}
-			}
-		},
-		'border-color': {
-			name: 'stroke'
-		},
-		'border-width': {
-			name: 'stroke-width',
-			converter: parseInt
-		},
-		'border-radius': {
-			name: ['rx', 'ry'],
-			converter: parseInt
-		},
-		'color': {
-			name: 'fill'
-		},
-		'font-family': {
-			name: 'family'
-		},
-		'font-size': {
-			name: 'size',
-			converter: parseInt
-		},
-		'font-style': {
-			name: 'style',
-			converter: getDefaultConverter('font-style', ['normal', 'italic'])
-		},
-		'font-weight': {
-			name: 'weight',
-			converter: getDefaultConverter('font-weight', ['normal', 'bold'])
-		},
-		'text-align': {
-			name: 'anchor',
-			converter: function (value) {
-				if (value === 'left') {
-					return 'start';
-				} else if (value === 'center') {
-					return 'middle';
-				} else if (value === 'right') {
-					return 'end';
-				} else {
-					throw getValueError('text-align', value, ['left', 'center', 'right']);
-				}
-			}
-		},
-		'line-height': {
-			name: 'leading',
-			converter: parseFloat
-		},
-		'background-color': {
-			name: 'fill'
-		},
-		'stroke': {
-			name: 'stroke'
-		},
-		'stroke-opacity': {
-			name: 'stroke-opacity',
-			converter: parseFloat
-		},
-		'stroke-linecap': {
-			name: 'stroke-linecap',
-			converter: getDefaultConverter('stroke-linecap', ['butt', 'square', 'round'])
-		},
-		'stroke-linejoin': {
-			name: 'stroke-linejoin',
-			converter: getDefaultConverter('stroke-linecap', ['miter', 'bevel', 'round'])
-		},
-		'stroke-dasharray': {
-			name: 'stroke-dasharray'
-		},
-		'fill': {
-			name: 'fill'
-		}
-	};
-
-	let converted_style = {};
-
-	for (let parameter in style) {
-		if (decision_matrix[parameter]) {
-
-			let parameter_names = [].concat(decision_matrix[parameter].name);
-			let parameter_convert_function = decision_matrix[parameter].converter || function (value) { return value; }
-
-			parameter_names.forEach(function (parameter_name) {
-				converted_style[parameter_name] = parameter_convert_function(style[parameter]);
-			})
-
-		} else {
-			throw new TypeError('Wrong attribute name: ' + parameter.toString());
-		}
-	}
-
-	return converted_style;
-}
-
-function getValueError(name, value, accepted) {
-	return new RangeError(
-		'Wrong ' + 
-		name.toString() + ': ' + 
-		value.toString() + 
-		'. Must be ' + 
-		accepted.map(function (val) {
-			return '`' + val.toString() + '`';
-		}).join(' or ') + '.');
-}
-
-function getDefaultConverter(name, accepted) {
-	return function(value) {
-		let found = false;
-
-		for (let acc in accepted) {
-			if (value === accepted[acc]) {
-				found = true;
-			}
-		}
-
-		if (!found) {
-			throw getValueError(name, value, accepted);
-		} else {
-			return value;
-		}
-	}
-}
-
-let monokai = {
-	rect_style: {
-		'background-color': '#272822',
-		'border-color': 'white',
-		'border-width': '1'
-	},
-	text_style: {
-		common: {
-			'color': 'white'
-		},
-		node: {
-			name: {
-				'color': '#A6E22E',
-				'font-weight': 'bold'
-			}
-		},
-		attribute: {
-			scope: {
-				'color': '#F92672'
-			},
-			type: {
-				'color': '#66D9EF'
-			},
-			symbol: {
-				'color': '#F92672'
-			},
-			value: {
-				common: {
-					'color': '#AE81FF'
-				},
-				string: {
-					'color': '#E6DB74'
-				}
-			}
-		},
-		method: {
-			scope: {
-				'color': '#F92672'
-			},
-			type: {
-				'color': '#66D9EF',
-				'font-style': 'italic'
-			},
-			name: {
-				'color': '#A6E22E',
-			}
-		}
-	}
-};
-
-
-/***/ }),
-/* 4 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__fixtures__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__lib_theme_model__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__lib_classes__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__lib_controllers__ = __webpack_require__(10);
-
-
-
-
-
-
-
-let diagram = __WEBPACK_IMPORTED_MODULE_2__lib_classes__["a" /* draw */].classDiagram();
-let model = Object.assign({}, __WEBPACK_IMPORTED_MODULE_0__fixtures__["a" /* model */]);
-
-function bindControllers(diagram) {
-	diagram.children().forEach(function (child) {
-		child.on('mouseup', function () {
-			model = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__lib_controllers__["a" /* dragController */])(this, model);
-			rebuild();
-		});
-	});
-}
-
-function build(model) {
-	diagram.fromModel(model);
-	bindControllers(diagram);
-}
-
-function rebuild() {
-	diagram.clear();
-	build(model);
-}
-
-//build(model);
-
-diagram.rect(100, 100).move(100, 100).addClass('dolphin rect');
-diagram.text('This is my text').move(200, 200).addClass('dolphin text');
-diagram.line(100, 100, 500, 500).addClass('dolphin line');
-
-console.log(diagram.children());
-
-/***/ }),
-/* 5 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return model; });
 
+
+// mock elements and connections
 
 let element_blueprints = [
 	{
@@ -654,6 +305,10 @@ let element_blueprints = [
 						{
 							name: 'wife',
 							type: 'any'
+						},
+						{
+							name: 'wife',
+							type: 'any'
 						}
 					]					
 				}
@@ -698,25 +353,51 @@ let model = {
 
 
 /***/ }),
-/* 6 */
+/* 4 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return draw; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__tools__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__element__ = __webpack_require__(14);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__connection__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__diagram__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__diagram__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__element__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__connection__ = __webpack_require__(6);
 
 
-
-
-
-
-
+// classes declarations
 
 
 let draw = SVG('diagram');
+
+
+// diagram
+
+
+SVG.ClassDiagram = SVG.invent({
+	create: 'g',
+	inherit: SVG.G,
+	extend: {
+		setId: __WEBPACK_IMPORTED_MODULE_1__diagram__["a" /* setId */],
+		clear: __WEBPACK_IMPORTED_MODULE_1__diagram__["b" /* clear */],
+		fromModel: __WEBPACK_IMPORTED_MODULE_1__diagram__["c" /* fromModel */],
+		getNodeById: __WEBPACK_IMPORTED_MODULE_1__diagram__["d" /* getNodeById */],
+		getType: function () {
+			return 'Diagram';
+		}
+	},
+	construct: {
+		classDiagram: function (theme) {
+			return this.put(new SVG.ClassDiagram)
+				.addClass('dolphin_diagram dolphin_diagram-class')
+				.setId(__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__tools__["b" /* getHash */])())
+				.move(0, 0);
+		}
+	}
+});
+
+
+// element
+
 
 SVG.ClassDiagramNode = SVG.invent({
 	create: 'g',
@@ -728,17 +409,21 @@ SVG.ClassDiagramNode = SVG.invent({
 		y2: function () {
 			return this.y() + this.getRect().height();
 		},
-		setRichText: __WEBPACK_IMPORTED_MODULE_1__element__["a" /* setRichText */],
-		drawBorder: __WEBPACK_IMPORTED_MODULE_1__element__["b" /* drawBorder */],
-		refreshTheme: __WEBPACK_IMPORTED_MODULE_1__element__["c" /* refreshTheme */],
-		applyBlueprint: __WEBPACK_IMPORTED_MODULE_1__element__["d" /* applyBlueprint */],
-		socket: __WEBPACK_IMPORTED_MODULE_1__element__["e" /* getSocketCoords */],
-		setId: __WEBPACK_IMPORTED_MODULE_1__element__["f" /* setId */],
-		getRect: __WEBPACK_IMPORTED_MODULE_1__element__["g" /* getRect */],
-		getNameLabel: __WEBPACK_IMPORTED_MODULE_1__element__["h" /* getNameLabel */],
-		getTypeLabel: __WEBPACK_IMPORTED_MODULE_1__element__["i" /* getTypeLabel */],
-		getAttributesLabel: __WEBPACK_IMPORTED_MODULE_1__element__["j" /* getAttributesLabel */],
-		getMethodsLabel: __WEBPACK_IMPORTED_MODULE_1__element__["k" /* getMethodsLabel */],
+		setRichText: __WEBPACK_IMPORTED_MODULE_2__element__["a" /* setRichText */],
+		drawBorder: __WEBPACK_IMPORTED_MODULE_2__element__["b" /* drawBorder */],
+		reset: __WEBPACK_IMPORTED_MODULE_2__element__["c" /* reset */],
+		applyBlueprint: __WEBPACK_IMPORTED_MODULE_2__element__["d" /* applyBlueprint */],
+		socket: __WEBPACK_IMPORTED_MODULE_2__element__["e" /* getSocketCoords */],
+		setId: __WEBPACK_IMPORTED_MODULE_2__element__["f" /* setId */],
+		getRect: __WEBPACK_IMPORTED_MODULE_2__element__["g" /* getRect */],
+		getNameLabel: __WEBPACK_IMPORTED_MODULE_2__element__["h" /* getNameLabel */],
+		getTypeLabel: __WEBPACK_IMPORTED_MODULE_2__element__["i" /* getTypeLabel */],
+		getAttributesLabel: __WEBPACK_IMPORTED_MODULE_2__element__["j" /* getAttributesLabel */],
+		getMethodsLabel: __WEBPACK_IMPORTED_MODULE_2__element__["k" /* getMethodsLabel */],
+		clear: __WEBPACK_IMPORTED_MODULE_2__element__["l" /* clear */],
+		getType: function () {
+			return 'DiagramNode';
+		},
 		blueprint: null,
 		style: null,
 		richText: null
@@ -747,39 +432,30 @@ SVG.ClassDiagramNode = SVG.invent({
 		classDiagramNode: function (blueprint) {
 			return this.put(new SVG.ClassDiagramNode)
 				.applyBlueprint(blueprint)
+				.addClass('dolphin_node')
 				.draggy();
 		}
 	}
 });
 
-SVG.ClassDiagram = SVG.invent({
+
+// connection
+
+
+SVG.Connection = SVG.invent({
 	create: 'g',
 	inherit: SVG.G,
 	extend: {
-		applyTheme: __WEBPACK_IMPORTED_MODULE_3__diagram__["a" /* applyTheme */],
-		setId: __WEBPACK_IMPORTED_MODULE_3__diagram__["b" /* setId */],
-		clear: __WEBPACK_IMPORTED_MODULE_3__diagram__["c" /* clear */],
-		fromModel: __WEBPACK_IMPORTED_MODULE_3__diagram__["d" /* fromModel */],
-		getNodeById: __WEBPACK_IMPORTED_MODULE_3__diagram__["e" /* getNodeById */]
-	},
-	construct: {
-		classDiagram: function (theme) {
-			return this.put(new SVG.ClassDiagram)
-				.applyTheme(theme)
-				.addClass('class_diagram')
-				.setId(__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__tools__["b" /* getHash */])())
-				.move(0, 0);
-		}
-	}
-});
-
-SVG.Connection = SVG.invent({
-	create: 'path',
-	inherit: SVG.Path,
-	extend: {
-		applyBlueprint: __WEBPACK_IMPORTED_MODULE_2__connection__["a" /* applyBlueprint */],
-		connectSockets: __WEBPACK_IMPORTED_MODULE_2__connection__["b" /* connectSockets */],
-		connectDots: __WEBPACK_IMPORTED_MODULE_2__connection__["c" /* connectDots */],
+		applyBlueprint: __WEBPACK_IMPORTED_MODULE_3__connection__["a" /* applyBlueprint */],
+		connectSockets: __WEBPACK_IMPORTED_MODULE_3__connection__["b" /* connectSockets */],
+		connectDots: __WEBPACK_IMPORTED_MODULE_3__connection__["c" /* connectDots */],
+		redraw: __WEBPACK_IMPORTED_MODULE_3__connection__["d" /* redraw */],
+		clear: __WEBPACK_IMPORTED_MODULE_3__connection__["e" /* clear */],
+		setId: __WEBPACK_IMPORTED_MODULE_3__connection__["f" /* setId */],
+		setRichText: __WEBPACK_IMPORTED_MODULE_3__connection__["g" /* setRichText */],
+		getType: function () {
+			return 'Connection';
+		},
 		blueprint: null
 	},
 	construct: {
@@ -792,48 +468,113 @@ SVG.Connection = SVG.invent({
 
 
 /***/ }),
-/* 7 */
+/* 5 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+	'padding-w': '11',	// element padding
+	'padding-h': '11'
+});
+
+
+/***/ }),
+/* 6 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = applyBlueprint;
+/* harmony export (immutable) */ __webpack_exports__["f"] = setId;
+/* harmony export (immutable) */ __webpack_exports__["e"] = clear;
+/* harmony export (immutable) */ __webpack_exports__["d"] = redraw;
 /* harmony export (immutable) */ __webpack_exports__["b"] = connectSockets;
+/* harmony export (immutable) */ __webpack_exports__["g"] = setRichText;
 /* harmony export (immutable) */ __webpack_exports__["c"] = connectDots;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lines__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__style__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lines__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__tools__ = __webpack_require__(0);
 
+
+// methods of Connection class
 
 
 
 
 function applyBlueprint (blueprint) {
-	let from = this.parent().getNodeById(blueprint.from).socket(5);
-	let to = this.parent().getNodeById(blueprint.to).socket(4);
+	this.blueprint = blueprint;
 
-	this.connectDots(from, to);
-
+	this.setId(__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__tools__["b" /* getHash */])());
+	// check blueprint here
+	this.setRichText('Hello');
+	this.redraw();
 	return this;
 }
 
+function setId(id) {
+	return this.attr('id', __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__tools__["c" /* getId */])('Connection', id));
+}
+
+function clear() {
+	// remove everything: the line, labels, arrows...
+	this.children().forEach(function (child) {
+		child.remove();
+	});
+	return this;
+}
+
+function redraw() {
+	this.clear();
+
+	let from = this.parent().getNodeById(this.blueprint.from).socket(5);
+	let to = this.parent().getNodeById(this.blueprint.to).socket(4);
+
+	this.connectDots(from, to);
+}
+
 function connectSockets () {
+	// connect two elements' sockets (abstraction over connection by two coordinates)
+	return this;
+}
+
+function setRichText(line_text) {
+	// set connection's rich text: labels, roles, indicators...
+	this.richText = line_text;
+	this.redraw();
 	return this;
 }
 
 function connectDots (a, b) {
-	this.parent().path(__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__lines__["a" /* cubicTo */])(a, b)).fill('none').stroke('black');
+	// connect two coordinates with a line
+	let id = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__tools__["a" /* getRawId */])(this.id());
+	let richText = this.richText;
+
+	let path = this.path(__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__lines__["a" /* cubicTo */])(a, b))
+		.attr('id', __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__tools__["c" /* getId */])(id))
+		.addClass('dolphin_line');
+
+	let text = this.text(function (add) {
+		add.tspan(richText).dy(-5);
+	}).addClass('dolphin_text dolphin_line_text dolphin_line_action');
+
+	let offset = (50 - Math.round((text.bbox().w / path.length()) * 50)) + '%';
+
+	text.path(__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__lines__["a" /* cubicTo */])(a, b)).textPath().attr('startOffset', offset);
 
 	return this;
 }
 
 
 /***/ }),
-/* 8 */
+/* 7 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* unused harmony export arcTo */
 /* harmony export (immutable) */ __webpack_exports__["a"] = cubicTo;
 
+
+// Get pathes for line drawing
 
 function arcTo(from, to) {
 	var x_between_from_and_to = from.x + Math.abs(from.x - to.x) / 2;
@@ -878,42 +619,17 @@ function cubic(from, to, bias_1, bias_2) {
 
 
 /***/ }),
-/* 9 */
+/* 8 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* unused harmony export convertLineStyle */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__theme__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__theme_model__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__tools__ = __webpack_require__(0);
-
-
-
-
-
-
-let merge = __webpack_require__(1);
-
-function convertLineStyle(passed_style) {
-	let merged_style = merge(__WEBPACK_IMPORTED_MODULE_1__theme_model__["a" /* class_theme */], passed_style);
-	let converted_style = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__tools__["c" /* convertObject */])(merged_style, __WEBPACK_IMPORTED_MODULE_0__theme__["a" /* convertStyle */]);
-
-	return converted_style.line_style;
-}
-
-
-/***/ }),
-/* 10 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = dragController;
+/* harmony export (immutable) */ __webpack_exports__["a"] = moveController;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__tools__ = __webpack_require__(0);
 
 
 
 
-function dragController(node, model) {
+function moveController(node, model) {
 	let new_model = Object.assign({}, model);
 	let node_id = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__tools__["a" /* getRawId */])(node.attr('id'));
 	let new_coords = {
@@ -932,39 +648,25 @@ function dragController(node, model) {
 
 
 /***/ }),
-/* 11 */
+/* 9 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["b"] = setId;
-/* harmony export (immutable) */ __webpack_exports__["a"] = applyTheme;
-/* harmony export (immutable) */ __webpack_exports__["c"] = clear;
-/* harmony export (immutable) */ __webpack_exports__["d"] = fromModel;
-/* harmony export (immutable) */ __webpack_exports__["e"] = getNodeById;
+/* harmony export (immutable) */ __webpack_exports__["a"] = setId;
+/* harmony export (immutable) */ __webpack_exports__["b"] = clear;
+/* harmony export (immutable) */ __webpack_exports__["c"] = fromModel;
+/* harmony export (immutable) */ __webpack_exports__["d"] = getNodeById;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__tools__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__style__ = __webpack_require__(12);
 
 
+// methods of ClassDiagram class
 
 
 
 function setId(id) {
 	return this.attr({
-		'id': __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__tools__["d" /* getId */])('ClassDiagram', id)
+		'id': __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__tools__["c" /* getId */])('ClassDiagram', id)
 	});
-}
-
-function applyTheme(theme) {
-	if (!theme) {
-		console.warn('Missing diagram theme, loading default');
-	}
-
-	this.theme = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__style__["a" /* convertTheme */])(theme);
-
-	this.children().forEach(function (child) {
-		child.refreshTheme();
-	});
-	return this;
 }
 
 function clear() {
@@ -990,7 +692,7 @@ function fromModel(model) {
 function getNodeById(id) {
 	let found;
 	this.children().forEach(function (child) {
-		if (child.attr('id') === __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__tools__["d" /* getId */])('ClassDiagramNode', id)) {
+		if (child.attr('id') === __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__tools__["c" /* getId */])('ClassDiagramNode', id)) {
 			found = child;
 		}
 	})
@@ -1000,44 +702,21 @@ function getNodeById(id) {
 
 
 /***/ }),
-/* 12 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = convertTheme;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__theme__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__theme_model__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__tools__ = __webpack_require__(0);
-
-
-let merge = __webpack_require__(1);
-
-
-
-
-function convertTheme(theme) {
-	let merged_style = merge(__WEBPACK_IMPORTED_MODULE_1__theme_model__["a" /* class_theme */], theme || {});
-	let converted_style = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__tools__["c" /* convertObject */])(merged_style, __WEBPACK_IMPORTED_MODULE_0__theme__["a" /* convertStyle */]);
-	
-	return converted_style;
-}
-
-
-/***/ }),
-/* 13 */
+/* 10 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = fillBlueprint;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__model__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__model__ = __webpack_require__(12);
 
 
 // Blueprints processing functions
 
-let merge = __webpack_require__(1);
+let merge = __webpack_require__(2);
 
 
 function fillBlueprint(blueprint) {
+	// get blueprint and fill it's empty fields with default values
 	if (checkBlueprint(blueprint)) {
 		let passed_blueprint = blueprint;
 		let desired_blueprint = merge(__WEBPACK_IMPORTED_MODULE_0__model__["a" /* default_blueprint */], blueprint);
@@ -1067,6 +746,7 @@ function fillBlueprint(blueprint) {
 }
 
 function checkBlueprint(blueprint) {
+	// check the required parameters
 	if (blueprint.position && blueprint.id) {
 		return true;
 	} else {
@@ -1077,14 +757,15 @@ function checkBlueprint(blueprint) {
 
 
 /***/ }),
-/* 14 */
+/* 11 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["e"] = getSocketCoords;
+/* harmony export (immutable) */ __webpack_exports__["l"] = clear;
+/* harmony export (immutable) */ __webpack_exports__["c"] = reset;
 /* harmony export (immutable) */ __webpack_exports__["a"] = setRichText;
 /* harmony export (immutable) */ __webpack_exports__["b"] = drawBorder;
-/* harmony export (immutable) */ __webpack_exports__["c"] = refreshTheme;
 /* harmony export (immutable) */ __webpack_exports__["f"] = setId;
 /* harmony export (immutable) */ __webpack_exports__["d"] = applyBlueprint;
 /* harmony export (immutable) */ __webpack_exports__["g"] = getRect;
@@ -1092,13 +773,14 @@ function checkBlueprint(blueprint) {
 /* harmony export (immutable) */ __webpack_exports__["i"] = getTypeLabel;
 /* harmony export (immutable) */ __webpack_exports__["j"] = getAttributesLabel;
 /* harmony export (immutable) */ __webpack_exports__["k"] = getMethodsLabel;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__text__ = __webpack_require__(17);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__blueprint__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__text__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__blueprint__ = __webpack_require__(10);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__tools__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__style__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__config__ = __webpack_require__(5);
 
 
-// Everything needed to construct an element
+// methods of ClassDiagramNode element
+
 
 
 
@@ -1124,66 +806,51 @@ function getSocketCoords(number) {
 	}
 }
 
+function clear() {
+	// delete everything inside the element
+	this.children().forEach(function (child) {
+		child.remove();
+	})
+}
+
+function reset() {
+	// rebuild element
+	this.setRichText();
+	this.drawBorder();
+	return this;
+}
+
 function setRichText() {
+	// set element's rich text: node name, attribures, methods and so on
 	let id = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__tools__["a" /* getRawId */])(this.attr('id'));
-	let style = this.style;
 	let text = this.richText;
 
 	if (!text) {
 		throw new EvalError("Couldn't apply rich text: no rich text set");
 	}
 
-	if (!style) {
-		throw new EvalError("Couldn't apply rich text: no theme set");
-	}
-
-	let name_label = this.getNameLabel();
-	let type_label = this.getTypeLabel();
-	let attributes_label = this.getAttributesLabel();
-	let methods_label = this.getMethodsLabel();
-
-	if (name_label) {
-		name_label.remove();
-	}
-
-	if (type_label) {
-		type_label.remove();
-	}
-
-	if (attributes_label) {
-		attributes_label.remove();
-	}
-
-	if (methods_label) {
-		methods_label.remove();
-	}
+	this.clear();
 
 	if (text.type !== 'normal') {
-		type_label = this.text('<' + text.type + '>')
-			.font(style.text_style.common)
-			.font(style.text_style.node.common)
-			.font(style.text_style.node.type)
-			.font('anchor', 'middle')
-			.attr('id', __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__tools__["d" /* getId */])('type-label', id));
+		var type_label = this.text('<' + text.type + '>')
+			.attr('id', __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__tools__["c" /* getId */])('type-label', id))
+			.addClass('dolphin_text dolphin_node_type');
 	}
 
-	name_label = this.text(text.name)
-		.font(style.text_style.common)
-		.font(style.text_style.node.common)
-		.font(style.text_style.node.name)
-		.font('anchor', 'middle')
-		.attr('id', __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__tools__["d" /* getId */])('name-label', id));
+	var name_label = this.text(text.name)
+		.attr('id', __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__tools__["c" /* getId */])('name-label', id))
+		.addClass('dolphin_text dolphin_node_name');
 
 	if (text.attributes) {
-		attributes_label = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__text__["a" /* addAttributes */])(this, text.attributes, style.text_style)
-			.font(style.text_style.common)
-			.attr('id', __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__tools__["d" /* getId */])('attributes-label', id));
+		var attributes_label = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__text__["a" /* addAttributes */])(this, text.attributes)
+			.attr('id', __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__tools__["c" /* getId */])('attributes-label', id))
+			.addClass('dolphin_text');
 	}
 
 	if (text.methods) {
-		methods_label = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__text__["b" /* addMethods */])(this, text.methods, style.text_style)
-			.font(style.text_style.common)
-			.attr('id', __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__tools__["d" /* getId */])('methods-label', id));
+		var methods_label = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__text__["b" /* addMethods */])(this, text.methods)
+			.attr('id', __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__tools__["c" /* getId */])('methods-label', id))
+			.addClass('dolphin_text');
 	}
 
 	let offsets = computeLabelOffsets(this);
@@ -1209,46 +876,27 @@ function setRichText() {
 
 function drawBorder() {
 	let id = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__tools__["a" /* getRawId */])(this.attr('id'));
-	let style = this.style;
-
 	var rect = this.getRect();
 	var rect_size = computeRectSize(this);
 	
 	if (rect) {
-		rect.size(rect_size.w, rect_size.h)
-			.attr(style.rect_style);
+
+		rect.size(rect_size.w, rect_size.h);
+
 	} else {
 		rect = this.rect(rect_size.w, rect_size.h)
-			.attr(style.rect_style)
 			.move(0, 0)
-			.attr('id', __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__tools__["d" /* getId */])('rectangle', id));
+			.attr('id', __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__tools__["c" /* getId */])('rectangle', id))
+			.addClass('dolphin_rect');
 	}
 	rect.back();
 
 	return this;
 }
 
-function refreshTheme() {
-	if (!this.parent().theme) {
-		throw new TypeError('Diagram theme is undefined');
-	}
-
-	let theme = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__style__["a" /* convertElementStyle */])(this.parent().theme);
-
-	this.style = {
-		rect_style: theme.rect_style,
-		text_style: theme.text_style,
-		additional_style: theme.additional_style
-	}
-
-	this.setRichText();
-	this.drawBorder();
-	return this;
-}
-
 function setId(id) {
 	return this.attr({
-		'id': __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__tools__["d" /* getId */])('ClassDiagramNode', id)
+		'id': __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__tools__["c" /* getId */])('ClassDiagramNode', id)
 	});
 }
 
@@ -1257,9 +905,8 @@ function applyBlueprint(blueprint) {
 	this.setId(checked_blueprint.id);
 	this.blueprint = checked_blueprint;
 	this.richText = checked_blueprint.text;
-	this.refreshTheme();
+	this.reset();
 	this.move(checked_blueprint.position.x, checked_blueprint.position.y);
-	this.attr('cursor', 'pointer');
 	return this;
 }
 
@@ -1269,19 +916,24 @@ function computeRectSize(element) {
 	let attributes_label = element.getAttributesLabel();
 	let methods_label = element.getMethodsLabel();
 
-	let padding = element.style.additional_style.padding;
+	let padding = {
+		w: parseInt(__WEBPACK_IMPORTED_MODULE_3__config__["a" /* default */]['padding-w']),
+		h: parseInt(__WEBPACK_IMPORTED_MODULE_3__config__["a" /* default */]['padding-h'])
+	};
 
-	let actual_padding = {
-		w: Math.max(
-			padding.w,
-			element.style.rect_style.rx
-		),
+	let actual_padding = padding;
 
-		h: Math.max(
-			padding.h,
-			element.style.rect_style.ry
-		)
-	}
+	// let actual_padding = {
+	// 	w: Math.max(
+	// 		padding.w,
+	// 		element.style.rect_style.rx
+	// 	),
+
+	// 	h: Math.max(
+	// 		padding.h,
+	// 		element.style.rect_style.ry
+	// 	)
+	// }
 
 	let width = Math.max(
 		name_label ? name_label.bbox().w : 0,
@@ -1320,18 +972,24 @@ function computeLabelOffsets(element) {
 	let rect_size = computeRectSize(element);
 	let offsets = {};
 
-	let padding = element.style.additional_style.padding;
-	let actual_padding = {
-		w: Math.max(
-			padding.w,
-			element.style.rect_style.rx
-		),
+	let padding = {
+		w: parseInt(__WEBPACK_IMPORTED_MODULE_3__config__["a" /* default */]['padding-w']),
+		h: parseInt(__WEBPACK_IMPORTED_MODULE_3__config__["a" /* default */]['padding-h'])
+	};
 
-		h: Math.max(
-			padding.h,
-			element.style.rect_style.ry
-		)
-	}
+	// let actual_padding = {
+	// 	w: Math.max(
+	// 		padding.w,
+	// 		element.style.rect_style.rx
+	// 	),
+
+	// 	h: Math.max(
+	// 		padding.h,
+	// 		element.style.rect_style.ry
+	// 	)
+	// }
+
+	let actual_padding = padding;
 
 	let x_left = actual_padding.w;
 	let x_center = rect_size.w / 2;	
@@ -1416,7 +1074,7 @@ function findChildElements(parent, type) {
 
 
 /***/ }),
-/* 15 */
+/* 12 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1464,31 +1122,7 @@ let default_argument = {
 
 
 /***/ }),
-/* 16 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = convertElementStyle;
-
-
-// convert CSS-like style to SVG-like
-
-function convertElementStyle(passed_style) {
-	let converted_style = Object.assign({}, passed_style);
-
-	let additional_style = {
-		padding: Object.assign({}, converted_style.rect_style.padding)
-	}
-
-	converted_style.additional_style = additional_style;
-	// delete converted_style.rect_style.padding;
-
-	return converted_style;
-}
-
-
-/***/ }),
-/* 17 */
+/* 13 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1498,72 +1132,62 @@ function convertElementStyle(passed_style) {
 
 // element text processing
 
-var merge = __webpack_require__(1);
-
 function addAttributes(element, text, style) {
 	// + foo : int = "bar"
-	// 
-	let attr_style = style.attribute;
-
+ 
 	return element.text(function (add) {
 		for (let name in text) {
 			let value = text[name];		// one attribute
+			let addLabel = construct_addLabel(add);
 
-			add.tspan(getScopeSymbol(value.scope)).font(attr_style.scope).newLine();	// add scope symbol
-			add.tspan(' ');
-
-			add.tspan(value.name).font(attr_style.name);	// add attibute's name
-			add.tspan(' ');
+			addLabel(getScopeSymbol(value.scope), 'dolphin_node_scope', 1).newLine();	// scope
+			addLabel(value.name, 'dolphin_node_attribute', 1);	// attribute name
 
 			if (value.type !== 'any') {
 				// if attribute has type
-				add.tspan(' : ');
-				add.tspan(capitalizeFirst(value.type) + ' ').font(attr_style.type);		// add attribute's type
+				addLabel(':', 'dolphin_node_symbol', 2);
+				addLabel(capitalizeFirst(value.type), 'dolphin_node_datatype');
 			}
 
 			if (value.value) {
 				// if attribute has value
+				addLabel('=', 'dolphin_node_symbol', 2);
 
-				add.tspan('=').font(attr_style.symbol);		// add '='
-				add.tspan(' ');
+				switch (value.type) {
+					case 'string':
+						addLabel('"' + value.value + '"', 'dolphin_node_value dolphin_node_value-string');
+						break;
 
-				if (value.type === 'string') {
-					// if value's type is string, apply specific stypes
-					add.tspan('"' + value.value + '"').font(merge(attr_style.value.common, attr_style.value.string));
+					case 'int':
+						addLabel(value.value, 'dolphin_node_value dolphin_node_value-int');
+						break;
 
-				} else if (value.type === 'int') {
-					// the same kind of action for integers
-					add.tspan(value.value).font(merge(attr_style.value.common, attr_style.value.integer));
-
-				} else {
-					// any other value
-					add.tspan(value.value).font(attr_style.value.common);
+					default:
+						addLabel(value.value, 'dolphin_node_value');
+						break;
 				}
 			}
 		}
-	}).font(attr_style.common);		// apply general font style
+	}).addClass('dolphin_text');	// apply general font style
 }
 
 function addMethods(element, text, style) {
 	// - string getFoo(
 	// 		bar: int,
 	// 		foo: string = "hello")
-	let method_style = style.method;
-	let attr_style = style.attribute;	// needed to apply to passed parameters
 
 	return element.text(function (add) {
 		for (let name in text) {
 			let value = text[name];
+			let addLabel = construct_addLabel(add);
 
-			add.tspan(getScopeSymbol(value.scope)).font(method_style.scope).newLine();	// add scope symbol
-			add.tspan(' ');
+			addLabel(getScopeSymbol(value.scope), 'dolphin_node_scope', 1).newLine();	// scope
 
 			if (value.type !== 'any') {
-				add.tspan(capitalizeFirst(value.type)).font(method_style.type);	// add returned value type if needed
-				add.tspan(' ');
+				addLabel(capitalizeFirst(value.type), 'dolphin_node_datatype', 1);
 			}
-			add.tspan(value.name).font(method_style.name);	// add method name
-			add.tspan(' ');
+
+			addLabel(value.name, 'dolphin_node_method', 1);	// attribute name
 
 			if (value.args) {	// if method has arguments
 
@@ -1573,62 +1197,76 @@ function addMethods(element, text, style) {
 					// get one argument
 
 					let argument = value.args[arg];
-					let arg_style = attr_style;
 
-					add.tspan(argument.name)	// add argument name
-						.font(arg_style.name)
-						.font(method_style.passed)	// override the style with special style for passed argument
-						.newLine()	// each passed argument should start with newline
-						.dx(20);	// ident
+					addLabel(argument.name, 'dolphin_node_passed dolphin_node_attribute').newLine().dx(20);
 					
 					if (argument.type !== 'any') {
-						add.tspan(' : ').font(method_style.passed);
-						add.tspan(capitalizeFirst(argument.type))	// add argument data type
-							.font(arg_style.type)
-							.font(method_style.passed);
+						addLabel(':', 'dolphin_node_passed dolphin_node_symbol', 2);
+						addLabel(capitalizeFirst(argument.type), 'dolphin_node_passed dolphin_node_datatype');
 					}
 
 					if (argument.value !== '') {
-						add.tspan(' ').font(method_style.passed);
-						add.tspan('=').font(arg_style.symbol).font(method_style.passed);	// add '='
-						add.tspan(' ').font(method_style.passed);;
 
-						if (argument.type === 'string') {	// add default value just like we do it in attributes
+						addLabel('=', 'dolphin_node_passed dolphin_node_symbol', 2);
 
-							add.tspan('"' + argument.value + '"')
-								.font(merge(arg_style.value.common, arg_style.value.string))
-								.font(method_style.passed);
+						switch (argument.type) {
+							case 'string':
+								addLabel('"' + argument.value + '"', 'dolphin_node_passed dolphin_node_value dolphin_node_value-string');
+								break;
 
-						} else if (argument.type === 'int') {
+							case 'int':
+								addLabel(argument.value, 'dolphin_node_passed dolphin_node_value dolphin_node_value-int');
+								break;
 
-							add.tspan(argument.value)
-								.font(merge(arg_style.value.common, arg_style.value.integer))
-								.font(method_style.passed);
-
-						} else {
-
-							add.tspan(argument.value)
-								.font(arg_style.value.common)
-								.font(method_style.passed);
+							default:
+								addLabel(argument.value, 'dolphin_node_passed dolphin_node_value');
+								break;
 						}
-
 					}
 
 					if (arg < value.args.length - 1) {
-						add.tspan(',')
-							.font(arg_style.common)
-							.font(method_style.passed);
+						addLabel(',', 'dolphin_node_passed');
 					} else {
-						add.tspan(')');
+						addLabel(')');
 					}
 				}
 
 			} else {
 				// otherwise just close the method with ()
-				add.tspan('()');
+				addLabel('()');
 			}
 		}
-	}).font(method_style.common);
+	}).addClass('dolphin_text');
+}
+
+function construct_addLabel(add) {
+	return function (text, classes, spacing) {
+		if (spacing) {
+			if (spacing === 1) {
+
+				let tspan = add.tspan(text)
+					.addClass(classes || '');
+				add.tspan(' ');
+
+				return tspan;
+
+			} else if (spacing === 2) {
+				
+				add.tspan(' ');
+				let tspan = add.tspan(text)
+					.addClass(classes || '');
+				add.tspan(' ');
+
+				return tspan;
+
+			} else {
+				throw new RangeError('Wrong spacing: ' + spacing);
+			}
+		} else {
+			return add.tspan(text)
+				.addClass(classes || '');
+		}
+	}
 }
 
 function getScopeSymbol(scope) {
@@ -1664,10 +1302,10 @@ function capitalizeFirst(word) {
 
 
 /***/ }),
-/* 18 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(4);
+module.exports = __webpack_require__(1);
 
 
 /***/ })

@@ -2,72 +2,62 @@
 
 // element text processing
 
-var merge = require('deepmerge');
-
 export function addAttributes(element, text, style) {
 	// + foo : int = "bar"
-	// 
-	let attr_style = style.attribute;
-
+ 
 	return element.text(function (add) {
 		for (let name in text) {
 			let value = text[name];		// one attribute
+			let addLabel = construct_addLabel(add);
 
-			add.tspan(getScopeSymbol(value.scope)).font(attr_style.scope).newLine();	// add scope symbol
-			add.tspan(' ');
-
-			add.tspan(value.name).font(attr_style.name);	// add attibute's name
-			add.tspan(' ');
+			addLabel(getScopeSymbol(value.scope), 'dolphin_node_scope', 1).newLine();	// scope
+			addLabel(value.name, 'dolphin_node_attribute', 1);	// attribute name
 
 			if (value.type !== 'any') {
 				// if attribute has type
-				add.tspan(' : ');
-				add.tspan(capitalizeFirst(value.type) + ' ').font(attr_style.type);		// add attribute's type
+				addLabel(':', 'dolphin_node_symbol', 2);
+				addLabel(capitalizeFirst(value.type), 'dolphin_node_datatype');
 			}
 
 			if (value.value) {
 				// if attribute has value
+				addLabel('=', 'dolphin_node_symbol', 2);
 
-				add.tspan('=').font(attr_style.symbol);		// add '='
-				add.tspan(' ');
+				switch (value.type) {
+					case 'string':
+						addLabel('"' + value.value + '"', 'dolphin_node_value dolphin_node_value-string');
+						break;
 
-				if (value.type === 'string') {
-					// if value's type is string, apply specific stypes
-					add.tspan('"' + value.value + '"').font(merge(attr_style.value.common, attr_style.value.string));
+					case 'int':
+						addLabel(value.value, 'dolphin_node_value dolphin_node_value-int');
+						break;
 
-				} else if (value.type === 'int') {
-					// the same kind of action for integers
-					add.tspan(value.value).font(merge(attr_style.value.common, attr_style.value.integer));
-
-				} else {
-					// any other value
-					add.tspan(value.value).font(attr_style.value.common);
+					default:
+						addLabel(value.value, 'dolphin_node_value');
+						break;
 				}
 			}
 		}
-	}).font(attr_style.common);		// apply general font style
+	}).addClass('dolphin_text');	// apply general font style
 }
 
 export function addMethods(element, text, style) {
 	// - string getFoo(
 	// 		bar: int,
 	// 		foo: string = "hello")
-	let method_style = style.method;
-	let attr_style = style.attribute;	// needed to apply to passed parameters
 
 	return element.text(function (add) {
 		for (let name in text) {
 			let value = text[name];
+			let addLabel = construct_addLabel(add);
 
-			add.tspan(getScopeSymbol(value.scope)).font(method_style.scope).newLine();	// add scope symbol
-			add.tspan(' ');
+			addLabel(getScopeSymbol(value.scope), 'dolphin_node_scope', 1).newLine();	// scope
 
 			if (value.type !== 'any') {
-				add.tspan(capitalizeFirst(value.type)).font(method_style.type);	// add returned value type if needed
-				add.tspan(' ');
+				addLabel(capitalizeFirst(value.type), 'dolphin_node_datatype', 1);
 			}
-			add.tspan(value.name).font(method_style.name);	// add method name
-			add.tspan(' ');
+
+			addLabel(value.name, 'dolphin_node_method', 1);	// attribute name
 
 			if (value.args) {	// if method has arguments
 
@@ -77,62 +67,76 @@ export function addMethods(element, text, style) {
 					// get one argument
 
 					let argument = value.args[arg];
-					let arg_style = attr_style;
 
-					add.tspan(argument.name)	// add argument name
-						.font(arg_style.name)
-						.font(method_style.passed)	// override the style with special style for passed argument
-						.newLine()	// each passed argument should start with newline
-						.dx(20);	// ident
+					addLabel(argument.name, 'dolphin_node_passed dolphin_node_attribute').newLine().dx(20);
 					
 					if (argument.type !== 'any') {
-						add.tspan(' : ').font(method_style.passed);
-						add.tspan(capitalizeFirst(argument.type))	// add argument data type
-							.font(arg_style.type)
-							.font(method_style.passed);
+						addLabel(':', 'dolphin_node_passed dolphin_node_symbol', 2);
+						addLabel(capitalizeFirst(argument.type), 'dolphin_node_passed dolphin_node_datatype');
 					}
 
 					if (argument.value !== '') {
-						add.tspan(' ').font(method_style.passed);
-						add.tspan('=').font(arg_style.symbol).font(method_style.passed);	// add '='
-						add.tspan(' ').font(method_style.passed);;
 
-						if (argument.type === 'string') {	// add default value just like we do it in attributes
+						addLabel('=', 'dolphin_node_passed dolphin_node_symbol', 2);
 
-							add.tspan('"' + argument.value + '"')
-								.font(merge(arg_style.value.common, arg_style.value.string))
-								.font(method_style.passed);
+						switch (argument.type) {
+							case 'string':
+								addLabel('"' + argument.value + '"', 'dolphin_node_passed dolphin_node_value dolphin_node_value-string');
+								break;
 
-						} else if (argument.type === 'int') {
+							case 'int':
+								addLabel(argument.value, 'dolphin_node_passed dolphin_node_value dolphin_node_value-int');
+								break;
 
-							add.tspan(argument.value)
-								.font(merge(arg_style.value.common, arg_style.value.integer))
-								.font(method_style.passed);
-
-						} else {
-
-							add.tspan(argument.value)
-								.font(arg_style.value.common)
-								.font(method_style.passed);
+							default:
+								addLabel(argument.value, 'dolphin_node_passed dolphin_node_value');
+								break;
 						}
-
 					}
 
 					if (arg < value.args.length - 1) {
-						add.tspan(',')
-							.font(arg_style.common)
-							.font(method_style.passed);
+						addLabel(',', 'dolphin_node_passed');
 					} else {
-						add.tspan(')');
+						addLabel(')');
 					}
 				}
 
 			} else {
 				// otherwise just close the method with ()
-				add.tspan('()');
+				addLabel('()');
 			}
 		}
-	}).font(method_style.common);
+	}).addClass('dolphin_text');
+}
+
+function construct_addLabel(add) {
+	return function (text, classes, spacing) {
+		if (spacing) {
+			if (spacing === 1) {
+
+				let tspan = add.tspan(text)
+					.addClass(classes || '');
+				add.tspan(' ');
+
+				return tspan;
+
+			} else if (spacing === 2) {
+				
+				add.tspan(' ');
+				let tspan = add.tspan(text)
+					.addClass(classes || '');
+				add.tspan(' ');
+
+				return tspan;
+
+			} else {
+				throw new RangeError('Wrong spacing: ' + spacing);
+			}
+		} else {
+			return add.tspan(text)
+				.addClass(classes || '');
+		}
+	}
 }
 
 function getScopeSymbol(scope) {
