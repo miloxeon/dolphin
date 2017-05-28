@@ -6,7 +6,7 @@ let element_blueprints = [
 	{
 		id: 1,
 		position: {
-			x: 200,
+			x: 300,
 			y: 100
 		},
 		text: {
