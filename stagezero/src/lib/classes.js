@@ -17,28 +17,12 @@ import {
 
 import {
 	applyTheme as applyTheme_diagram,
-	setId as setId_diagram
+	setId as setId_diagram,
+	clear,
+	fromModel
 } from './diagram';
 
 export let draw = SVG('diagram');
-
-SVG.ClassDiagram = SVG.invent({
-	create: 'g',
-	inherit: SVG.G,
-	extend: {
-		applyTheme: applyTheme_diagram,
-		setId: setId_diagram
-	},
-	construct: {
-		classDiagram: function (theme) {
-			return this.put(new SVG.ClassDiagram)
-				.applyTheme(theme)
-				.addClass('class_diagram')
-				.setId(getHash())
-				.move(0, 0);
-		}
-	}
-});
 
 SVG.ClassDiagramNode = SVG.invent({
 	create: 'g',
@@ -67,6 +51,27 @@ SVG.ClassDiagramNode = SVG.invent({
 		}
 	}
 });
+
+SVG.ClassDiagram = SVG.invent({
+	create: 'g',
+	inherit: SVG.G,
+	extend: {
+		applyTheme: applyTheme_diagram,
+		setId: setId_diagram,
+		clear: clear,
+		fromModel: fromModel
+	},
+	construct: {
+		classDiagram: function (theme) {
+			return this.put(new SVG.ClassDiagram)
+				.applyTheme(theme)
+				.addClass('class_diagram')
+				.setId(getHash())
+				.move(0, 0);
+		}
+	}
+});
+
 
 SVG.Connection = SVG.invent({
 	create: 'path',

@@ -14,3 +14,19 @@ export function applyTheme(theme) {
 	});
 	return this;
 }
+
+export function clear() {
+	this.children().forEach(function (child) {
+		child.remove();
+	});
+	return this;
+}
+
+export function fromModel(model) {
+	let self = this;
+	model.forEach(function (blueprint) {
+		self.classDiagramNode(blueprint);
+	});
+
+	return this;
+}
