@@ -2,38 +2,24 @@
 
 // Everything needed to construct an element
 
-import {convertElementStyle} from './style';
 import {addAttributes, addMethods} from './text';
 import {fillBlueprint} from './blueprint';
 import {getId, getRawId} from '../tools';
+import {convertElementStyle} from './style';
 
 export function getSocketCoords(number) {
 
-	let rect;
-
-	this.children().forEach(function (child) {
-		if (child.attr('id').split('_')[0] === 'rectangle') {
-			rect = child;
-		}
-	});
-
-	if (rect) {
-		var bbox = rect.bbox();
-	} else {
-		throw new ReferenceError("Element's rectangle is not defined, couldn't attach sockets");
-	}
-
 	switch (number) {
-		case 1: return {x: bbox.x, y: bbox.y};		// top left
-		case 2: return {x: bbox.cx, y: bbox.y};		// top center
-		case 3: return {x: bbox.x2, y: bbox.y};		// top right
+		case 1: return {x: this.x(), y: this.y()};		// top left
+		case 2: return {x: this.cx(), y: this.y()};		// top center
+		case 3: return {x: this.x2(), y: this.y()};		// top right
 
-		case 4: return {x: bbox.x, y: bbox.cy};		// middle left
-		case 5: return {x: bbox.x2, y: bbox.cy};	// middle right
+		case 4: return {x: this.x(), y: this.cy()};		// middle left
+		case 5: return {x: this.x2(), y: this.cy()};	// middle right
 
-		case 6: return {x: bbox.x, y: bbox.y2};		// bottom left
-		case 7: return {x: bbox.cx, y: bbox.y2};	// bottom center
-		case 8: return {x: bbox.x2, y: bbox.y2};	// bottom right
+		case 6: return {x: this.x(), y: this.y2()};		// bottom left
+		case 7: return {x: this.cx(), y: this.y2()};	// bottom center
+		case 8: return {x: this.x2(), y: this.y2()};	// bottom right
 
 		default:
 			throw new RangeError('Wrong socket number (must be from 1 to 8)');
@@ -144,8 +130,19 @@ export function drawBorder() {
 	return this;
 }
 
-export function applyTheme(theme) {
-	this.style = convertElementStyle(theme || {});
+export function refreshTheme() {
+	if (!this.parent().theme) {
+		throw new TypeError('Diagram theme is undefined');
+	}
+
+	let theme = convertElementStyle(this.parent().theme);
+
+	this.style = {
+		rect_style: theme.rect_style,
+		text_style: theme.text_style,
+		additional_style: theme.additional_style
+	}
+
 	this.setRichText();
 	this.drawBorder();
 	return this;
@@ -162,7 +159,7 @@ export function applyBlueprint(blueprint) {
 	this.setId(checked_blueprint.id);
 	this.blueprint = checked_blueprint;
 	this.richText = checked_blueprint.text;
-	this.applyTheme(checked_blueprint.style);
+	this.refreshTheme();
 	this.move(checked_blueprint.position.x, checked_blueprint.position.y);
 	this.attr('cursor', 'pointer');
 	return this;
@@ -175,6 +172,7 @@ function computeRectSize(element) {
 	let methods_label = element.getMethodsLabel();
 
 	let padding = element.style.additional_style.padding;
+
 	let actual_padding = {
 		w: Math.max(
 			padding.w,

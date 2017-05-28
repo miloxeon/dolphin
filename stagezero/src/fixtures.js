@@ -1,6 +1,6 @@
 'use strict';
 
-export let element_blueprints = [
+let element_blueprints = [
 	{
 		id: 1,
 		position: {
@@ -59,7 +59,7 @@ export let element_blueprints = [
 	{
 		id: 2,
 		position: {
-			x: 400,
+			x: 600,
 			y: 300
 		},
 		text: {
@@ -74,7 +74,7 @@ export let element_blueprints = [
 	}
 ];
 
-export let connection_blueprints = [
+let connection_blueprints = [
 	{
 		id: 1,
 		type: 'inheritance',
@@ -86,3 +86,8 @@ export let connection_blueprints = [
 		}
 	}
 ];
+
+export let model = {
+	elements: element_blueprints,
+	connections: connection_blueprints
+}

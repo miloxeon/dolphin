@@ -61,7 +61,6 @@ export function convertObject(object, converter) {
 		}
 
 		return new_object;
-
 		
 	} else {
 		console.log(object);

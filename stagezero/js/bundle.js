@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "/static/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 13);
+/******/ 	return __webpack_require__(__webpack_require__.s = 18);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -72,13 +72,13 @@
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["b"] = getHash;
-/* harmony export (immutable) */ __webpack_exports__["c"] = getId;
+/* harmony export (immutable) */ __webpack_exports__["d"] = getId;
 /* harmony export (immutable) */ __webpack_exports__["a"] = getRawId;
 /* unused harmony export xor */
 /* unused harmony export isComplexObject */
 /* unused harmony export isObject */
 /* unused harmony export isNested */
-/* harmony export (immutable) */ __webpack_exports__["d"] = convertObject;
+/* harmony export (immutable) */ __webpack_exports__["c"] = convertObject;
 
 
 function getHash(object_type) {
@@ -142,7 +142,6 @@ function convertObject(object, converter) {
 		}
 
 		return new_object;
-
 		
 	} else {
 		console.log(object);
@@ -250,24 +249,330 @@ return deepmerge
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return class_theme; });
+
+
+let class_theme = {
+	rect_style: {
+		'padding': '11 11',
+		'border-color': 'black',
+		'border-width': '2',
+		'border-radius': '4',
+		'background-color': 'white'
+	},
+	text_style: {
+		common: {
+			// styles applied to overall text
+			'color': 'black',
+			'font-family': 'Verdana, sans-serif',
+			'font-size': '12',
+			'line-height': '1.25',
+			'font-style': 'normal',
+			'font-weight': 'normal',
+			'text-align': 'left'
+		},
+		node: {
+			common: {
+			},
+			name: {
+				'font-weight': 'bold'
+			},
+			type: {
+				// for example, <<interface>>
+				'font-style': 'italic',
+				'font-size': '9'
+			}
+		},
+		attribute: {
+			common: {
+				// styles applied to overall attributes
+			},
+			scope: {
+				// +, -, /, ~ and so on
+				'font-family': 'Courier New, monospace',
+				'color': '#B90690'
+			},
+			name: {
+
+			},
+			type: {
+				'color': 'blue',
+				'font-style': 'italic'
+			},
+			symbol: {
+				// '=' if there is default value
+			},
+			value: {
+				common: {
+					'color': 'blue'
+				},
+				string: {
+					'color': '#036A07'
+				},
+				integer: {
+
+				}
+			}
+		},
+		method: {
+			common: {
+				
+			},
+			scope: {
+				'font-family': 'Courier New, monospace',
+				'color': '#B90690'
+			},
+			type: {
+				'color': 'blue'
+			},
+			name: {
+				'color': '#0000A2',
+			},
+			passed: {
+				// these styles will override everything applied to passed agruments
+				// 'color': 'dimgrey'
+			}
+		}
+	},
+	line_style: {
+		line: {
+			'stroke': 'black',
+			'stroke-opacity': '1',
+			'stroke-linecap': 'round',
+			'stroke-linejoin': 'round',
+			'fill': 'none'
+		},
+		text: {
+			// text on top of the line
+			'color': 'black',
+			'font-family': 'Verdana, sans-serif',
+			'font-size': '12',
+			'line-height': '1.25',
+			'font-style': 'normal',
+			'font-weight': 'normal',
+			'text-align': 'left'
+		}
+	}
+};
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = convertStyle;
+
+
+function convertStyle(style) {
+	let decision_matrix = {
+		'padding': {
+			name: 'padding',
+			converter: function (value) {
+				let split_value = value.split(' ');
+				return {
+					w: parseInt(split_value[1]),
+					h: parseInt(split_value[0])
+				}
+			}
+		},
+		'border-color': {
+			name: 'stroke'
+		},
+		'border-width': {
+			name: 'stroke-width',
+			converter: parseInt
+		},
+		'border-radius': {
+			name: ['rx', 'ry'],
+			converter: parseInt
+		},
+		'color': {
+			name: 'fill'
+		},
+		'font-family': {
+			name: 'family'
+		},
+		'font-size': {
+			name: 'size',
+			converter: parseInt
+		},
+		'font-style': {
+			name: 'style',
+			converter: getDefaultConverter('font-style', ['normal', 'italic'])
+		},
+		'font-weight': {
+			name: 'weight',
+			converter: getDefaultConverter('font-weight', ['normal', 'bold'])
+		},
+		'text-align': {
+			name: 'anchor',
+			converter: function (value) {
+				if (value === 'left') {
+					return 'start';
+				} else if (value === 'center') {
+					return 'middle';
+				} else if (value === 'right') {
+					return 'end';
+				} else {
+					throw getValueError('text-align', value, ['left', 'center', 'right']);
+				}
+			}
+		},
+		'line-height': {
+			name: 'leading',
+			converter: parseFloat
+		},
+		'background-color': {
+			name: 'fill'
+		},
+		'stroke': {
+			name: 'stroke'
+		},
+		'stroke-opacity': {
+			name: 'stroke-opacity',
+			converter: parseFloat
+		},
+		'stroke-linecap': {
+			name: 'stroke-linecap',
+			converter: getDefaultConverter('stroke-linecap', ['butt', 'square', 'round'])
+		},
+		'stroke-linejoin': {
+			name: 'stroke-linejoin',
+			converter: getDefaultConverter('stroke-linecap', ['miter', 'bevel', 'round'])
+		},
+		'stroke-dasharray': {
+			name: 'stroke-dasharray'
+		},
+		'fill': {
+			name: 'fill'
+		}
+	};
+
+	let converted_style = {};
+
+	for (let parameter in style) {
+		if (decision_matrix[parameter]) {
+
+			let parameter_names = [].concat(decision_matrix[parameter].name);
+			let parameter_convert_function = decision_matrix[parameter].converter || function (value) { return value; }
+
+			parameter_names.forEach(function (parameter_name) {
+				converted_style[parameter_name] = parameter_convert_function(style[parameter]);
+			})
+
+		} else {
+			throw new TypeError('Wrong attribute name: ' + parameter.toString());
+		}
+	}
+
+	return converted_style;
+}
+
+function getValueError(name, value, accepted) {
+	return new RangeError(
+		'Wrong ' + 
+		name.toString() + ': ' + 
+		value.toString() + 
+		'. Must be ' + 
+		accepted.map(function (val) {
+			return '`' + val.toString() + '`';
+		}).join(' or ') + '.');
+}
+
+function getDefaultConverter(name, accepted) {
+	return function(value) {
+		let found = false;
+
+		for (let acc in accepted) {
+			if (value === accepted[acc]) {
+				found = true;
+			}
+		}
+
+		if (!found) {
+			throw getValueError(name, value, accepted);
+		} else {
+			return value;
+		}
+	}
+}
+
+let monokai = {
+	rect_style: {
+		'background-color': '#272822',
+		'border-color': 'white',
+		'border-width': '1'
+	},
+	text_style: {
+		common: {
+			'color': 'white'
+		},
+		node: {
+			name: {
+				'color': '#A6E22E',
+				'font-weight': 'bold'
+			}
+		},
+		attribute: {
+			scope: {
+				'color': '#F92672'
+			},
+			type: {
+				'color': '#66D9EF'
+			},
+			symbol: {
+				'color': '#F92672'
+			},
+			value: {
+				common: {
+					'color': '#AE81FF'
+				},
+				string: {
+					'color': '#E6DB74'
+				}
+			}
+		},
+		method: {
+			scope: {
+				'color': '#F92672'
+			},
+			type: {
+				'color': '#66D9EF',
+				'font-style': 'italic'
+			},
+			name: {
+				'color': '#A6E22E',
+			}
+		}
+	}
+};
+
+
+/***/ }),
+/* 4 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__fixtures__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__lib_classes__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__lib_controllers__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__fixtures__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__lib_theme_model__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__lib_classes__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__lib_controllers__ = __webpack_require__(10);
 
 
 
 
 
 
-let diagram = __WEBPACK_IMPORTED_MODULE_1__lib_classes__["a" /* draw */].classDiagram();
 
-let model = __WEBPACK_IMPORTED_MODULE_0__fixtures__["a" /* element_blueprints */];
+let diagram = __WEBPACK_IMPORTED_MODULE_2__lib_classes__["a" /* draw */].classDiagram();
+let model = Object.assign({}, __WEBPACK_IMPORTED_MODULE_0__fixtures__["a" /* model */]);
 
 function bindControllers(diagram) {
 	diagram.children().forEach(function (child) {
 		child.on('mouseup', function () {
-			model = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__lib_controllers__["a" /* dragController */])(this, model);
+			model = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__lib_controllers__["a" /* dragController */])(this, model);
 			rebuild();
 		});
 	});
@@ -283,21 +588,20 @@ function rebuild() {
 	build(model);
 }
 
-build(model);
+//build(model);
 
-// connection_blueprints.forEach(function (blueprint) {
-// 	diagram.connection(blueprint);
-// });
-// 
+diagram.rect(100, 100).move(100, 100).addClass('dolphin rect');
+diagram.text('This is my text').move(200, 200).addClass('dolphin text');
+diagram.line(100, 100, 500, 500).addClass('dolphin line');
 
+console.log(diagram.children());
 
 /***/ }),
-/* 3 */
+/* 5 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return element_blueprints; });
-/* unused harmony export connection_blueprints */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return model; });
 
 
 let element_blueprints = [
@@ -359,7 +663,7 @@ let element_blueprints = [
 	{
 		id: 2,
 		position: {
-			x: 400,
+			x: 600,
 			y: 300
 		},
 		text: {
@@ -387,16 +691,24 @@ let connection_blueprints = [
 	}
 ];
 
+let model = {
+	elements: element_blueprints,
+	connections: connection_blueprints
+}
+
 
 /***/ }),
-/* 4 */
+/* 6 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return draw; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__tools__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__element__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__diagram__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__element__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__connection__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__diagram__ = __webpack_require__(11);
+
+
 
 
 
@@ -410,9 +722,15 @@ SVG.ClassDiagramNode = SVG.invent({
 	create: 'g',
 	inherit: SVG.G,
 	extend: {
+		x2: function() {
+			return this.x() + this.getRect().width();
+		},
+		y2: function () {
+			return this.y() + this.getRect().height();
+		},
 		setRichText: __WEBPACK_IMPORTED_MODULE_1__element__["a" /* setRichText */],
 		drawBorder: __WEBPACK_IMPORTED_MODULE_1__element__["b" /* drawBorder */],
-		applyTheme: __WEBPACK_IMPORTED_MODULE_1__element__["c" /* applyTheme */],
+		refreshTheme: __WEBPACK_IMPORTED_MODULE_1__element__["c" /* refreshTheme */],
 		applyBlueprint: __WEBPACK_IMPORTED_MODULE_1__element__["d" /* applyBlueprint */],
 		socket: __WEBPACK_IMPORTED_MODULE_1__element__["e" /* getSocketCoords */],
 		setId: __WEBPACK_IMPORTED_MODULE_1__element__["f" /* setId */],
@@ -438,10 +756,11 @@ SVG.ClassDiagram = SVG.invent({
 	create: 'g',
 	inherit: SVG.G,
 	extend: {
-		applyTheme: __WEBPACK_IMPORTED_MODULE_2__diagram__["a" /* applyTheme */],
-		setId: __WEBPACK_IMPORTED_MODULE_2__diagram__["b" /* setId */],
-		clear: __WEBPACK_IMPORTED_MODULE_2__diagram__["c" /* clear */],
-		fromModel: __WEBPACK_IMPORTED_MODULE_2__diagram__["d" /* fromModel */]
+		applyTheme: __WEBPACK_IMPORTED_MODULE_3__diagram__["a" /* applyTheme */],
+		setId: __WEBPACK_IMPORTED_MODULE_3__diagram__["b" /* setId */],
+		clear: __WEBPACK_IMPORTED_MODULE_3__diagram__["c" /* clear */],
+		fromModel: __WEBPACK_IMPORTED_MODULE_3__diagram__["d" /* fromModel */],
+		getNodeById: __WEBPACK_IMPORTED_MODULE_3__diagram__["e" /* getNodeById */]
 	},
 	construct: {
 		classDiagram: function (theme) {
@@ -454,17 +773,13 @@ SVG.ClassDiagram = SVG.invent({
 	}
 });
 
-
 SVG.Connection = SVG.invent({
 	create: 'path',
 	inherit: SVG.Path,
 	extend: {
-		connect: function (blueprint) {
-			return this;
-		},
-		applyBlueprint: function (blueprint) {
-			return this;
-		},
+		applyBlueprint: __WEBPACK_IMPORTED_MODULE_2__connection__["a" /* applyBlueprint */],
+		connectSockets: __WEBPACK_IMPORTED_MODULE_2__connection__["b" /* connectSockets */],
+		connectDots: __WEBPACK_IMPORTED_MODULE_2__connection__["c" /* connectDots */],
 		blueprint: null
 	},
 	construct: {
@@ -477,7 +792,118 @@ SVG.Connection = SVG.invent({
 
 
 /***/ }),
-/* 5 */
+/* 7 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = applyBlueprint;
+/* harmony export (immutable) */ __webpack_exports__["b"] = connectSockets;
+/* harmony export (immutable) */ __webpack_exports__["c"] = connectDots;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lines__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__style__ = __webpack_require__(9);
+
+
+
+
+
+function applyBlueprint (blueprint) {
+	let from = this.parent().getNodeById(blueprint.from).socket(5);
+	let to = this.parent().getNodeById(blueprint.to).socket(4);
+
+	this.connectDots(from, to);
+
+	return this;
+}
+
+function connectSockets () {
+	return this;
+}
+
+function connectDots (a, b) {
+	this.parent().path(__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__lines__["a" /* cubicTo */])(a, b)).fill('none').stroke('black');
+
+	return this;
+}
+
+
+/***/ }),
+/* 8 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* unused harmony export arcTo */
+/* harmony export (immutable) */ __webpack_exports__["a"] = cubicTo;
+
+
+function arcTo(from, to) {
+	var x_between_from_and_to = from.x + Math.abs(from.x - to.x) / 2;
+
+	var bias = {
+		x: from.x,
+		y: to.y
+	}
+
+	return cubic(from, to, bias, bias);
+}
+
+function cubicTo(from, to) {
+	var x_between_from_and_to = from.x + Math.abs(from.x - to.x) / 2;
+
+	var bias_1 = {
+		x: x_between_from_and_to,
+		y: from.y
+	}
+
+	var bias_2 = {
+		x: x_between_from_and_to,
+		y: to.y
+	}
+
+	return cubic(from, to, bias_1, bias_2);
+}
+
+function cubic(from, to, bias_1, bias_2) {
+	return 'M ' + 
+		from.x.toString() + ' ' + 
+		from.y.toString() + ' ' + 
+		'C ' +
+		bias_1.x.toString() + ' ' + 
+		bias_1.y.toString() + ' ' +
+		bias_2.x.toString() + ' ' + 
+		bias_2.y.toString() + 
+		' ' + 
+		to.x.toString() + ' ' + 
+		to.y.toString();
+}
+
+
+/***/ }),
+/* 9 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* unused harmony export convertLineStyle */
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__theme__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__theme_model__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__tools__ = __webpack_require__(0);
+
+
+
+
+
+
+let merge = __webpack_require__(1);
+
+function convertLineStyle(passed_style) {
+	let merged_style = merge(__WEBPACK_IMPORTED_MODULE_1__theme_model__["a" /* class_theme */], passed_style);
+	let converted_style = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__tools__["c" /* convertObject */])(merged_style, __WEBPACK_IMPORTED_MODULE_0__theme__["a" /* convertStyle */]);
+
+	return converted_style.line_style;
+}
+
+
+/***/ }),
+/* 10 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -488,14 +914,14 @@ SVG.Connection = SVG.invent({
 
 
 function dragController(node, model) {
-	let new_model = [].concat(model);
+	let new_model = Object.assign({}, model);
 	let node_id = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__tools__["a" /* getRawId */])(node.attr('id'));
 	let new_coords = {
 		x: node.x(),
 		y: node.y()
 	}
 	
-	new_model.forEach(function (elem) {
+	new_model.elements.forEach(function (elem) {
 		if (elem.id === node_id) {
 			elem.position = new_coords;
 		}
@@ -506,7 +932,7 @@ function dragController(node, model) {
 
 
 /***/ }),
-/* 6 */
+/* 11 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -514,20 +940,29 @@ function dragController(node, model) {
 /* harmony export (immutable) */ __webpack_exports__["a"] = applyTheme;
 /* harmony export (immutable) */ __webpack_exports__["c"] = clear;
 /* harmony export (immutable) */ __webpack_exports__["d"] = fromModel;
+/* harmony export (immutable) */ __webpack_exports__["e"] = getNodeById;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__tools__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__style__ = __webpack_require__(12);
+
 
 
 
 
 function setId(id) {
 	return this.attr({
-		'id': __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__tools__["c" /* getId */])('ClassDiagram', id)
+		'id': __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__tools__["d" /* getId */])('ClassDiagram', id)
 	});
 }
 
 function applyTheme(theme) {
+	if (!theme) {
+		console.warn('Missing diagram theme, loading default');
+	}
+
+	this.theme = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__style__["a" /* convertTheme */])(theme);
+
 	this.children().forEach(function (child) {
-		child.applyTheme(theme);
+		child.refreshTheme();
 	});
 	return this;
 }
@@ -541,21 +976,60 @@ function clear() {
 
 function fromModel(model) {
 	let self = this;
-	model.forEach(function (blueprint) {
+	model.elements.forEach(function (blueprint) {
 		self.classDiagramNode(blueprint);
 	});
+
+	model.connections.forEach(function (blueprint) {
+		self.connection(blueprint);
+	})
 
 	return this;
 }
 
+function getNodeById(id) {
+	let found;
+	this.children().forEach(function (child) {
+		if (child.attr('id') === __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__tools__["d" /* getId */])('ClassDiagramNode', id)) {
+			found = child;
+		}
+	})
+
+	return found;
+}
+
 
 /***/ }),
-/* 7 */
+/* 12 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = convertTheme;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__theme__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__theme_model__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__tools__ = __webpack_require__(0);
+
+
+let merge = __webpack_require__(1);
+
+
+
+
+function convertTheme(theme) {
+	let merged_style = merge(__WEBPACK_IMPORTED_MODULE_1__theme_model__["a" /* class_theme */], theme || {});
+	let converted_style = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__tools__["c" /* convertObject */])(merged_style, __WEBPACK_IMPORTED_MODULE_0__theme__["a" /* convertStyle */]);
+	
+	return converted_style;
+}
+
+
+/***/ }),
+/* 13 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = fillBlueprint;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__model__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__model__ = __webpack_require__(15);
 
 
 // Blueprints processing functions
@@ -603,14 +1077,14 @@ function checkBlueprint(blueprint) {
 
 
 /***/ }),
-/* 8 */
+/* 14 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["e"] = getSocketCoords;
 /* harmony export (immutable) */ __webpack_exports__["a"] = setRichText;
 /* harmony export (immutable) */ __webpack_exports__["b"] = drawBorder;
-/* harmony export (immutable) */ __webpack_exports__["c"] = applyTheme;
+/* harmony export (immutable) */ __webpack_exports__["c"] = refreshTheme;
 /* harmony export (immutable) */ __webpack_exports__["f"] = setId;
 /* harmony export (immutable) */ __webpack_exports__["d"] = applyBlueprint;
 /* harmony export (immutable) */ __webpack_exports__["g"] = getRect;
@@ -618,10 +1092,10 @@ function checkBlueprint(blueprint) {
 /* harmony export (immutable) */ __webpack_exports__["i"] = getTypeLabel;
 /* harmony export (immutable) */ __webpack_exports__["j"] = getAttributesLabel;
 /* harmony export (immutable) */ __webpack_exports__["k"] = getMethodsLabel;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__style__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__text__ = __webpack_require__(11);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__blueprint__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__tools__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__text__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__blueprint__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__tools__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__style__ = __webpack_require__(16);
 
 
 // Everything needed to construct an element
@@ -633,31 +1107,17 @@ function checkBlueprint(blueprint) {
 
 function getSocketCoords(number) {
 
-	let rect;
-
-	this.children().forEach(function (child) {
-		if (child.attr('id').split('_')[0] === 'rectangle') {
-			rect = child;
-		}
-	});
-
-	if (rect) {
-		var bbox = rect.bbox();
-	} else {
-		throw new ReferenceError("Element's rectangle is not defined, couldn't attach sockets");
-	}
-
 	switch (number) {
-		case 1: return {x: bbox.x, y: bbox.y};		// top left
-		case 2: return {x: bbox.cx, y: bbox.y};		// top center
-		case 3: return {x: bbox.x2, y: bbox.y};		// top right
+		case 1: return {x: this.x(), y: this.y()};		// top left
+		case 2: return {x: this.cx(), y: this.y()};		// top center
+		case 3: return {x: this.x2(), y: this.y()};		// top right
 
-		case 4: return {x: bbox.x, y: bbox.cy};		// middle left
-		case 5: return {x: bbox.x2, y: bbox.cy};	// middle right
+		case 4: return {x: this.x(), y: this.cy()};		// middle left
+		case 5: return {x: this.x2(), y: this.cy()};	// middle right
 
-		case 6: return {x: bbox.x, y: bbox.y2};		// bottom left
-		case 7: return {x: bbox.cx, y: bbox.y2};	// bottom center
-		case 8: return {x: bbox.x2, y: bbox.y2};	// bottom right
+		case 6: return {x: this.x(), y: this.y2()};		// bottom left
+		case 7: return {x: this.cx(), y: this.y2()};	// bottom center
+		case 8: return {x: this.x2(), y: this.y2()};	// bottom right
 
 		default:
 			throw new RangeError('Wrong socket number (must be from 1 to 8)');
@@ -665,7 +1125,7 @@ function getSocketCoords(number) {
 }
 
 function setRichText() {
-	let id = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["a" /* getRawId */])(this.attr('id'));
+	let id = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__tools__["a" /* getRawId */])(this.attr('id'));
 	let style = this.style;
 	let text = this.richText;
 
@@ -704,7 +1164,7 @@ function setRichText() {
 			.font(style.text_style.node.common)
 			.font(style.text_style.node.type)
 			.font('anchor', 'middle')
-			.attr('id', __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["c" /* getId */])('type-label', id));
+			.attr('id', __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__tools__["d" /* getId */])('type-label', id));
 	}
 
 	name_label = this.text(text.name)
@@ -712,18 +1172,18 @@ function setRichText() {
 		.font(style.text_style.node.common)
 		.font(style.text_style.node.name)
 		.font('anchor', 'middle')
-		.attr('id', __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["c" /* getId */])('name-label', id));
+		.attr('id', __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__tools__["d" /* getId */])('name-label', id));
 
 	if (text.attributes) {
-		attributes_label = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__text__["a" /* addAttributes */])(this, text.attributes, style.text_style)
+		attributes_label = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__text__["a" /* addAttributes */])(this, text.attributes, style.text_style)
 			.font(style.text_style.common)
-			.attr('id', __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["c" /* getId */])('attributes-label', id));
+			.attr('id', __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__tools__["d" /* getId */])('attributes-label', id));
 	}
 
 	if (text.methods) {
-		methods_label = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__text__["b" /* addMethods */])(this, text.methods, style.text_style)
+		methods_label = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__text__["b" /* addMethods */])(this, text.methods, style.text_style)
 			.font(style.text_style.common)
-			.attr('id', __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["c" /* getId */])('methods-label', id));
+			.attr('id', __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__tools__["d" /* getId */])('methods-label', id));
 	}
 
 	let offsets = computeLabelOffsets(this);
@@ -748,7 +1208,7 @@ function setRichText() {
 }
 
 function drawBorder() {
-	let id = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["a" /* getRawId */])(this.attr('id'));
+	let id = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__tools__["a" /* getRawId */])(this.attr('id'));
 	let style = this.style;
 
 	var rect = this.getRect();
@@ -761,15 +1221,26 @@ function drawBorder() {
 		rect = this.rect(rect_size.w, rect_size.h)
 			.attr(style.rect_style)
 			.move(0, 0)
-			.attr('id', __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["c" /* getId */])('rectangle', id));
+			.attr('id', __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__tools__["d" /* getId */])('rectangle', id));
 	}
 	rect.back();
 
 	return this;
 }
 
-function applyTheme(theme) {
-	this.style = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__style__["a" /* convertElementStyle */])(theme || {});
+function refreshTheme() {
+	if (!this.parent().theme) {
+		throw new TypeError('Diagram theme is undefined');
+	}
+
+	let theme = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__style__["a" /* convertElementStyle */])(this.parent().theme);
+
+	this.style = {
+		rect_style: theme.rect_style,
+		text_style: theme.text_style,
+		additional_style: theme.additional_style
+	}
+
 	this.setRichText();
 	this.drawBorder();
 	return this;
@@ -777,16 +1248,16 @@ function applyTheme(theme) {
 
 function setId(id) {
 	return this.attr({
-		'id': __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["c" /* getId */])('ClassDiagramNode', id)
+		'id': __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__tools__["d" /* getId */])('ClassDiagramNode', id)
 	});
 }
 
 function applyBlueprint(blueprint) {
-	var checked_blueprint = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__blueprint__["a" /* fillBlueprint */])(blueprint);
+	var checked_blueprint = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__blueprint__["a" /* fillBlueprint */])(blueprint);
 	this.setId(checked_blueprint.id);
 	this.blueprint = checked_blueprint;
 	this.richText = checked_blueprint.text;
-	this.applyTheme(checked_blueprint.style);
+	this.refreshTheme();
 	this.move(checked_blueprint.position.x, checked_blueprint.position.y);
 	this.attr('cursor', 'pointer');
 	return this;
@@ -799,6 +1270,7 @@ function computeRectSize(element) {
 	let methods_label = element.getMethodsLabel();
 
 	let padding = element.style.additional_style.padding;
+
 	let actual_padding = {
 		w: Math.max(
 			padding.w,
@@ -944,7 +1416,7 @@ function findChildElements(parent, type) {
 
 
 /***/ }),
-/* 9 */
+/* 15 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -992,156 +1464,31 @@ let default_argument = {
 
 
 /***/ }),
-/* 10 */
+/* 16 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = convertElementStyle;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__theme_model__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__tools__ = __webpack_require__(0);
 
 
 // convert CSS-like style to SVG-like
 
-let merge = __webpack_require__(1);
-
-
-
 function convertElementStyle(passed_style) {
-	let merged_style = merge(__WEBPACK_IMPORTED_MODULE_0__theme_model__["a" /* class_theme */], passed_style);
-	let converted_style = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__tools__["d" /* convertObject */])(merged_style, convertStyle);
+	let converted_style = Object.assign({}, passed_style);
 
 	let additional_style = {
 		padding: Object.assign({}, converted_style.rect_style.padding)
 	}
 
-	delete converted_style.rect_style.padding;
-
-	let element_style = {
-		rect_style: converted_style.rect_style,
-		text_style: converted_style.text_style,
-		additional_style: additional_style
-	}
-
-	return element_style;
-}
-
-function getValueError(name, value, accepted) {
-	return new RangeError(
-		'Wrong ' + 
-		name.toString() + ': ' + 
-		value.toString() + 
-		'. Must be ' + 
-		accepted.map(function (val) {
-			return '`' + val.toString() + '`';
-		}).join(' or ') + '.');
-}
-
-function getDefaultConverter(name, accepted) {
-	return function(value) {
-		let found = false;
-
-		for (let acc in accepted) {
-			if (value === accepted[acc]) {
-				found = true;
-			}
-		}
-
-		if (!found) {
-			throw getValueError(name, value, accepted);
-		} else {
-			return value;
-		}
-	}
-}
-
-function convertStyle(style) {
-	let decision_matrix = {
-		'padding': {
-			name: 'padding',
-			converter: function (value) {
-				let split_value = value.split(' ');
-				return {
-					w: parseInt(split_value[1]),
-					h: parseInt(split_value[0])
-				}
-			}
-		},
-		'border-color': {
-			name: 'stroke'
-		},
-		'border-width': {
-			name: 'stroke-width',
-			converter: parseInt
-		},
-		'border-radius': {
-			name: ['rx', 'ry'],
-			converter: parseInt
-		},
-		'color': {
-			name: 'fill'
-		},
-		'font-family': {
-			name: 'family'
-		},
-		'font-size': {
-			name: 'size',
-			converter: parseInt
-		},
-		'font-style': {
-			name: 'style',
-			converter: getDefaultConverter('font-style', ['normal', 'italic'])
-		},
-		'font-weight': {
-			name: 'weight',
-			converter: getDefaultConverter('font-weight', ['normal', 'bold'])
-		},
-		'text-align': {
-			name: 'anchor',
-			converter: function (value) {
-				if (value === 'left') {
-					return 'start';
-				} else if (value === 'center') {
-					return 'middle';
-				} else if (value === 'right') {
-					return 'end';
-				} else {
-					throw getValueError('text-align', value, ['left', 'center', 'right']);
-				}
-			}
-		},
-		'line-height': {
-			name: 'leading',
-			converter: parseFloat
-		},
-		'background-color': {
-			name: 'fill'
-		}
-	};
-
-	let converted_style = {};
-
-	for (let parameter in style) {
-		if (decision_matrix[parameter]) {
-
-			let parameter_names = [].concat(decision_matrix[parameter].name);
-			let parameter_convert_function = decision_matrix[parameter].converter || function (value) { return value; }
-
-			parameter_names.forEach(function (parameter_name) {
-				converted_style[parameter_name] = parameter_convert_function(style[parameter]);
-			})
-
-		} else {
-			throw new TypeError('Wrong attribute name: ' + parameter.toString());
-		}
-	}
+	converted_style.additional_style = additional_style;
+	// delete converted_style.rect_style.padding;
 
 	return converted_style;
 }
 
 
 /***/ }),
-/* 11 */
+/* 17 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1317,106 +1664,10 @@ function capitalizeFirst(word) {
 
 
 /***/ }),
-/* 12 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return class_theme; });
-
-
-let class_theme = {
-	rect_style: {
-		'padding': '11 11',
-		'border-color': 'black',
-		'border-width': '2',
-		'border-radius': '4',
-		'background-color': 'white'
-	},
-	text_style: {
-		common: {
-			// styles applied to overall text
-			'color': 'black',
-			'font-family': 'Verdana, sans-serif',
-			'font-size': '12',
-			'line-height': '1.25',
-			'font-style': 'normal',
-			'font-weight': 'normal',
-			'text-align': 'left'
-		},
-		node: {
-			common: {
-			},
-			name: {
-				'font-weight': 'bold'
-			},
-			type: {
-				// for example, <<interface>>
-				'font-style': 'italic',
-				'font-size': '9'
-			}
-		},
-		attribute: {
-			common: {
-				// styles applied to overall attributes
-			},
-			scope: {
-				// +, -, /, ~ and so on
-				'font-family': 'Courier New, monospace',
-				'color': '#B90690'
-			},
-			name: {
-
-			},
-			type: {
-				'color': 'blue',
-				'font-style': 'italic'
-			},
-			symbol: {
-				// '=' if there is default value
-			},
-			value: {
-				common: {
-					'color': 'blue'
-				},
-				string: {
-					'color': '#036A07'
-				},
-				integer: {
-
-				}
-			}
-		},
-		method: {
-			common: {
-				
-			},
-			scope: {
-				'font-family': 'Courier New, monospace',
-				'color': '#B90690'
-			},
-			type: {
-				'color': 'blue'
-			},
-			name: {
-				'color': '#0000A2',
-			},
-			passed: {
-				// these styles will override everything applied to passed agruments
-				// 'color': 'dimgrey'
-			}
-		}
-	},
-	line_style: {
-		
-	}
-};
-
-
-/***/ }),
-/* 13 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(2);
+module.exports = __webpack_require__(4);
 
 
 /***/ })
