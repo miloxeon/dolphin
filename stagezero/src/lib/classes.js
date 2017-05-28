@@ -1,35 +1,57 @@
 'use strict';
 
+// classes declarations
+
 import {getHash} from './tools';
+export let draw = SVG('diagram');
+
+
+// diagram
+import {
+	setId as setId_diagram,
+	clear,
+	fromModel,
+	getNodeById,
+} from './diagram';
+
+SVG.ClassDiagram = SVG.invent({
+	create: 'g',
+	inherit: SVG.G,
+	extend: {
+		setId: setId_diagram,
+		clear: clear,
+		fromModel: fromModel,
+		getNodeById: getNodeById,
+		getType: function () {
+			return 'Diagram';
+		}
+	},
+	construct: {
+		classDiagram: function (theme) {
+			return this.put(new SVG.ClassDiagram)
+				.addClass('dolphin_diagram dolphin_diagram-class')
+				.setId(getHash())
+				.move(0, 0);
+		}
+	}
+});
+
+
+// element
 import {
 	applyBlueprint,
 	getSocketCoords,
 	setRichText,
 	drawBorder,
-	refreshTheme,
+	reset,
 	setId as setId_element,
 	getRect,
 	getNameLabel,
 	getTypeLabel,
 	getAttributesLabel,
-	getMethodsLabel
+	getMethodsLabel,
+	clear as clear_element
 } from './element';
-
-import {
-	applyBlueprint as applyBlueprint_connection,
-	connectSockets,
-	connectDots
-} from './connection';
-
-import {
-	applyTheme,
-	setId as setId_diagram,
-	clear,
-	fromModel,
-	getNodeById
-} from './diagram';
-
-export let draw = SVG('diagram');
 
 SVG.ClassDiagramNode = SVG.invent({
 	create: 'g',
@@ -43,7 +65,7 @@ SVG.ClassDiagramNode = SVG.invent({
 		},
 		setRichText: setRichText,
 		drawBorder: drawBorder,
-		refreshTheme: refreshTheme,
+		reset: reset,
 		applyBlueprint: applyBlueprint,
 		socket: getSocketCoords,
 		setId: setId_element,
@@ -52,6 +74,10 @@ SVG.ClassDiagramNode = SVG.invent({
 		getTypeLabel: getTypeLabel,
 		getAttributesLabel: getAttributesLabel,
 		getMethodsLabel: getMethodsLabel,
+		clear: clear_element,
+		getType: function () {
+			return 'DiagramNode';
+		},
 		blueprint: null,
 		style: null,
 		richText: null
@@ -60,39 +86,38 @@ SVG.ClassDiagramNode = SVG.invent({
 		classDiagramNode: function (blueprint) {
 			return this.put(new SVG.ClassDiagramNode)
 				.applyBlueprint(blueprint)
+				.addClass('dolphin_node')
 				.draggy();
 		}
 	}
 });
 
-SVG.ClassDiagram = SVG.invent({
-	create: 'g',
-	inherit: SVG.G,
-	extend: {
-		applyTheme: applyTheme,
-		setId: setId_diagram,
-		clear: clear,
-		fromModel: fromModel,
-		getNodeById: getNodeById
-	},
-	construct: {
-		classDiagram: function (theme) {
-			return this.put(new SVG.ClassDiagram)
-				.applyTheme(theme)
-				.addClass('class_diagram')
-				.setId(getHash())
-				.move(0, 0);
-		}
-	}
-});
+
+// connection
+import {
+	applyBlueprint as applyBlueprint_connection,
+	connectSockets,
+	connectDots,
+	redraw,
+	clear as clear_connection,
+	setRichText as setRichText_connection,
+	setId as setId_connection
+} from './connection';
 
 SVG.Connection = SVG.invent({
-	create: 'path',
-	inherit: SVG.Path,
+	create: 'g',
+	inherit: SVG.G,
 	extend: {
 		applyBlueprint: applyBlueprint_connection,
 		connectSockets: connectSockets,
 		connectDots: connectDots,
+		redraw: redraw,
+		clear: clear_connection,
+		setId: setId_connection,
+		setRichText: setRichText_connection,
+		getType: function () {
+			return 'Connection';
+		},
 		blueprint: null
 	},
 	construct: {
