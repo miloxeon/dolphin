@@ -7,7 +7,12 @@ import {
 	setRichText,
 	drawBorder,
 	applyTheme as applyTheme_element,
-	setId as setId_element
+	setId as setId_element,
+	getRect,
+	getNameLabel,
+	getTypeLabel,
+	getAttributesLabel,
+	getMethodsLabel
 } from './element';
 
 import {
@@ -45,6 +50,11 @@ SVG.ClassDiagramNode = SVG.invent({
 		applyBlueprint: applyBlueprint,
 		socket: getSocketCoords,
 		setId: setId_element,
+		getRect: getRect,
+		getNameLabel: getNameLabel,
+		getTypeLabel: getTypeLabel,
+		getAttributesLabel: getAttributesLabel,
+		getMethodsLabel: getMethodsLabel,
 		blueprint: null,
 		style: null,
 		richText: null

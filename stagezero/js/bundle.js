@@ -256,7 +256,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 let diagram = __WEBPACK_IMPORTED_MODULE_1__lib_classes__["a" /* draw */].classDiagram();
 
 __WEBPACK_IMPORTED_MODULE_0__fixtures__["a" /* element_blueprints */].forEach(function (blueprint) {
-	console.log(diagram.classDiagramNode(blueprint));
+	diagram.classDiagramNode(blueprint);
 });
 
 // connection_blueprints.forEach(function (blueprint) {
@@ -408,6 +408,11 @@ SVG.ClassDiagramNode = SVG.invent({
 		applyBlueprint: __WEBPACK_IMPORTED_MODULE_1__element__["d" /* applyBlueprint */],
 		socket: __WEBPACK_IMPORTED_MODULE_1__element__["e" /* getSocketCoords */],
 		setId: __WEBPACK_IMPORTED_MODULE_1__element__["f" /* setId */],
+		getRect: __WEBPACK_IMPORTED_MODULE_1__element__["g" /* getRect */],
+		getNameLabel: __WEBPACK_IMPORTED_MODULE_1__element__["h" /* getNameLabel */],
+		getTypeLabel: __WEBPACK_IMPORTED_MODULE_1__element__["i" /* getTypeLabel */],
+		getAttributesLabel: __WEBPACK_IMPORTED_MODULE_1__element__["j" /* getAttributesLabel */],
+		getMethodsLabel: __WEBPACK_IMPORTED_MODULE_1__element__["k" /* getMethodsLabel */],
 		blueprint: null,
 		style: null,
 		richText: null
@@ -532,6 +537,11 @@ function checkBlueprint(blueprint) {
 /* harmony export (immutable) */ __webpack_exports__["c"] = applyTheme;
 /* harmony export (immutable) */ __webpack_exports__["f"] = setId;
 /* harmony export (immutable) */ __webpack_exports__["d"] = applyBlueprint;
+/* harmony export (immutable) */ __webpack_exports__["g"] = getRect;
+/* harmony export (immutable) */ __webpack_exports__["h"] = getNameLabel;
+/* harmony export (immutable) */ __webpack_exports__["i"] = getTypeLabel;
+/* harmony export (immutable) */ __webpack_exports__["j"] = getAttributesLabel;
+/* harmony export (immutable) */ __webpack_exports__["k"] = getMethodsLabel;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__style__ = __webpack_require__(9);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__text__ = __webpack_require__(10);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__blueprint__ = __webpack_require__(6);
@@ -591,10 +601,10 @@ function setRichText() {
 		throw new EvalError("Couldn't apply rich text: no theme set");
 	}
 
-	var name_label = findChildElement(this, 'name-label');
-	var type_label = findChildElement(this, 'type-label');
-	var attributes_label = findChildElement(this, 'attributes-label');
-	var methods_label = findChildElement(this, 'methods-label');
+	let name_label = this.getNameLabel();
+	let type_label = this.getTypeLabel();
+	let attributes_label = this.getAttributesLabel();
+	let methods_label = this.getMethodsLabel();
 
 	if (name_label) {
 		name_label.remove();
@@ -665,7 +675,7 @@ function drawBorder() {
 	let id = getRawId(this.attr('id'));
 	let style = this.style;
 
-	var rect = findChildElement(this, 'rectangle');
+	var rect = this.getRect();
 	var rect_size = computeRectSize(this);
 	
 	if (rect) {
@@ -711,10 +721,10 @@ function getRawId(element_id) {
 }
 
 function computeRectSize(element) {
-	let name_label = findChildElement(element, 'name-label');
-	let type_label = findChildElement(element, 'type-label');
-	let attributes_label = findChildElement(element, 'attributes-label');
-	let methods_label = findChildElement(element, 'methods-label');
+	let name_label = element.getNameLabel();
+	let type_label = element.getTypeLabel();
+	let attributes_label = element.getAttributesLabel();
+	let methods_label = element.getMethodsLabel();
 
 	let padding = element.style.additional_style.padding;
 	let actual_padding = {
@@ -758,10 +768,10 @@ function computeRectSize(element) {
 }
 
 function computeLabelOffsets(element) {
-	let name_label = findChildElement(element, 'name-label');
-	let type_label = findChildElement(element, 'type-label');
-	let attributes_label = findChildElement(element, 'attributes-label');
-	let methods_label = findChildElement(element, 'methods-label');
+	let name_label = element.getNameLabel();
+	let type_label = element.getTypeLabel();
+	let attributes_label = element.getAttributesLabel();
+	let methods_label = element.getMethodsLabel();
 	
 	let rect_size = computeRectSize(element);
 	let offsets = {};
@@ -816,6 +826,26 @@ function computeLabelOffsets(element) {
 	}
 
 	return offsets;
+}
+
+function getRect() {
+	return findChildElement(this, 'rectangle');
+}
+
+function getNameLabel() {
+	return findChildElement(this, 'name-label');
+}
+
+function getTypeLabel() {
+	return findChildElement(this, 'type-label');
+}
+
+function getAttributesLabel() {
+	return findChildElement(this, 'attributes-label');
+}
+
+function getMethodsLabel() {
+	return findChildElement(this, 'methods-label');
 }
 
 function findChildElement(parent, type) {
