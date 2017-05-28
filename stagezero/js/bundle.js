@@ -68,6 +68,86 @@
 /************************************************************************/
 /******/ ([
 /* 0 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = getHash;
+/* harmony export (immutable) */ __webpack_exports__["b"] = getId;
+/* unused harmony export xor */
+/* unused harmony export isComplexObject */
+/* unused harmony export isObject */
+/* unused harmony export isNested */
+/* harmony export (immutable) */ __webpack_exports__["c"] = convertObject;
+
+
+function getHash(object_type) {
+	return Math.floor(Math.random() * new Date()).toString();
+}
+
+function getId(object_type, hash) {
+	return object_type.toString() + '_' + hash;
+}
+
+function xor(arr) {
+	var all_false = Array(arr.length).fill('0').join('');
+	var all_true = Array(arr.length).fill('1').join('');
+	var arr_str = arr.map(function (elem) {
+		return elem ? '1' : '0';
+	}).join('');
+
+	return (arr_str !== all_false && arr_str !== all_true);
+}
+
+function isComplexObject(object) {
+	var obj_str = [];
+	for (let name in object) {
+		if (isObject(object[name])) {
+			obj_str.push(true);
+		} else {
+			obj_str.push(false);
+		}
+	}
+	return xor(obj_str);
+}
+
+function isObject(variable) {
+	return (variable !== null) && (typeof variable === 'object');
+}
+
+function isNested(object) {
+	for (let name in object) {
+		if (!isObject(object[name])) {
+			return false;
+		}
+	}
+	return true;
+}
+
+function convertObject(object, converter) {
+	let new_object = {};
+
+	if (!isComplexObject(object)) {
+
+		if (isNested(object)) {
+			for (let name in object) {
+				new_object[name] = convertObject(object[name], converter);
+			}
+		} else {
+			new_object = converter(object);
+		}
+
+		return new_object;
+
+		
+	} else {
+		console.log(object);
+		throw new TypeError("Couldn't convert a complex object");
+	}
+}
+
+
+/***/ }),
+/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (root, factory) {
@@ -161,86 +241,6 @@ return deepmerge
 
 
 /***/ }),
-/* 1 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* unused harmony export getHash */
-/* harmony export (immutable) */ __webpack_exports__["a"] = getId;
-/* unused harmony export xor */
-/* unused harmony export isComplexObject */
-/* unused harmony export isObject */
-/* unused harmony export isNested */
-/* harmony export (immutable) */ __webpack_exports__["b"] = convertObject;
-
-
-function getHash(object_type) {
-	return Math.floor(Math.random() * new Date()).toString();
-}
-
-function getId(object_type, hash) {
-	return object_type.toString() + '_' + hash;
-}
-
-function xor(arr) {
-	var all_false = Array(arr.length).fill('0').join('');
-	var all_true = Array(arr.length).fill('1').join('');
-	var arr_str = arr.map(function (elem) {
-		return elem ? '1' : '0';
-	}).join('');
-
-	return (arr_str !== all_false && arr_str !== all_true);
-}
-
-function isComplexObject(object) {
-	var obj_str = [];
-	for (let name in object) {
-		if (isObject(object[name])) {
-			obj_str.push(true);
-		} else {
-			obj_str.push(false);
-		}
-	}
-	return xor(obj_str);
-}
-
-function isObject(variable) {
-	return (variable !== null) && (typeof variable === 'object');
-}
-
-function isNested(object) {
-	for (let name in object) {
-		if (!isObject(object[name])) {
-			return false;
-		}
-	}
-	return true;
-}
-
-function convertObject(object, converter) {
-	let new_object = {};
-
-	if (!isComplexObject(object)) {
-
-		if (isNested(object)) {
-			for (let name in object) {
-				new_object[name] = convertObject(object[name], converter);
-			}
-		} else {
-			new_object = converter(object);
-		}
-
-		return new_object;
-
-		
-	} else {
-		console.log(object);
-		throw new TypeError("Couldn't convert a complex object");
-	}
-}
-
-
-/***/ }),
 /* 2 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -256,7 +256,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 let diagram = __WEBPACK_IMPORTED_MODULE_1__lib_classes__["a" /* draw */].classDiagram();
 
 __WEBPACK_IMPORTED_MODULE_0__fixtures__["a" /* element_blueprints */].forEach(function (blueprint) {
-	diagram.classDiagramNode(blueprint);
+	console.log(diagram.classDiagramNode(blueprint));
 });
 
 // connection_blueprints.forEach(function (blueprint) {
@@ -368,8 +368,11 @@ let connection_blueprints = [
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return draw; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__element__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__diagram__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__tools__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__element__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__diagram__ = __webpack_require__(5);
+
+
 
 
 
@@ -381,13 +384,15 @@ SVG.ClassDiagram = SVG.invent({
 	create: 'g',
 	inherit: SVG.G,
 	extend: {
-		applyTheme: __WEBPACK_IMPORTED_MODULE_1__diagram__["a" /* applyTheme */]
+		applyTheme: __WEBPACK_IMPORTED_MODULE_2__diagram__["a" /* applyTheme */],
+		setId: __WEBPACK_IMPORTED_MODULE_2__diagram__["b" /* setId */]
 	},
 	construct: {
 		classDiagram: function (theme) {
 			return this.put(new SVG.ClassDiagram)
 				.applyTheme(theme)
 				.addClass('class_diagram')
+				.setId(__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__tools__["a" /* getHash */])())
 				.move(0, 0);
 		}
 	}
@@ -397,11 +402,12 @@ SVG.ClassDiagramNode = SVG.invent({
 	create: 'g',
 	inherit: SVG.G,
 	extend: {
-		setRichText: __WEBPACK_IMPORTED_MODULE_0__element__["a" /* setRichText */],
-		drawBorder: __WEBPACK_IMPORTED_MODULE_0__element__["b" /* drawBorder */],
-		applyTheme: __WEBPACK_IMPORTED_MODULE_0__element__["c" /* applyTheme */],
-		applyBlueprint: __WEBPACK_IMPORTED_MODULE_0__element__["d" /* applyBlueprint */],
-		socket: __WEBPACK_IMPORTED_MODULE_0__element__["e" /* getSocketCoords */],
+		setRichText: __WEBPACK_IMPORTED_MODULE_1__element__["a" /* setRichText */],
+		drawBorder: __WEBPACK_IMPORTED_MODULE_1__element__["b" /* drawBorder */],
+		applyTheme: __WEBPACK_IMPORTED_MODULE_1__element__["c" /* applyTheme */],
+		applyBlueprint: __WEBPACK_IMPORTED_MODULE_1__element__["d" /* applyBlueprint */],
+		socket: __WEBPACK_IMPORTED_MODULE_1__element__["e" /* getSocketCoords */],
+		setId: __WEBPACK_IMPORTED_MODULE_1__element__["f" /* setId */],
 		blueprint: null,
 		style: null,
 		richText: null
@@ -441,8 +447,18 @@ SVG.Connection = SVG.invent({
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony export (immutable) */ __webpack_exports__["b"] = setId;
 /* harmony export (immutable) */ __webpack_exports__["a"] = applyTheme;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__tools__ = __webpack_require__(0);
 
+
+
+
+function setId(id) {
+	return this.attr({
+		'id': __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__tools__["b" /* getId */])('ClassDiagram', id)
+	});
+}
 
 function applyTheme(theme) {
 	this.children().forEach(function (child) {
@@ -463,7 +479,7 @@ function applyTheme(theme) {
 
 // Blueprints processing functions
 
-let merge = __webpack_require__(0);
+let merge = __webpack_require__(1);
 
 
 function fillBlueprint(blueprint) {
@@ -514,15 +530,15 @@ function checkBlueprint(blueprint) {
 /* harmony export (immutable) */ __webpack_exports__["a"] = setRichText;
 /* harmony export (immutable) */ __webpack_exports__["b"] = drawBorder;
 /* harmony export (immutable) */ __webpack_exports__["c"] = applyTheme;
+/* harmony export (immutable) */ __webpack_exports__["f"] = setId;
 /* harmony export (immutable) */ __webpack_exports__["d"] = applyBlueprint;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__style__ = __webpack_require__(9);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__text__ = __webpack_require__(10);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__blueprint__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__tools__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__tools__ = __webpack_require__(0);
 
 
 // Everything needed to construct an element
-
 
 
 
@@ -602,7 +618,7 @@ function setRichText() {
 			.font(style.text_style.node.common)
 			.font(style.text_style.node.type)
 			.font('anchor', 'middle')
-			.attr('id', __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["a" /* getId */])('type-label', id));
+			.attr('id', __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["b" /* getId */])('type-label', id));
 	}
 
 	name_label = this.text(text.name)
@@ -610,18 +626,18 @@ function setRichText() {
 		.font(style.text_style.node.common)
 		.font(style.text_style.node.name)
 		.font('anchor', 'middle')
-		.attr('id', __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["a" /* getId */])('name-label', id));
+		.attr('id', __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["b" /* getId */])('name-label', id));
 
 	if (text.attributes) {
 		attributes_label = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__text__["a" /* addAttributes */])(this, text.attributes, style.text_style)
 			.font(style.text_style.common)
-			.attr('id', __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["a" /* getId */])('attributes-label', id));
+			.attr('id', __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["b" /* getId */])('attributes-label', id));
 	}
 
 	if (text.methods) {
 		methods_label = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__text__["b" /* addMethods */])(this, text.methods, style.text_style)
 			.font(style.text_style.common)
-			.attr('id', __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["a" /* getId */])('methods-label', id));
+			.attr('id', __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["b" /* getId */])('methods-label', id));
 	}
 
 	let offsets = computeLabelOffsets(this);
@@ -659,7 +675,7 @@ function drawBorder() {
 		rect = this.rect(rect_size.w, rect_size.h)
 			.attr(style.rect_style)
 			.move(0, 0)
-			.attr('id', __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["a" /* getId */])('rectangle', id));
+			.attr('id', __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["b" /* getId */])('rectangle', id));
 	}
 
 	rect.back();
@@ -673,21 +689,20 @@ function applyTheme(theme) {
 	return this;
 }
 
+function setId(id) {
+	return this.attr({
+		'id': __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["b" /* getId */])('ClassDiagramNode', id)
+	});
+}
+
 function applyBlueprint(blueprint) {
 	var checked_blueprint = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__blueprint__["a" /* fillBlueprint */])(blueprint);
-	let id = checked_blueprint.id;
-	let style = checked_blueprint.style;
-	this.attr({
-		'id': __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__tools__["a" /* getId */])('ClassDiagramNode', id),
-		'cursor': 'pointer'
-	});
-	
-	this.richText = checked_blueprint.text;
+	this.setId(checked_blueprint.id);
 	this.blueprint = checked_blueprint;
-
-	this.applyTheme(style);
+	this.richText = checked_blueprint.text;
+	this.applyTheme(checked_blueprint.style);
 	this.move(checked_blueprint.position.x, checked_blueprint.position.y);
-
+	this.attr('cursor', 'pointer');
 	return this;
 }
 
@@ -852,18 +867,18 @@ let default_argument = {
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = convertElementStyle;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__theme_model__ = __webpack_require__(11);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__tools__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__tools__ = __webpack_require__(0);
 
 
 // convert CSS-like style to SVG-like
 
-let merge = __webpack_require__(0);
+let merge = __webpack_require__(1);
 
 
 
 function convertElementStyle(passed_style) {
 	let merged_style = merge(__WEBPACK_IMPORTED_MODULE_0__theme_model__["a" /* class_theme */], passed_style);
-	let converted_style = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__tools__["b" /* convertObject */])(merged_style, convertStyle);
+	let converted_style = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__tools__["c" /* convertObject */])(merged_style, convertStyle);
 
 	let additional_style = {
 		padding: Object.assign({}, converted_style.rect_style.padding)
@@ -1005,7 +1020,7 @@ function convertStyle(style) {
 
 // element text processing
 
-var merge = __webpack_require__(0);
+var merge = __webpack_require__(1);
 
 function addAttributes(element, text, style) {
 	// + foo : int = "bar"

@@ -6,7 +6,7 @@ import {draw} from './lib/classes';
 let diagram = draw.classDiagram();
 
 element_blueprints.forEach(function (blueprint) {
-	diagram.classDiagramNode(blueprint);
+	console.log(diagram.classDiagramNode(blueprint));
 });
 
 // connection_blueprints.forEach(function (blueprint) {
