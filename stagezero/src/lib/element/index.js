@@ -5,7 +5,7 @@
 import {convertElementStyle} from './style';
 import {addAttributes, addMethods} from './text';
 import {fillBlueprint} from './blueprint';
-import {getId} from '../tools';
+import {getId, getRawId} from '../tools';
 
 export function getSocketCoords(number) {
 
@@ -139,8 +139,8 @@ export function drawBorder() {
 			.move(0, 0)
 			.attr('id', getId('rectangle', id));
 	}
-
 	rect.back();
+
 	return this;
 }
 
@@ -166,10 +166,6 @@ export function applyBlueprint(blueprint) {
 	this.move(checked_blueprint.position.x, checked_blueprint.position.y);
 	this.attr('cursor', 'pointer');
 	return this;
-}
-
-function getRawId(element_id) {
-	return element_id.split('_')[1];
 }
 
 function computeRectSize(element) {

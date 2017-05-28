@@ -8,6 +8,10 @@ export function getId(object_type, hash) {
 	return object_type.toString() + '_' + hash;
 }
 
+export function getRawId(element_id) {
+	return parseInt(element_id.split('_')[1]);
+}
+
 export function xor(arr) {
 	var all_false = Array(arr.length).fill('0').join('');
 	var all_true = Array(arr.length).fill('1').join('');
