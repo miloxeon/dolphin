@@ -5,8 +5,7 @@
 import {convertElementStyle} from './style';
 import {addAttributes, addMethods} from './text';
 import {fillBlueprint} from './blueprint';
-import {getHash, getId} from '../tools';
-
+import {getId} from '../tools';
 
 export function getSocketCoords(number) {
 
@@ -152,21 +151,20 @@ export function applyTheme(theme) {
 	return this;
 }
 
+export function setId(id) {
+	return this.attr({
+		'id': getId('ClassDiagramNode', id)
+	});
+}
+
 export function applyBlueprint(blueprint) {
 	var checked_blueprint = fillBlueprint(blueprint);
-	let id = checked_blueprint.id;
-	let style = checked_blueprint.style;
-	this.attr({
-		'id': getId('ClassDiagramNode', id),
-		'cursor': 'pointer'
-	});
-	
-	this.richText = checked_blueprint.text;
+	this.setId(checked_blueprint.id);
 	this.blueprint = checked_blueprint;
-
-	this.applyTheme(style);
+	this.richText = checked_blueprint.text;
+	this.applyTheme(checked_blueprint.style);
 	this.move(checked_blueprint.position.x, checked_blueprint.position.y);
-
+	this.attr('cursor', 'pointer');
 	return this;
 }
 
