@@ -178,23 +178,40 @@ function computeRectSize(element) {
 	let attributes_label = findChildElement(element, 'attributes-label');
 	let methods_label = findChildElement(element, 'methods-label');
 
+	let padding = element.style.additional_style.padding;
+	let actual_padding = {
+		w: Math.max(
+			padding.w,
+			element.style.rect_style.rx
+		),
+
+		h: Math.max(
+			padding.h,
+			element.style.rect_style.ry
+		)
+	}
+
 	let width = Math.max(
 		name_label ? name_label.bbox().w : 0,
 		type_label ? type_label.bbox().w : 0,
 		attributes_label ? attributes_label.bbox().w : 0,
 		methods_label ? methods_label.bbox().w : 0
-	) + element.style.additional_style.padding.w * 2;
+	) + actual_padding.w * 2;
 
 	let height = (
 		(name_label ? name_label.bbox().h : 0) +
 		(type_label ? type_label.bbox().h : 0) +
 		(attributes_label ? attributes_label.bbox().h : 0) +
 		(methods_label ? methods_label.bbox().h : 0)
-	) + (
-		(name_label ? 1 : 0) +
-		(attributes_label ? 1 : 0) +
-		(methods_label ? 1 : 0) + 1
-	) * element.style.additional_style.padding.h;
+	) + actual_padding.h * 2;	// top and bottom padding
+
+	if (attributes_label) {	// name label is always there, type label doesn't require to be spaced
+		height += padding.h;
+	}
+
+	if (methods_label) {
+		height += padding.h
+	}
 
 	return {
 		w: width,
@@ -208,13 +225,25 @@ function computeLabelOffsets(element) {
 	let attributes_label = findChildElement(element, 'attributes-label');
 	let methods_label = findChildElement(element, 'methods-label');
 	
-	let padding = element.style.additional_style.padding;
 	let rect_size = computeRectSize(element);
 	let offsets = {};
 
-	let x_left = padding.w;
+	let padding = element.style.additional_style.padding;
+	let actual_padding = {
+		w: Math.max(
+			padding.w,
+			element.style.rect_style.rx
+		),
+
+		h: Math.max(
+			padding.h,
+			element.style.rect_style.ry
+		)
+	}
+
+	let x_left = actual_padding.w;
 	let x_center = rect_size.w / 2;	
-	let y_last = padding.h;
+	let y_last = actual_padding.h;
 
 	if (type_label) {
 		offsets.type = {
