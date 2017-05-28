@@ -6,7 +6,7 @@ import {
 	getSocketCoords,
 	setRichText,
 	drawBorder,
-	applyTheme as applyTheme_element,
+	refreshTheme,
 	setId as setId_element,
 	getRect,
 	getNameLabel,
@@ -16,10 +16,17 @@ import {
 } from './element';
 
 import {
-	applyTheme as applyTheme_diagram,
+	applyBlueprint as applyBlueprint_connection,
+	connectSockets,
+	connectDots
+} from './connection';
+
+import {
+	applyTheme,
 	setId as setId_diagram,
 	clear,
-	fromModel
+	fromModel,
+	getNodeById
 } from './diagram';
 
 export let draw = SVG('diagram');
@@ -28,9 +35,15 @@ SVG.ClassDiagramNode = SVG.invent({
 	create: 'g',
 	inherit: SVG.G,
 	extend: {
+		x2: function() {
+			return this.x() + this.getRect().width();
+		},
+		y2: function () {
+			return this.y() + this.getRect().height();
+		},
 		setRichText: setRichText,
 		drawBorder: drawBorder,
-		applyTheme: applyTheme_element,
+		refreshTheme: refreshTheme,
 		applyBlueprint: applyBlueprint,
 		socket: getSocketCoords,
 		setId: setId_element,
@@ -56,10 +69,11 @@ SVG.ClassDiagram = SVG.invent({
 	create: 'g',
 	inherit: SVG.G,
 	extend: {
-		applyTheme: applyTheme_diagram,
+		applyTheme: applyTheme,
 		setId: setId_diagram,
 		clear: clear,
-		fromModel: fromModel
+		fromModel: fromModel,
+		getNodeById: getNodeById
 	},
 	construct: {
 		classDiagram: function (theme) {
@@ -72,17 +86,13 @@ SVG.ClassDiagram = SVG.invent({
 	}
 });
 
-
 SVG.Connection = SVG.invent({
 	create: 'path',
 	inherit: SVG.Path,
 	extend: {
-		connect: function (blueprint) {
-			return this;
-		},
-		applyBlueprint: function (blueprint) {
-			return this;
-		},
+		applyBlueprint: applyBlueprint_connection,
+		connectSockets: connectSockets,
+		connectDots: connectDots,
 		blueprint: null
 	},
 	construct: {

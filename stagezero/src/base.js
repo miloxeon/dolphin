@@ -1,12 +1,12 @@
 'use strict';
 
-import {element_blueprints, connection_blueprints} from './fixtures';
+import {model as mock_model} from './fixtures';
+import {class_theme} from './lib/theme/model';
 import {draw} from './lib/classes';
 import {dragController} from './lib/controllers';
 
 let diagram = draw.classDiagram();
-
-let model = element_blueprints;
+let model = Object.assign({}, mock_model);
 
 function bindControllers(diagram) {
 	diagram.children().forEach(function (child) {
@@ -27,9 +27,10 @@ function rebuild() {
 	build(model);
 }
 
-build(model);
+//build(model);
 
-// connection_blueprints.forEach(function (blueprint) {
-// 	diagram.connection(blueprint);
-// });
-// 
+diagram.rect(100, 100).move(100, 100).addClass('dolphin rect');
+diagram.text('This is my text').move(200, 200).addClass('dolphin text');
+diagram.line(100, 100, 500, 500).addClass('dolphin line');
+
+console.log(diagram.children());

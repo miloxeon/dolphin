@@ -83,6 +83,22 @@ export let class_theme = {
 		}
 	},
 	line_style: {
-		
+		line: {
+			'stroke': 'black',
+			'stroke-opacity': '1',
+			'stroke-linecap': 'round',
+			'stroke-linejoin': 'round',
+			'fill': 'none'
+		},
+		text: {
+			// text on top of the line
+			'color': 'black',
+			'font-family': 'Verdana, sans-serif',
+			'font-size': '12',
+			'line-height': '1.25',
+			'font-style': 'normal',
+			'font-weight': 'normal',
+			'text-align': 'left'
+		}
 	}
 };
