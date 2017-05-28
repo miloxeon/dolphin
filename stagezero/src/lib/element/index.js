@@ -53,10 +53,10 @@ export function setRichText() {
 		throw new EvalError("Couldn't apply rich text: no theme set");
 	}
 
-	var name_label = findChildElement(this, 'name-label');
-	var type_label = findChildElement(this, 'type-label');
-	var attributes_label = findChildElement(this, 'attributes-label');
-	var methods_label = findChildElement(this, 'methods-label');
+	let name_label = this.getNameLabel();
+	let type_label = this.getTypeLabel();
+	let attributes_label = this.getAttributesLabel();
+	let methods_label = this.getMethodsLabel();
 
 	if (name_label) {
 		name_label.remove();
@@ -127,7 +127,7 @@ export function drawBorder() {
 	let id = getRawId(this.attr('id'));
 	let style = this.style;
 
-	var rect = findChildElement(this, 'rectangle');
+	var rect = this.getRect();
 	var rect_size = computeRectSize(this);
 	
 	if (rect) {
@@ -173,10 +173,10 @@ function getRawId(element_id) {
 }
 
 function computeRectSize(element) {
-	let name_label = findChildElement(element, 'name-label');
-	let type_label = findChildElement(element, 'type-label');
-	let attributes_label = findChildElement(element, 'attributes-label');
-	let methods_label = findChildElement(element, 'methods-label');
+	let name_label = element.getNameLabel();
+	let type_label = element.getTypeLabel();
+	let attributes_label = element.getAttributesLabel();
+	let methods_label = element.getMethodsLabel();
 
 	let padding = element.style.additional_style.padding;
 	let actual_padding = {
@@ -220,10 +220,10 @@ function computeRectSize(element) {
 }
 
 function computeLabelOffsets(element) {
-	let name_label = findChildElement(element, 'name-label');
-	let type_label = findChildElement(element, 'type-label');
-	let attributes_label = findChildElement(element, 'attributes-label');
-	let methods_label = findChildElement(element, 'methods-label');
+	let name_label = element.getNameLabel();
+	let type_label = element.getTypeLabel();
+	let attributes_label = element.getAttributesLabel();
+	let methods_label = element.getMethodsLabel();
 	
 	let rect_size = computeRectSize(element);
 	let offsets = {};
@@ -278,6 +278,26 @@ function computeLabelOffsets(element) {
 	}
 
 	return offsets;
+}
+
+export function getRect() {
+	return findChildElement(this, 'rectangle');
+}
+
+export function getNameLabel() {
+	return findChildElement(this, 'name-label');
+}
+
+export function getTypeLabel() {
+	return findChildElement(this, 'type-label');
+}
+
+export function getAttributesLabel() {
+	return findChildElement(this, 'attributes-label');
+}
+
+export function getMethodsLabel() {
+	return findChildElement(this, 'methods-label');
 }
 
 function findChildElement(parent, type) {
