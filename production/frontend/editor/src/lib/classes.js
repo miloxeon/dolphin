@@ -2,9 +2,11 @@
 
 // classes declarations
 
+let SVG = require('svg.js');
+let draggy = require('svg.draggy.js');
 import {getHash} from './tools';
-export let draw = SVG('diagram');
 
+export let draw = SVG('diagram');
 
 // diagram
 import {

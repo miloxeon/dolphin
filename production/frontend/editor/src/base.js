@@ -2,6 +2,7 @@
 
 // entry point
 
+require('./css/style.css');
 import {model as mock_model} from './fixtures';
 import {draw} from './lib/classes';
 import {moveController} from './lib/controllers';
