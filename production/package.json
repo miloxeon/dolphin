@@ -1,0 +1,30 @@
+{
+  "name": "dolphin",
+  "version": "0.0.1",
+  "description": "Diagram tool",
+  "main": "index.html",
+  "scripts": {
+    "start": "npm run dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "author": "Miloslav Voloskov",
+  "license": "own",
+  "bugs": {
+    "url": ""
+  },
+  "homepage": "",
+  "devDependencies": {
+    "babel-core": "^6.13.2",
+    "babel-loader": "^6.2.4",
+    "babel-preset-es2015": "^6.24.1",
+    "webpack": "^2.0.0"
+  },
+  "dependencies": {
+    "deepmerge": "^1.3.2",
+    "svg.draggy.js": "^1.1.1",
+    "svg.js": "^2.6.1"
+  }
+}
