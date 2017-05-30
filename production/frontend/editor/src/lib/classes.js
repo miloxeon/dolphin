@@ -103,7 +103,8 @@ import {
 	redraw,
 	clear as clear_connection,
 	setRichText as setRichText_connection,
-	setId as setId_connection
+	setId as setId_connection,
+	displayLineText
 } from './connection';
 
 SVG.Connection = SVG.invent({
@@ -117,6 +118,7 @@ SVG.Connection = SVG.invent({
 		clear: clear_connection,
 		setId: setId_connection,
 		setRichText: setRichText_connection,
+		displayLineText: displayLineText,
 		getType: function () {
 			return 'Connection';
 		},

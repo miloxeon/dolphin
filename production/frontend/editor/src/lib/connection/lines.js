@@ -13,6 +13,17 @@ export function arcTo(from, to) {
 	return cubic(from, to, bias, bias);
 }
 
+export function arcReverseTo(from, to) {
+	var x_between_from_and_to = from.x + Math.abs(from.x - to.x) / 2;
+
+	var bias = {
+		x: to.x,
+		y: from.y
+	}
+
+	return cubic(from, to, bias, bias);	
+}
+
 export function cubicTo(from, to) {
 	var x_between_from_and_to = from.x + Math.abs(from.x - to.x) / 2;
 
