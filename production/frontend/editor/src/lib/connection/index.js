@@ -220,13 +220,27 @@ export function connectDots (a, b, type, connector, isReverse) {
 	// connect two coordinates with a line
 	let id = getRawId(this.id());
 
-	console.log(type);
-
 	this.connectionLine = this.path(connector(a, b))
 		.attr('id', getId(id))
-		.addClass('dolphin_line');
+		.addClass(defineLineClass(type))
+		.marker(isReverse ? 'start' : 'end', 12, 7, function (add) {
+			add.path('M1,1.5 L6,3.5 L1,5.5')
+				.attr('transform-origin', '0 0')
+				.transform({'rotation': 90})
+				.addClass('dolphin_line_marker dolphin_line_marker-arrow');
+		});
 
 	this.displayLineText(isReverse);
 
 	return this;
+}
+
+function defineLineClass(type) {
+	return 'dolphin_line dolphin_line-' + type;
+}
+
+function defineMarker(type) {
+	switch (type) {
+		// case 'association': return []
+	}
 }

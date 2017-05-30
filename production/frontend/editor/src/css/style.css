@@ -103,6 +103,31 @@
 	shape-rendering: geometricPrecision;
 }
 
+/* Different line styles */
+.dolphin_line-association {
+	stroke-dasharray: none;
+}
+
+.dolphin_line-inheritance {
+	stroke-dasharray: none;	
+}
+
+.dolphin_line-implementation {
+	stroke-dasharray: 5 5;
+}
+
+.dolphin_line-dependency {
+	stroke-dasharray: 5 5;
+}
+
+.dolphin_line-aggregation {
+	stroke-dasharray: none;	
+}
+
+.dolphin_line-composition {
+	stroke-dasharray: none;	
+}
+
 .dolphin_line-dashed {
 	/* Dashed line (implementation and dependency) */
 	stroke-dasharray: 5 7;
@@ -148,18 +173,31 @@
 	font-style: italic;
 }
 
-.dolphin_line_arrow {
+.dolphin_line_marker {
+	/* Line arrows and diamonds */
+	stroke: black;
+	stroke-width: 1;
+	stroke-linejoin: round;
+	stroke-linecap: round;
+	shape-rendering: geometricPrecision;
+}
+
+.dolphin_line_marker-arrow {
 	/* > non-filled arrow */
+	fill: none;
 }
 
-.dolphin_line_solid-arrow {
+.dolphin_line_marker-solid_arrow {
 	/* ► filled arrow */
+	fill: white;
 }
 
-.dolphin_line_diamond {
+.dolphin_line_marker-diamond {
 	/* <> non-filled diamond */
+	fill: white;
 }
 
-.dolphin_line_filled-diamond {
+.dolphin_line_marker-filled_diamond {
 	/* ♦ filled diamond */
+	fill: black;
 }
