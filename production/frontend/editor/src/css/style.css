@@ -110,20 +110,42 @@
 
 .dolphin_line_text {
 	/* All of the line text */
-	font-family: 'Tahoma', sans-serif;
-	letter-spacing: 1.5px;
+	letter-spacing: 1.2px;
 }
 
 .dolphin_line_indicator {
 	/* Quantity indicator: 0..1, *, 5 and so on */
+	font-size: 9px;
+}
+
+.dolphin_line_indicator-from {
+	/* Indicator near the 'from' class */
+}
+
+.dolphin_line_indicator-to {
+	/* Indicator near the 'to' class */
+	text-anchor: end;
 }
 
 .dolphin_line_role {
 	/* Class roles: extendedFoo, wrappedBar and so on. They are at the ends of the line */
+	/*letter-spacing: initial;*/
+}
+
+.dolphin_line_role-from {
+	/* Role near the 'from' class */
+}
+
+.dolphin_line_role-to {
+	/* Role near the 'to' class */
+	text-anchor: end;
 }
 
 .dolphin_line_action {
 	/* Text in the middle of the line */
+	font-family: 'Tahoma', sans-serif;
+	fill: grey;
+	font-style: italic;
 }
 
 .dolphin_line_arrow {
@@ -135,7 +157,7 @@
 }
 
 .dolphin_line_diamond {
-	/* non-filled diamond */
+	/* <> non-filled diamond */
 }
 
 .dolphin_line_filled-diamond {

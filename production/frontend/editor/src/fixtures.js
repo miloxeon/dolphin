@@ -84,12 +84,17 @@ let connection_blueprints = [
 	{
 		id: 1,
 		type: 'inheritance',
-		from: 1,
-		to: 2,
-		text: 'inherits',
-		style: {
-			'stroke-dasharray': '5,5'
-		}
+		from: {
+			id: 1,
+			role: 'foo',
+			indicator: '2'
+		},
+		to: {
+			id: 2,
+			role: 'bar',
+			indicator: '1..*'
+		},
+		text: 'inherits'
 	}
 ];
 
