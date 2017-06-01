@@ -2,7 +2,65 @@
 
 // element text processing
 
-export function addAttributes(element, text, style) {
+import {getId, getRawId} from '../tools';
+import {computeRectSize} from './geometry';
+import config from '../config';
+
+export function setRichText() {
+	// set element's rich text: node name, attribures, methods and so on
+	let id = getRawId(this.attr('id'));
+	let text = this.richText;
+
+	if (!text) {
+		throw new EvalError("Couldn't apply rich text: no rich text set");
+	}
+
+	this.clear();
+
+	if (text.type !== 'normal') {
+		var type_label = this.text('<' + text.type + '>')
+			.attr('id', getId('type-label', id))
+			.addClass('dolphin_text dolphin_node_type');
+	}
+
+	var name_label = this.text(text.name)
+		.attr('id', getId('name-label', id))
+		.addClass('dolphin_text dolphin_node_name');
+
+	if (text.attributes) {
+		var attributes_label = addAttributes(this, text.attributes)
+			.attr('id', getId('attributes-label', id))
+			.addClass('dolphin_text');
+	}
+
+	if (text.methods) {
+		var methods_label = addMethods(this, text.methods)
+			.attr('id', getId('methods-label', id))
+			.addClass('dolphin_text');
+	}
+
+	let offsets = computeLabelOffsets(this);
+
+	if (type_label) {
+		type_label.move(offsets.type.x, offsets.type.y);
+	}
+
+	if (name_label) {
+		name_label.move(offsets.name.x, offsets.name.y);
+	}
+
+	if (attributes_label) {
+		attributes_label.move(offsets.attributes.x, offsets.attributes.y);
+	}
+
+	if (methods_label) {
+		methods_label.move(offsets.methods.x, offsets.methods.y);
+	}
+
+	return this;
+}
+
+function addAttributes(element, text, style) {
 	// + foo : int = "bar"
  
 	return element.text(function (add) {
@@ -41,7 +99,7 @@ export function addAttributes(element, text, style) {
 	}).addClass('dolphin_text');	// apply general font style
 }
 
-export function addMethods(element, text, style) {
+function addMethods(element, text, style) {
 	// - string getFoo(
 	// 		bar: int,
 	// 		foo: string = "hello")
@@ -107,6 +165,73 @@ export function addMethods(element, text, style) {
 			}
 		}
 	}).addClass('dolphin_text');
+}
+
+function computeLabelOffsets(element) {
+	let name_label = element.getNameLabel();
+	let type_label = element.getTypeLabel();
+	let attributes_label = element.getAttributesLabel();
+	let methods_label = element.getMethodsLabel();
+	
+	let rect_size = computeRectSize(element);
+	let offsets = {};
+
+	let padding = {
+		w: parseInt(config['padding-w']),
+		h: parseInt(config['padding-h'])
+	};
+
+	// let actual_padding = {
+	// 	w: Math.max(
+	// 		padding.w,
+	// 		element.style.rect_style.rx
+	// 	),
+
+	// 	h: Math.max(
+	// 		padding.h,
+	// 		element.style.rect_style.ry
+	// 	)
+	// }
+
+	let actual_padding = padding;
+
+	let x_left = actual_padding.w;
+	let x_center = rect_size.w / 2;	
+	let y_last = actual_padding.h;
+
+	if (type_label) {
+		offsets.type = {
+			x: x_center,
+			y: y_last
+		};
+		y_last += type_label.bbox().h;
+	}
+
+	if (name_label) {
+		offsets.name = {
+			x: x_center,
+			y: y_last
+		};
+		y_last += name_label.bbox().h + padding.h;
+	}
+
+	if (attributes_label) {
+		offsets.attributes = {
+			x: x_left,
+			y: y_last
+		}
+		y_last += attributes_label.bbox().h + padding.h;
+	}
+
+	if (methods_label) {
+		offsets.methods = {
+			x: x_left,
+			y: y_last
+		}
+		y_last += methods_label.bbox().h + padding.h;
+	}
+
+	return offsets;
 }
 
 function construct_addLabel(add) {

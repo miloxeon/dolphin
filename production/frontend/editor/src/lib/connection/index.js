@@ -2,55 +2,57 @@
 
 // methods of Connection class
 
-import {getLineFunction} from './lines';
-import {getId, getHash, getRawId} from '../tools';
+import {getLineFunction} from './pathes';
+import {getId} from '../tools';
 import {defineSockets} from './geometry';
-import {defineMarker} from './markers';
+import {applyBlueprint, setRichText} from './blueprints';
+import {connectSockets, connectDots} from './lines';
+import {displayLineText} from './text';
 
-export function applyBlueprint (blueprint) {
-	this.blueprint = blueprint;
+let name = 'Connection';
 
-	this.setId(getHash());
-	// check blueprint here
-	this.setRichText({
-		text: blueprint.text,
-		from: {
-			role: blueprint.from.role,
-			indicator: blueprint.from.indicator
-		},
-		to: {
-			role: blueprint.to.role,
-			indicator: blueprint.to.indicator
-		}
-	});
-	this.redraw();
-	return this;
+export default {
+	applyBlueprint,
+	connectSockets,
+	connectDots,
+	redraw,
+	setId,
+	setRichText,
+	displayLineText,
+	getType,
+	hideAll,
+	showAll,
+	blueprint: null,
+	actionLabel: null,
+	startRole: null,
+	endRole: null,
+	startIndicator: null,
+	endIndicator: null
 }
 
-export function setId(id) {
-	return this.attr('id', getId('Connection', id));
+function getType() {
+	return name;
 }
 
-export function clear() {
-	// remove everything: the line, labels, arrows...
+function setId(id) {
+	return this.attr('id', getId(name, id));
+}
+
+function hideAll() {
 	this.children().forEach(function (child) {
-		child.remove();
-	});
+		child.opacity(0);
+	})
 	return this;
 }
 
-function getDirection(socket) {
-	switch (socket) {
-		case 5: return 'left';
-		case 4: return 'right';
-		case 7: return 'top';
-		case 2: return 'bottom';
-	}
+function showAll() {
+	this.children().forEach(function (child) {
+		child.opacity(1);
+	})
+	return this;
 }
 
-export function redraw() {
-	// this.clear();
-
+function redraw() {
 	let from_elem = this.parent().getNodeById(this.blueprint.from.id);
 	let to_elem = this.parent().getNodeById(this.blueprint.to.id);
 
@@ -68,197 +70,4 @@ export function redraw() {
 
 	let type = this.blueprint.type;
 	this.connectSockets(from, to, type, getLineFunction(sockets));
-}
-
-export function connectSockets (from, to, type, connector = cubicTo) {
-	// connect two elements' sockets (abstraction over connection by two coordinates)
-	let from_dot = from.element.socket(from.socket);
-	let to_dot = to.element.socket(to.socket);
-	let isReverse = from_dot.x > to_dot.x;
-	
-	let direction = getDirection(to.socket);
-	
-	this.connectDots(from_dot, to_dot, type, connector, isReverse);
-	this.displayLineText(isReverse);
-
-	let drawMarker = defineMarker(type);
-	drawMarker(this.connectionLine, direction, isReverse);
-
-	return this;
-}
-
-export function setRichText(rich_text) {
-	// set connection's rich text: labels, roles, indicators...
-	this.richText = rich_text;
-	this.redraw();
-	return this;
-}
-
-function computeOffset(part, all, position) {
-	let path_length = all.length();
-	let padding = 10;
-
-	switch (position) {
-		case 'start':
-			return padding;
-
-		case 'middle':
-			// magic
-			return '50%';
-
-		case 'end':
-			return path_length - part - padding;
-
-		default:
-			// err
-	}
-}
-
-function reverseAlignment(alignment, isReverse) {
-	switch (alignment) {
-		case 'start':
-			return !isReverse ? 'start' : 'end';
-
-		case 'middle':
-			return 'middle';
-
-		case 'end':
-			return !isReverse ? 'end' : 'start';
-	}
-}
-
-function displayLabel(context, label_text, classes, offset, alignment, isReverse) {
-	let label_width;
-	let label = context.text(function (add) {
-		let t = add.tspan(label_text).dy(offset)
-		label_width = t.bbox().w;
-	}).addClass(classes);
-
-	label.path(context.connectionLine.array())
-		.textPath().attr({
-		'startOffset': computeOffset(label_width, context.connectionLine, reverseAlignment(alignment, isReverse)),
-		'spacing': 'auto'
-	});
-	return label;
-}
-
-function updateLabel(label, path, alignment, isReverse) {
-	label.textPath().attr('startOffset', computeOffset(label.bbox().w, path, reverseAlignment(alignment, isReverse)))
-	return label.plot(path.array());
-}
-
-export function hideAll() {
-	this.children().forEach(function (child) {
-		child.opacity(0);
-	})
-	return this;
-}
-
-export function showAll() {
-	this.children().forEach(function (child) {
-		child.opacity(1);
-	})
-	return this;
-}
-
-export function displayLineText(isReverse = false) {
-	let path = this.connectionLine;
-	let richText = this.richText;
-	let offset_upper = -5;
-	let offset_lower = 15;
-
-	if (path.length() > 80) {
-		// text at the middle
-		this.showAll();
-
-		if (this.actionLabel) {
-			updateLabel(this.actionLabel, path, 'middle', isReverse);
-		} else {
-			this.actionLabel = displayLabel(
-				this,
-				richText.text,
-				'dolphin_text dolphin_line_text dolphin_line_action',
-				offset_upper,
-				'middle');
-		}
-
-		// role at the start
-
-		if (this.startRole) {
-			updateLabel(this.startRole, path, 'start', isReverse);
-		} else {
-			this.startRole = displayLabel(
-				this,
-				richText.from.role,
-				'dolphin_text dolphin_line_text dolphin_line_role',
-				offset_upper,
-				'start', isReverse);
-		}
-		
-		// indicator at the start
-		if (this.startIndicator) {
-			updateLabel(this.startIndicator, path, 'start', isReverse);
-
-		} else {
-			this.startIndicator = displayLabel(
-				this,
-				richText.from.indicator,
-				'dolphin_text dolphin_line_text dolphin_line_indicator',
-				offset_lower,
-				'start', isReverse);
-		}
-		
-		// role at the end
-		if (this.endRole) {
-			updateLabel(this.endRole, path, 'end', isReverse);
-
-		} else {
-			this.endRole = displayLabel(
-				this,
-				richText.to.role,
-				'dolphin_text dolphin_line_text dolphin_line_role',
-				offset_upper,
-				'end', isReverse);
-		}
-
-		// indicator at the end
-		if (this.endIndicator) {
-			updateLabel(this.endIndicator, path, 'end', isReverse);
-
-		} else {
-			this.endIndicator = displayLabel(
-				this,
-				richText.to.indicator,
-				'dolphin_text dolphin_line_text dolphin_line_indicator',
-				offset_lower,
-				'end', isReverse);
-		}
-	} else {
-		this.hideAll();
-	}
-
-	return this;
-}
-
-export function connectDots (a, b, type, connector, isReverse) {
-	// connect two coordinates with a line
-
-	if (isReverse) {
-		[a, b] = [b, a];
-	}
-
-	if (this.connectionLine) {
-		this.connectionLine.plot(connector(a, b));
-	} else {
-		let id = getRawId(this.id());
-		this.connectionLine = this.path(connector(a, b))
-			.attr('id', getId(id))
-			.addClass(defineLineClass(type))
-	}
-	
-	return this;
-}
-
-function defineLineClass(type) {
-	return 'dolphin_line dolphin_line-' + type;
 }
