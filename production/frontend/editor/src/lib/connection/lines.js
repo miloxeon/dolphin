@@ -3,8 +3,14 @@
 import {defineMarker} from './markers';
 import {getId, getRawId} from '../tools';
 
-export function connectSockets (from, to, type, connector = cubicTo) {
+import {checkAddress, checkCoordinates, checkLineFunction} from './errors';
+import config from '../config';
+
+export function connectSockets (from, to, type = config['default-connection-type'], connector = cubicTo) {
 	// connect two elements' sockets (abstraction over connection by two coordinates)
+	if (checkAddress(from)) throw checkAddress(from);
+	if (checkAddress(to)) throw checkAddress(to);
+
 	let from_dot = from.element.socket(from.socket);
 	let to_dot = to.element.socket(to.socket);
 	let isReverse = from_dot.x > to_dot.x;
@@ -18,9 +24,12 @@ export function connectSockets (from, to, type, connector = cubicTo) {
 	return this;
 }
 
-export function connectDots (a, b, type, connector, isReverse) {
+export function connectDots (a, b, type = config['default-connection-type'], connector, isReverse) {
 	// connect two coordinates with a line
 
+	if (checkCoordinates(a, b)) throw checkCoordinates(a, b);
+	if (checkLineFunction(connector)) throw checkLineFunction(connector);
+	
 	if (isReverse) {
 		[a, b] = [b, a];
 	}
@@ -37,6 +46,6 @@ export function connectDots (a, b, type, connector, isReverse) {
 	return this;
 }
 
-function defineLineClass(type) {
+function defineLineClass(type = config['default-connection-type']) {
 	return 'dolphin_line dolphin_line-' + type;
 }

@@ -1,10 +1,30 @@
 'use strict';
 
-export function checkIfInside(rendered_element, pos) {
+import {checkElement, checkPos, checkBbox} from './errors';
+
+export function checkOverlap(elem_1, elem_2) {
+	if (checkElement(elem_1)) throw checkElement(elem_1);
+	if (checkElement(elem_2)) throw checkElement(elem_2);
+
+	let bbox_1 = getFakeBbox(elem_1);
+	let bbox_2 = getFakeBbox(elem_2);
+
+	return (checkIfInside(elem_1, {x: bbox_2.x, y: bbox_2.y}) ||
+			checkIfInside(elem_1, {x: bbox_2.x2, y: bbox_2.y}) || 
+			checkIfInside(elem_1, {x: bbox_2.x, y: bbox_2.y2}) ||
+			checkIfInside(elem_1, {x: bbox_2.x2, y: bbox_2.y2}) ||
+			checkIfInside(elem_1, {x: bbox_2.cx, y: bbox_2.cy}));
+
+}
+
+export function checkIfInside(elem, pos) {
+
+	if (checkElement(elem)) throw checkElement(elem);
+	if (checkPos(pos)) throw checkPos(pos);
+
 	let x = pos.x;
 	let y = pos.y;
-
-	let bbox = rendered_element.bbox();
+	let bbox = getFakeBbox(elem);
 
 	return (x > bbox.x) && 
 		(x < bbox.x2) && 
@@ -13,6 +33,9 @@ export function checkIfInside(rendered_element, pos) {
 }
 
 function getFakeBbox(elem) {
+	// get fake bbox for the element (because the element is <g> and it's have no geometry by defaut)
+	if (checkElement(elem)) throw checkElement(elem);
+
 	return {
 		x: elem.x(),
 		y: elem.y(),
@@ -23,9 +46,11 @@ function getFakeBbox(elem) {
 		w: Math.abs((elem.x() - elem.cx()) * 2),
 		h: Math.abs((elem.y() - elem.cy()) * 2)
 	}
+	// return elem.getRect().bbox();
 }
 
 export function defineSockets(elem_1, elem_2) {
+	// define which sockets of elem_1 and elem_2 should be connected
 	let sectors = defineRelativePosition(elem_1, elem_2);
 
 	let decision_matrix = {
@@ -66,12 +91,14 @@ export function defineSockets(elem_1, elem_2) {
 	return decision_matrix[sectors] ? decision_matrix[sectors].split('').map((e) => parseInt(e)) : null;
 }
 
-function defineRelativePosition(rendered_element_1, rendered_element_2) {
-	// how element_2 relates to element_1
+function defineRelativePosition(elem_1, elem_2) {
+	// define how element_2 relates to element_1 (sectors)
+	 
+	if (checkElement(elem_1)) throw checkElement(elem_1);
+	if (checkElement(elem_2)) throw checkElement(elem_2);
 
-	let bbox_1 = getFakeBbox(rendered_element_1);
-	let bbox_2 = getFakeBbox(rendered_element_2);
-
+	let bbox_1 = getFakeBbox(elem_1);
+	let bbox_2 = getFakeBbox(elem_2);
 	// more is rigter
 	let horizontal_offset = bbox_2.x - bbox_1.x;
 
@@ -83,10 +110,10 @@ function defineRelativePosition(rendered_element_1, rendered_element_2) {
 	let bbox_2_relative_x = bbox_2.x - bbox_1.cx;
 	let bbox_2_relative_y = bbox_2.y - bbox_1.cy;
 
-	sectors.push(defineDotRelativePosition(bbox_1, bbox_2.x, bbox_2.y));	// top left
-	sectors.push(defineDotRelativePosition(bbox_1, bbox_2.x2, bbox_2.y));	// top right
-	sectors.push(defineDotRelativePosition(bbox_1, bbox_2.x, bbox_2.y2));	// bottom left
-	sectors.push(defineDotRelativePosition(bbox_1, bbox_2.x2, bbox_2.y2));	// bottom right
+	sectors.push(defineDotRelativePosition(bbox_1, {x: bbox_2.x, y: bbox_2.y}));	// top left
+	sectors.push(defineDotRelativePosition(bbox_1, {x: bbox_2.x2, y: bbox_2.y}));	// top right
+	sectors.push(defineDotRelativePosition(bbox_1, {x: bbox_2.x, y: bbox_2.y2}));	// bottom left
+	sectors.push(defineDotRelativePosition(bbox_1, {x: bbox_2.x2, y: bbox_2.y2}));	// bottom right
 
 	let unique_sectors = []
 
@@ -103,11 +130,16 @@ function defineRelativePosition(rendered_element_1, rendered_element_2) {
 	return unique_sectors.join('');
 }
 
-function defineDotRelativePosition(bbox, x, y) {
+function defineDotRelativePosition(bbox, pos) {
+	// define the sector in which the dot with coordinates x and y situated relatively to some bbox
+	if (checkBbox(bbox)) throw checkBbox(bbox);
+	if (checkPos(pos)) throw checkPos(pos);
+
+	let x = pos.x;
+	let y = pos.y;
 
 	let relative_x = Math.abs(bbox.cx - x);
 	let relative_y = Math.abs(bbox.cy - y);
-
 
 	if (x >= bbox.cx) {
 		// righter: sectors 1, 2, 3, 4

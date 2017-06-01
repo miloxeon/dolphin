@@ -1,6 +1,13 @@
 'use strict';
 
 import config from '../config';
+// todo errors
+export function setRichText(rich_text) {
+	// set connection's rich text: labels, roles, indicators...
+	this.richText = rich_text;
+	this.redraw();
+	return this;
+}
 
 export function displayLineText(isReverse = false) {
 	let path = this.connectionLine;
@@ -9,7 +16,7 @@ export function displayLineText(isReverse = false) {
 	let offset_upper = parseInt(config['offset-upper']);
 	let offset_lower = parseInt(config['offset-lower']);
 
-	if (path.length() > 80) {
+	if (path.length() > config['line-min-length']) {
 		// text at the middle
 		this.showAll();
 

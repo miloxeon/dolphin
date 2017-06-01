@@ -1,4 +1,5 @@
 'use strict';
+// todo errors
 
 import config from '../config';
 

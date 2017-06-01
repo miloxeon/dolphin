@@ -1,4 +1,5 @@
 'use strict';
+// todo errors
 
 export function socket(number) {
 

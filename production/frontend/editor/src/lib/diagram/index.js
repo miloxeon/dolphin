@@ -1,6 +1,7 @@
 'use strict';
 
 // methods of ClassDiagram class
+// todo errors
 
 import {getId, getRawId} from '../tools';
 

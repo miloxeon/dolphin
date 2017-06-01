@@ -2,6 +2,7 @@
 
 import {computeRectSize} from './geometry';
 import {getId, getRawId} from '../tools';
+// todo errors
 
 export function drawBorder() {
 	let id = getRawId(this.attr('id'));

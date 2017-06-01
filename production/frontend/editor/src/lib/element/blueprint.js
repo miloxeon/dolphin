@@ -1,6 +1,7 @@
 'use strict';
 
 // Blueprints processing functions
+// todo errors
 
 let merge = require('deepmerge');
 import {default_blueprint, default_attribute, default_method, default_argument} from './model';

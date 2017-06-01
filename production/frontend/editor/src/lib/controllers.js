@@ -1,4 +1,5 @@
 'use strict';
+// todo errors
 
 import {getRawId} from './tools';
 
