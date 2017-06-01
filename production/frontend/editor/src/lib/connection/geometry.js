@@ -63,7 +63,7 @@ export function defineSockets(elem_1, elem_2) {
 		'1238': '24'
 	}
 
-	return decision_matrix[sectors].split('').map((e) => parseInt(e));
+	return decision_matrix[sectors] ? decision_matrix[sectors].split('').map((e) => parseInt(e)) : null;
 }
 
 function defineRelativePosition(rendered_element_1, rendered_element_2) {

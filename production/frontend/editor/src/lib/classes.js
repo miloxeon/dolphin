@@ -104,7 +104,9 @@ import {
 	clear as clear_connection,
 	setRichText as setRichText_connection,
 	setId as setId_connection,
-	displayLineText
+	displayLineText,
+	hideAll,
+	showAll
 } from './connection';
 
 SVG.Connection = SVG.invent({
@@ -122,7 +124,14 @@ SVG.Connection = SVG.invent({
 		getType: function () {
 			return 'Connection';
 		},
-		blueprint: null
+		hideAll: hideAll,
+		showAll: showAll,
+		blueprint: null,
+		actionLabel: null,
+		startRole: null,
+		endRole: null,
+		startIndicator: null,
+		endIndicator: null
 	},
 	construct: {
 		connection: function (blueprint) {
