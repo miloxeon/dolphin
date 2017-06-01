@@ -4,20 +4,34 @@
 
 import {getId, getRawId} from '../tools';
 
-export function setId(id) {
+let name = 'ClassDiagram';
+
+export default {
+	setId,
+	clear,
+	fromModel,
+	getNodeById,
+	getType
+}
+
+function getType() {
+	return name;
+}
+
+function setId(id) {
 	return this.attr({
-		'id': getId('ClassDiagram', id)
+		'id': getId(name, id)
 	});
 }
 
-export function clear() {
+function clear() {
 	this.children().forEach(function (child) {
 		child.remove();
 	});
 	return this;
 }
 
-export function fromModel(model) {
+function fromModel(model) {
 	let self = this;
 	model.elements.forEach(function (blueprint) {
 		self.classDiagramNode(blueprint);
@@ -30,7 +44,7 @@ export function fromModel(model) {
 	return this;
 }
 
-export function getNodeById(id) {
+function getNodeById(id) {
 	let found;
 	this.children().forEach(function (child) {
 		if (child.attr('id') === getId('ClassDiagramNode', id)) {

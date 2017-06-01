@@ -5,7 +5,17 @@
 let merge = require('deepmerge');
 import {default_blueprint, default_attribute, default_method, default_argument} from './model';
 
-export function fillBlueprint(blueprint) {
+export function applyBlueprint(blueprint) {
+	var checked_blueprint = fillBlueprint(blueprint);
+	this.setId(checked_blueprint.id);
+	this.blueprint = checked_blueprint;
+	this.richText = checked_blueprint.text;
+	this.reset();
+	this.move(checked_blueprint.position.x, checked_blueprint.position.y);
+	return this;
+}
+
+function fillBlueprint(blueprint) {
 	// get blueprint and fill it's empty fields with default values
 	if (checkBlueprint(blueprint)) {
 		let passed_blueprint = blueprint;
