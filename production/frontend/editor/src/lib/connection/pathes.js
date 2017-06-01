@@ -2,8 +2,12 @@
 
 // Get pathes for line drawing
 
+import {checkSockets, checkCoordinates} from './errors';
 
 export function getLineFunction(sockets) {
+
+	if (checkSockets(sockets)) throw checkSockets(sockets);
+
 	let sockets_str = [].concat(sockets).sort((a, b) => a - b).join('');
 
 	switch (sockets_str) {
@@ -24,6 +28,9 @@ export function getLineFunction(sockets) {
 }
 
 function arcTo(from, to) {
+
+	if (checkCoordinates(from, to)) throw checkCoordinates(from, to);
+
 	let x_between_from_and_to = from.x + Math.abs(from.x - to.x) / 2;
 
 	let bias = {
@@ -35,6 +42,9 @@ function arcTo(from, to) {
 }
 
 function arcReverseTo(from, to) {
+
+	if (checkCoordinates(from, to)) throw checkCoordinates(from, to);
+
 	let x_between_from_and_to = from.x + Math.abs(from.x - to.x) / 2;
 
 	let bias = {
@@ -46,6 +56,9 @@ function arcReverseTo(from, to) {
 }
 
 function cubicTo(from, to) {
+
+	if (checkCoordinates(from, to)) throw checkCoordinates(from, to);
+
 	let x_between_from_and_to = from.x + Math.abs(from.x - to.x) / 2;
 
 	let bias_1 = {
@@ -62,6 +75,9 @@ function cubicTo(from, to) {
 }
 
 function lineTo(from, to) {
+
+	if (checkCoordinates(from, to)) throw checkCoordinates(from, to);
+
 	return 'M ' + 
 		from.x.toString() + ' ' + 
 		from.y.toString() + ' ' + 
@@ -71,6 +87,9 @@ function lineTo(from, to) {
 }
 
 function cubic(from, to, bias_1, bias_2) {
+
+	if (checkCoordinates(from, to)) throw checkCoordinates(from, to);
+
 	return 'M ' + 
 		from.x.toString() + ' ' + 
 		from.y.toString() + ' ' + 

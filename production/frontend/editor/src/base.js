@@ -1,6 +1,7 @@
 'use strict';
 
 // entry point
+// todo errors
 
 require('./css/style.css');
 import {model as mock_model} from './fixtures';

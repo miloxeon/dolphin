@@ -1,4 +1,5 @@
 'use strict';
+// todo errors
 
 // methods of ClassDiagramNode element
 

@@ -1,4 +1,5 @@
 'use strict';
+// todo errors
 
 // handy functions used everywhere
 
