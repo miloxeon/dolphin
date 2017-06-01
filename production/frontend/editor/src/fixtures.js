@@ -83,7 +83,7 @@ let element_blueprints = [
 let connection_blueprints = [
 	{
 		id: 1,
-		type: 'implementation',
+		type: 'composition',
 		from: {
 			id: 1,
 			role: 'foo',

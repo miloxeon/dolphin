@@ -2,10 +2,31 @@
 
 // Get pathes for line drawing
 
-export function arcTo(from, to) {
-	var x_between_from_and_to = from.x + Math.abs(from.x - to.x) / 2;
 
-	var bias = {
+export function getLineFunction(sockets) {
+	let sockets_str = [].concat(sockets).sort((a, b) => a - b).join('');
+
+	switch (sockets_str) {
+		case '47':
+		case '24':
+			return arcTo;
+
+		case '25':
+		case '57':
+			return arcReverseTo;
+
+		case '27':
+			return lineTo;
+
+		default:
+			return cubicTo;
+	}	
+}
+
+function arcTo(from, to) {
+	let x_between_from_and_to = from.x + Math.abs(from.x - to.x) / 2;
+
+	let bias = {
 		x: from.x,
 		y: to.y
 	}
@@ -13,10 +34,10 @@ export function arcTo(from, to) {
 	return cubic(from, to, bias, bias);
 }
 
-export function arcReverseTo(from, to) {
-	var x_between_from_and_to = from.x + Math.abs(from.x - to.x) / 2;
+function arcReverseTo(from, to) {
+	let x_between_from_and_to = from.x + Math.abs(from.x - to.x) / 2;
 
-	var bias = {
+	let bias = {
 		x: to.x,
 		y: from.y
 	}
@@ -24,20 +45,29 @@ export function arcReverseTo(from, to) {
 	return cubic(from, to, bias, bias);	
 }
 
-export function cubicTo(from, to) {
-	var x_between_from_and_to = from.x + Math.abs(from.x - to.x) / 2;
+function cubicTo(from, to) {
+	let x_between_from_and_to = from.x + Math.abs(from.x - to.x) / 2;
 
-	var bias_1 = {
+	let bias_1 = {
 		x: x_between_from_and_to,
 		y: from.y
 	}
 
-	var bias_2 = {
+	let bias_2 = {
 		x: x_between_from_and_to,
 		y: to.y
 	}
 
 	return cubic(from, to, bias_1, bias_2);
+}
+
+function lineTo(from, to) {
+	return 'M ' + 
+		from.x.toString() + ' ' + 
+		from.y.toString() + ' ' + 
+		'L ' +
+		to.x.toString() + ' ' + 
+		to.y.toString();
 }
 
 function cubic(from, to, bias_1, bias_2) {

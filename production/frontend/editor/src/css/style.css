@@ -168,6 +168,7 @@
 
 .dolphin_line_action {
 	/* Text in the middle of the line */
+	text-anchor: middle;
 	font-family: 'Tahoma', sans-serif;
 	fill: grey;
 	font-style: italic;
@@ -187,7 +188,7 @@
 	fill: none;
 }
 
-.dolphin_line_marker-solid_arrow {
+.dolphin_line_marker-arrow_filled {
 	/* ► filled arrow */
 	fill: white;
 }
@@ -197,7 +198,7 @@
 	fill: white;
 }
 
-.dolphin_line_marker-filled_diamond {
+.dolphin_line_marker-diamond_filled {
 	/* ♦ filled diamond */
 	fill: black;
 }
