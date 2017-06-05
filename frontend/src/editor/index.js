@@ -11,29 +11,31 @@ import {moveController} from './lib/controllers';
 import {clone, getRawId} from './lib/tools';
 import {addElement, removeElement, addConnection, removeConnection} from './actions';
 
-let diagram = draw.classDiagram();
-let model = clone(mock_model);
-let store = createStore(modelReducer);
+var store;
+var diagram = draw.classDiagram();
 
-build();
+function init(model) {
+	store = createStore(modelReducer, model);
 
-store.subscribe(rebuild);
+	build();
+	store.subscribe(rebuild);
 
-diagram.on('redraw', diagram.redrawConnections);
-
-diagram.on('rebuild', function (e) {
-	store.dispatch({
-		type: 'MOVE',
-		payload: e.detail.node
+	diagram.on('redraw', diagram.redrawConnections);
+	diagram.on('rebuild', function (e) {
+		store.dispatch({
+			type: 'MOVE',
+			payload: e.detail.node
+		});
 	});
-});
+}
 
 module.exports = {
 	addElement: _addElement,
 	removeElement: _removeElement,
 	addConnection: _addConnection,
 	removeConnection: _removeConnection,
-	getModel
+	getModel,
+	init
 }
  
 function _addElement(blueprint) {
@@ -65,7 +67,7 @@ function _removeConnection(id) {
 }
 
 
-function modelReducer(state = model, action) {
+function modelReducer(state, action) {
 	switch (action.type) {
 
 		case 'ADD_ELEMENT':

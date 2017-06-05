@@ -8,8 +8,11 @@ var peers = [
 ];
 
 var gun = Gun(peers);
-var greetings = gun.get('greetings');
-greetings.put({ hello: 'world' });
+var storage = gun.get('model');
+
+storage.val(function (data) {
+	editor.init(JSON.parse(data.fixtures))
+})
 
 
-module.exports = {greetings}
+module.exports = {storage}
