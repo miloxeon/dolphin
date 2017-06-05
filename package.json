@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "deepmerge": "^1.3.2",
+    "gun": "^0.7.8",
     "redux": "^3.6.0",
     "svg.draggy.js": "^1.1.1",
     "svg.js": "^2.6.1"

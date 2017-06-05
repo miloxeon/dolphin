@@ -1,0 +1,15 @@
+{
+  "graph": {
+    "greetings": {
+      "_": {
+        "#": "greetings",
+        ">": {
+          "hello": 1496683065559.775,
+          "browser": 1496683110927.5
+        }
+      },
+      "hello": "world",
+      "browser": "Hello, Node!"
+    }
+  }
+}
