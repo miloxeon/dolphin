@@ -3,6 +3,10 @@
 
 // handy functions used everywhere
 
+export function clone(object) {
+	return JSON.parse(JSON.stringify(object));
+}
+
 export function getHash(object_type) {
 	return Math.floor(Math.random() * new Date()).toString();
 }

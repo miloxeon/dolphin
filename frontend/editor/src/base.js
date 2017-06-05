@@ -15,23 +15,23 @@ function bindControllers(diagram) {
 	diagram.children().forEach(function (child) {
 		
 		child.on('dragmove', function () {
-			redrawConnections();
+			diagram.fire('redraw');
 		})
 
-		child.on('mouseup', function () {
-			model = moveController(this, model);
-			rebuild();
+		child.on('dragend', function () {
+			diagram.fire('rebuild', {
+				new_model: moveController(this, model)
+			});
 		});
 	});
 }
 
-function redrawConnections() {
-	diagram.children().forEach(function (child) {
-		if (child.getType() === 'Connection') {
-			child.redraw();
-		}
-	});
-}
+diagram.on('redraw', diagram.redrawConnections);
+
+diagram.on('rebuild', function (e) {
+	model = e.detail.new_model;
+	rebuild();
+});
 
 function build(model) {
 	diagram.fromModel(model);
