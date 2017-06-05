@@ -12,7 +12,8 @@ export default {
 	clear,
 	fromModel,
 	getNodeById,
-	getType
+	getType,
+	redrawConnections
 }
 
 function getType() {
@@ -54,4 +55,13 @@ function getNodeById(id) {
 	})
 
 	return found;
+}
+
+function redrawConnections() {
+	this.children().forEach(function (child) {
+		if (child.getType() === 'Connection') {
+			child.redraw();
+		}
+	});
+	return this;
 }
