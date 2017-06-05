@@ -8,6 +8,7 @@ let Gun = require('gun');
 import {createStore} from 'redux';
 import {draw} from './lib/classes';
 import {moveController} from './lib/controllers';
+import {clone} from './lib/tools';
 import {addElement, removeElement, addConnection, removeConnection, move} from './actions';
 
 
@@ -22,7 +23,6 @@ storage.val(function (data) {
 	store = createStore(modelReducer, JSON.parse(data.fixtures));
 
 	build();
-	store.subscribe(rebuild);
 
 	diagram.on('redraw', diagram.redrawConnections);
 	diagram.on('rebuild', function (e) {
@@ -33,10 +33,10 @@ storage.val(function (data) {
 	});
 
 	store.subscribe(() => {
-		storage.get('fixtures').put(JSON.stringify(store.getState()))
+		rebuild();
+		storage.get('fixtures').put(JSON.stringify(store.getState()));
 	})
 });
-
 
 module.exports = {
 	addElement: _addElement,
@@ -93,9 +93,16 @@ function modelReducer(state, action) {
 		case 'MOVE':
 			return move(state, action.payload);
 
+		case 'REPLACE':
+			return replaceStore(state, action.payload)
+
 		default:
 			return state;
 	}
+}
+
+function replaceStore(state, action) {
+	return clone(action);
 }
 
 function getModel () {
