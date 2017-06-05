@@ -8,7 +8,7 @@ import {createStore} from 'redux';
 import {model as mock_model} from './fixtures';
 import {draw} from './lib/classes';
 import {moveController} from './lib/controllers';
-import {clone} from './lib/tools';
+import {clone, getRawId} from './lib/tools';
 import {addElement, removeElement, addConnection, removeConnection} from './actions';
 
 let diagram = draw.classDiagram();
@@ -17,14 +17,15 @@ let store = createStore(modelReducer);
 
 build();
 
+store.subscribe(rebuild);
+
 diagram.on('redraw', diagram.redrawConnections);
 
 diagram.on('rebuild', function (e) {
 	store.dispatch({
-		type: 'ALTER_MODEL',
-		payload: e.detail.new_model
-	})
-	rebuild();
+		type: 'MOVE',
+		payload: e.detail.node
+	});
 });
 
 module.exports = {
@@ -79,8 +80,8 @@ function modelReducer(state = model, action) {
 		case 'REMOVE_CONNECTION':
 			return removeConnection(state, action.payload);
 
-		case 'ALTER_MODEL':
-			return alterModel(state, action.payload);
+		case 'MOVE':
+			return move(state, action.payload);
 
 		default:
 			return state;
@@ -91,8 +92,21 @@ function getModel () {
 	return store.getState();
 }
 
-function alterModel(model, new_model) {
-	return clone(new_model);
+function move(model, node) {
+	let new_model = clone(model);
+	let node_id = getRawId(node.attr('id'));
+	let new_coords = {
+		x: node.x(),
+		y: node.y()
+	}
+	
+	new_model.elements.forEach(function (elem) {
+		if (elem.id === node_id) {
+			elem.position = new_coords;
+		}
+	});
+
+	return new_model;
 }
 
 function bindControllers(diagram) {
@@ -105,7 +119,7 @@ function bindControllers(diagram) {
 		child.on('dragend', function () {
 
 			diagram.fire('rebuild', {
-				new_model: moveController(this, model)
+				node: this
 
 			});
 		});
