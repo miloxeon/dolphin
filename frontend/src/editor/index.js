@@ -4,18 +4,22 @@
 // todo errors
 
 require('./css/style.css');
+let Gun = require('gun');
 import {createStore} from 'redux';
-import {model as mock_model} from './fixtures';
 import {draw} from './lib/classes';
 import {moveController} from './lib/controllers';
-import {clone, getRawId} from './lib/tools';
-import {addElement, removeElement, addConnection, removeConnection} from './actions';
+import {addElement, removeElement, addConnection, removeConnection, move} from './actions';
+
+
+var peers = ['http://localhost:8080/gun'];
+var gun = Gun(peers);
+var storage = gun.get('model');
 
 var store;
 var diagram = draw.classDiagram();
 
-function init(model) {
-	store = createStore(modelReducer, model);
+storage.val(function (data) {
+	store = createStore(modelReducer, JSON.parse(data.fixtures));
 
 	build();
 	store.subscribe(rebuild);
@@ -27,15 +31,19 @@ function init(model) {
 			payload: e.detail.node
 		});
 	});
-}
+
+	store.subscribe(() => {
+		storage.get('fixtures').put(JSON.stringify(store.getState()))
+	})
+});
+
 
 module.exports = {
 	addElement: _addElement,
 	removeElement: _removeElement,
 	addConnection: _addConnection,
 	removeConnection: _removeConnection,
-	getModel,
-	init
+	getModel
 }
  
 function _addElement(blueprint) {
@@ -94,23 +102,6 @@ function getModel () {
 	return store.getState();
 }
 
-function move(model, node) {
-	let new_model = clone(model);
-	let node_id = getRawId(node.attr('id'));
-	let new_coords = {
-		x: node.x(),
-		y: node.y()
-	}
-	
-	new_model.elements.forEach(function (elem) {
-		if (elem.id === node_id) {
-			elem.position = new_coords;
-		}
-	});
-
-	return new_model;
-}
-
 function bindControllers(diagram) {
 	diagram.children().forEach(function (child) {
 		
@@ -122,7 +113,6 @@ function bindControllers(diagram) {
 
 			diagram.fire('rebuild', {
 				node: this
-
 			});
 		});
 	});

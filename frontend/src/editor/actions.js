@@ -1,5 +1,7 @@
 'use strict';
 
+import {clone, getRawId} from './lib/tools';
+
 export function addElement(model, blueprint) {
 	let new_model = clone(model);
 	new_model.elements.push(blueprint);
@@ -42,5 +44,22 @@ export function removeConnection(model, id) {
 	}
 
 	new_model.connections.splice(index, 1);
+	return new_model;
+}
+
+export function move(model, node) {
+	let new_model = clone(model);
+	let node_id = getRawId(node.attr('id'));
+	let new_coords = {
+		x: node.x(),
+		y: node.y()
+	}
+	
+	new_model.elements.forEach(function (elem) {
+		if (elem.id === node_id) {
+			elem.position = new_coords;
+		}
+	});
+
 	return new_model;
 }
