@@ -11,7 +11,9 @@ module.exports = (env = {}) => {
 		entry: './src/base.js',
 		output: {
 			path: __dirname + '/frontend/editor/dist',
-			filename: 'bundle.js'
+			filename: 'bundle.js',
+			libraryTarget: 'var',
+			library: 'dolphin'
 		},
 		module: {
 			rules: [
