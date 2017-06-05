@@ -1,5 +1,7 @@
 'use strict';
 
+let model = require('./fixtures');
+
 var http = require('http');
 
 // Create a new server instance.
@@ -14,16 +16,19 @@ server.listen(8080, function () {
   console.log('Server listening on http://localhost:8080/gun')
 })
 
-// Read `greetings`, saving it to a variable.
-var greetings = gun.get('greetings');
+// var fixtures = gun.get('fixtures');
+// fixtures.put({
+// 	model: model
+// });
+
+// gun.get('fixtures').val(function (data) {
+// 	console.log(data)
+// })
+
+var storage = gun.get('model');
 
 // Update the value on `greetings`.
-greetings.put({
-	hello: 'world',
-})
-
-// Print the value!
-greetings.on(function (update) {
-	console.log('Update:', update)
-})
+storage.put({
+	'fixtures': JSON.stringify(model)
+});
 
