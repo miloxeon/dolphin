@@ -9,21 +9,39 @@ import {moveController} from './lib/controllers';
 import {clone} from './lib/tools';
 import {addElement, removeElement, addConnection, removeConnection, move} from './actions';
 
-let Gun = require('gun');
-// let peers = ['https://flowcharts.herokuapp.com/gun'];
-let peers = ['http://localhost:8080/gun'];
-let gun = Gun(peers);
+import gun from './model'; 
 
 let storage = gun.get('model');
 let diagram = draw.classDiagram();
 
-storage.get('fixtures').on(function (data) {
-	// model changes
-	diagram.clear();
-	diagram.fromModel(JSON.parse(data));
-	bindControllers(diagram);
-});
+auth(prompt('Enter password'));
 
+function auth(pass) {
+	gun.get('auth').put({
+		password: null
+	});
+	storage.get('error').put(null);
+	
+	gun.get('auth').put({
+		password: pass
+	});
+
+	storage.get('error').on(function (data) {
+		if(!data) {
+			start();
+		}
+	})
+}
+
+function start() {
+	storage.get('fixtures').on(function (data) {
+		diagram.clear();
+		if (data) {
+			diagram.fromModel(JSON.parse(data));
+			bindControllers(diagram);
+		}
+	});
+}
 
 function bindControllers(diagram) {
 	diagram.children().forEach(function (child) {
