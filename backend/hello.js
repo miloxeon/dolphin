@@ -1,46 +1,44 @@
 'use strict';
 
 let model = require('./fixtures');
-var port = process.env.PORT || 8080;
-var express = require('express');
-var Gun = require('gun');
+let sha3 = require('crypto-js/sha3');
+let gun = require('./model');
 
-var app = express();
-app.use(Gun.serve);
-app.get('/', function (req, res) {
-	res.send('Hello');
+let storage = gun.get('model');
+
+getCredentials(function (credentials) {
+	storage.put({
+		'fixtures': null,
+		'error': null
+	});
+
+	let data = getData(credentials.login, credentials.password);
+	storage.put(data);
 });
 
-var server = app.listen(port);
-let gun = Gun({web: server});
-console.log('Server started on port ' + port + ' with /gun');
 
+function getData(login, password) {
+	storage.put({
+		'fixtures': null,
+		'error': null
+	});
 
-var storage = gun.get('model');
-
-storage.put({
-	'fixtures': null,
-	'error': null
-});
-
-gun.get('auth').put(null);
-
-var auth = gun.get('auth').on(function (data) {
-	console.log(data.password)
-	if (data.password == 'hello') {
-		console.log('success');
-		storage.put({
+	if (password.toString() === sha3('hello').toString()) {
+		return {
 			'fixtures': JSON.stringify(model),
-			'error': 'Welcome'
-		});
+			'error': null
+		}
 	} else {
-		console.log('fail');
-		storage.put({
+		return {
 			'fixtures': null,
-			'error': 'Wrong credentials: ' + data.password
-		});
+			'error': 'Wrong credentials: ' + password.toString()
+		}
 	}
-	console.log(' ');
-});
+}
 
-
+function getCredentials(callback) {
+	gun.get('credentials').put(null);
+	gun.get('credentials').on(function (data) {
+		callback(data);
+	});
+}

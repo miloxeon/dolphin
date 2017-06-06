@@ -14,16 +14,24 @@ import gun from './model';
 let storage = gun.get('model');
 let diagram = draw.classDiagram();
 
-auth(prompt('Enter password'));
+let sha3 = require('crypto-js/sha3');
 
-function auth(pass) {
-	gun.get('auth').put({
-		password: null
-	});
-	storage.get('error').put(null);
-	
-	gun.get('auth').put({
-		password: pass
+auth(prompt('Enter login'), prompt('Enter password'));
+
+function auth(login, password) {
+	// gun.get('auth').put({
+	// 	password: null
+	// });
+	// storage.get('error').put(null);
+
+	// gun.get('auth').put({
+	// 	password: sha3(pass).toString()
+	// });
+
+	gun.get('credentials').put(null);
+	gun.get('credentials').put({
+		login,
+		password: sha3(password).toString()
 	});
 
 	storage.get('error').on(function (data) {
