@@ -28,7 +28,9 @@
   },
   "dependencies": {
     "deepmerge": "^1.3.2",
+    "express": "^4.15.3",
     "gun": "^0.7.8",
+    "mongoose": "^4.10.4",
     "svg.draggy.js": "^1.1.1",
     "svg.js": "^2.6.1"
   }

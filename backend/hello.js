@@ -4,11 +4,20 @@ let model = require('./fixtures');
 
 var http = require('http');
 var server = http.createServer();
+
 var Gun = require('gun');
+var server = require('http').createServer(function(req, res){
+	if(Gun.serve(req, res)){ return } // filters gun requests!
+	res.writeHead(200, {'Content-Type': 'text/html'});
+	res.end('hello');
+});
+
 var gun = Gun({web: server});
 
-server.listen(8080, function () {
-  console.log('Server listening on http://localhost:8080/gun')
+let port = process.env.PORT || 8080;
+
+server.listen(port, function () {
+  console.log('Server listening on ' + port);
 })
 
 // var fixtures = gun.get('fixtures');
