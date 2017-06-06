@@ -4,12 +4,12 @@
       "_": {
         "#": "model",
         ">": {
-          "fixtures": 1496757634474.002,
-          "error": 1496757634474.002
+          "fixtures": 1496762153413,
+          "error": 1496762153413
         }
       },
       "fixtures": null,
-      "error": "Wrong credentials: a7aa8f3445d42139ee0cf7c875b6125c565b7ae241476beea5cf1bfb8c989b59e327c9a347cc1857d999e9a81ea48444fb3da7ecf6fd76d11a9bb21429b1c5ac"
+      "error": null
     },
     "auth": {
       "_": {
@@ -24,12 +24,12 @@
       "_": {
         "#": "credentials",
         ">": {
-          "login": 1496757634309.605,
-          "password": 1496757634309.605
+          "login": 1496762153254.235,
+          "password": 1496762153254.235
         }
       },
-      "login": "",
-      "password": "a7aa8f3445d42139ee0cf7c875b6125c565b7ae241476beea5cf1bfb8c989b59e327c9a347cc1857d999e9a81ea48444fb3da7ecf6fd76d11a9bb21429b1c5ac"
+      "login": "sd",
+      "password": "fea2fe13bfee85ece1cd3b2e04933f8c869663682750838aff7c23acb4bba0cc64a9807002747406ed3d62dbf3e2b7e4c02f7cfea6b1542d4ed83029125202d3"
     }
   }
 }

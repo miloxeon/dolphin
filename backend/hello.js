@@ -1,40 +1,17 @@
 'use strict';
 
-let model = require('./fixtures');
 let sha3 = require('crypto-js/sha3');
-let gun = require('./model');
+let gun = require('./gun');
 
 let storage = gun.get('model');
 
+let getData = require('./model').getData;
+
 getCredentials(function (credentials) {
-	storage.put({
-		'fixtures': null,
-		'error': null
+	let data = getData(credentials.login, credentials.password, function (data) {
+		storage.put(data);
 	});
-
-	let data = getData(credentials.login, credentials.password);
-	storage.put(data);
 });
-
-
-function getData(login, password) {
-	storage.put({
-		'fixtures': null,
-		'error': null
-	});
-
-	if (password.toString() === sha3('hello').toString()) {
-		return {
-			'fixtures': JSON.stringify(model),
-			'error': null
-		}
-	} else {
-		return {
-			'fixtures': null,
-			'error': 'Wrong credentials: ' + password.toString()
-		}
-	}
-}
 
 function getCredentials(callback) {
 	gun.get('credentials').put(null);

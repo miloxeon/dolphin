@@ -19,15 +19,6 @@ let sha3 = require('crypto-js/sha3');
 auth(prompt('Enter login'), prompt('Enter password'));
 
 function auth(login, password) {
-	// gun.get('auth').put({
-	// 	password: null
-	// });
-	// storage.get('error').put(null);
-
-	// gun.get('auth').put({
-	// 	password: sha3(pass).toString()
-	// });
-
 	gun.get('credentials').put(null);
 	gun.get('credentials').put({
 		login,
@@ -37,8 +28,10 @@ function auth(login, password) {
 	storage.get('error').on(function (data) {
 		if(!data) {
 			start();
+		} else {
+			console.warn(data);
 		}
-	})
+	});
 }
 
 function start() {

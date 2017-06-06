@@ -1,13 +1,69 @@
 'use strict';
 
-let port = process.env.PORT || 8080;
-let app = require('./app');
-let Gun = require('gun');
+let sha3 = require('crypto-js/sha3');
+let mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost:27017/dolphin');
+let db = mongoose.connection;
+let gun = require('./gun');
+let storage = gun.get('model');
 
-app.use(Gun.serve);
-let server = app.listen(port);
-let gun = Gun({web: server});
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function() {
+	console.log('Connected!')
+});
 
-console.log('Server started on port ' + port + ' with /gun');
+let User = mongoose.model('user', {
+	name: String,
+	surname: String,
+	login: String,
+	password: String,
+	diagrams: []
+});
 
-module.exports = gun;
+let diagram = {
+	name: 'ClassDiagram1',
+	type: 'class',
+	data: JSON.stringify(require('./fixtures'))
+}
+
+new User({
+	name: 'John',
+	surname: 'Doe',
+	login: 'hello',
+	password: sha3('hello').toString(),
+	diagrams: [diagram]
+}).save();
+
+function getData(login, password, callback) {
+	storage.put({
+		'fixtures': null,
+		'error': null
+	});
+
+	let query = User.findOne({
+		login: login,
+		password: password
+
+	}, function (err, user) {
+		let data;
+		if (err || !user) {
+
+			data = {
+				'fixtures': null,
+				'error': err || null
+			}
+
+		} else {
+
+			data = {
+				'fixtures': user.diagrams[0].data,
+				'error': null
+			}
+		}
+		callback(data);
+	});
+}
+
+module.exports = {
+	getData
+}
