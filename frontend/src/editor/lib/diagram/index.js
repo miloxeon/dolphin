@@ -28,6 +28,7 @@ function setId(id) {
 
 function clear() {
 	this.children().forEach(function (child) {
+		child.off();
 		child.remove();
 	});
 	return this;

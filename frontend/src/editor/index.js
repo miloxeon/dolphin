@@ -14,26 +14,44 @@ let peers = ['http://localhost:8080/gun'];
 let gun = Gun(peers);
 
 let storage = gun.get('model');
+let diagram = draw.classDiagram();
 
-let model;
-let diagram;
+storage.get('fixtures').on(function (data) {
+	// model changes
+	diagram.clear();
+	diagram.fromModel(JSON.parse(data));
+	bindControllers(diagram);
+});
 
-storage.val(function (data) {
-	diagram = draw.classDiagram();
-	model = JSON.parse(data.fixtures);
 
-	build();
+function bindControllers(diagram) {
+	diagram.children().forEach(function (child) {
+		
+		child.on('dragmove', function () {
+			diagram.fire('redraw');
+			diagram.redrawConnections();
+		})
 
-	diagram.on('redraw', diagram.redrawConnections);
-	diagram.on('rebuild', function (event) {
-		storage.get('fixtures').put(JSON.stringify(event.detail.new_model));
+		child.on('dragend', function () {
+			// change model on dragend
+			let model = getModel();
+			let new_model = move(model, this);
+			changeModel(new_model);
+		});
 	});
-});
+}
 
-storage.on(function (data) {
-	model = JSON.parse(data.fixtures);
-	rebuild();
-});
+function changeModel(new_model) {
+	storage.get('fixtures').put(JSON.stringify(new_model));
+}
+
+function getModel() {
+	let model;
+	storage.get('fixtures').val(function (data) {
+		model = JSON.parse(data);
+	})
+	return model;
+}
 
 module.exports = {
 	addElement,
@@ -43,39 +61,13 @@ module.exports = {
 	getModel
 }
 
-function getModel () {
-	return clone(model);
-}
+// function unbindControllers(diagram) {
+// 	diagram.children().forEach(function (child) {
+// 		child.off();
+// 	});
+// }
 
-function bindControllers(diagram) {
-	diagram.children().forEach(function (child) {
-		
-		child.on('dragmove', function () {
-			diagram.fire('redraw');
-		})
-
-		child.on('dragend', function () {
-
-			diagram.fire('rebuild', {
-				new_model: move(model, this)
-			});
-		});
-	});
-}
-
-function unbindControllers(diagram) {
-	diagram.children().forEach(function (child) {
-		child.off();
-	});
-}
-
-function build() {
-	unbindControllers(diagram);
-	diagram.fromModel(model);
-	bindControllers(diagram);
-}
-
-function rebuild() {
-	diagram.clear();
-	build();
-}
+// function rebuild() {
+// 	diagram.clear();
+// 	build();
+// }
