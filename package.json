@@ -4,7 +4,8 @@
   "description": "Diagram tool",
   "main": "index.html",
   "scripts": {
-    "start": "webpack --hide-modules",
+    "start": "node backend/hello.js",
+    "watch": "webpack --hide-modules",
     "build": "webpack --env.production"
   },
   "repository": {
