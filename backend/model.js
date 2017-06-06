@@ -34,13 +34,22 @@ new User({
 	diagrams: [diagram]
 }).save();
 
-function getData(login, password, callback) {
-	storage.put({
-		'fixtures': null,
-		'error': null
-	});
+function createUser(schema) {
+	new User(schema).save();
+}
 
-	let query = User.findOne({
+function setData(login, password, data) {
+	User.findOneAndUpdate({
+		login: login,
+		password: password
+	}, {
+		diagrams: 
+	}).exec();
+}
+
+function getData(login, password, callback) {
+
+	User.findOne({
 		login: login,
 		password: password
 
@@ -51,14 +60,14 @@ function getData(login, password, callback) {
 			data = {
 				'fixtures': null,
 				'error': err || null
-			}
+			};
 
 		} else {
 
 			data = {
 				'fixtures': user.diagrams[0].data,
 				'error': null
-			}
+			};
 		}
 		callback(data);
 	});

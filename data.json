@@ -4,11 +4,11 @@
       "_": {
         "#": "model",
         ">": {
-          "fixtures": 1496762153413,
-          "error": 1496762153413
+          "fixtures": 1496765076876.215,
+          "error": 1496765072399
         }
       },
-      "fixtures": null,
+      "fixtures": "{\"elements\":[{\"id\":1,\"position\":{\"x\":76,\"y\":29},\"text\":{\"name\":\"Person\",\"type\":\"interface\",\"attributes\":[{\"name\":\"name\",\"type\":\"string\",\"value\":\"Alex\",\"scope\":\"public\"},{\"name\":\"age\",\"type\":\"int\",\"value\":\"100\"},{\"name\":\"wife\",\"scope\":\"protected\",\"type\":\"any\"}],\"methods\":[{\"name\":\"helloWorld\",\"type\":\"int\"},{\"name\":\"foo\",\"type\":\"string\",\"args\":[{\"name\":\"name\",\"type\":\"string\",\"value\":\"Alex\"},{\"name\":\"age\",\"type\":\"int\",\"value\":\"100\"},{\"name\":\"wife\",\"type\":\"any\"},{\"name\":\"wife\",\"type\":\"any\"}]}]}},{\"id\":2,\"position\":{\"x\":600,\"y\":300},\"text\":{\"name\":\"Creature\",\"attributes\":[{\"name\":\"name\",\"type\":\"string\"}]}}],\"connections\":[{\"id\":1,\"type\":\"inheritance\",\"from\":{\"id\":1,\"role\":\"foo\",\"indicator\":\"2\"},\"to\":{\"id\":2,\"role\":\"bar\",\"indicator\":\"1..*\"},\"text\":\"inherits\"}]}",
       "error": null
     },
     "auth": {
@@ -24,12 +24,12 @@
       "_": {
         "#": "credentials",
         ">": {
-          "login": 1496762153254.235,
-          "password": 1496762153254.235
+          "login": 1496765072340.765,
+          "password": 1496765072340.765
         }
       },
-      "login": "sd",
-      "password": "fea2fe13bfee85ece1cd3b2e04933f8c869663682750838aff7c23acb4bba0cc64a9807002747406ed3d62dbf3e2b7e4c02f7cfea6b1542d4ed83029125202d3"
+      "login": "hello",
+      "password": "52fa80662e64c128f8389c9ea6c73d4c02368004bf4463491900d11aaadca39d47de1b01361f207c512cfa79f0f92c3395c67ff7928e3f5ce3e3c852b392f976"
     }
   }
 }

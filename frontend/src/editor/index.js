@@ -8,26 +8,45 @@ import {draw} from './lib/classes';
 import {moveController} from './lib/controllers';
 import {clone} from './lib/tools';
 import {addElement, removeElement, addConnection, removeConnection, move} from './actions';
-
 import gun from './model'; 
-
+let sha3 = require('crypto-js/sha3');
 let storage = gun.get('model');
 let diagram = draw.classDiagram();
 
-let sha3 = require('crypto-js/sha3');
+if (checkAuth()) {
+	start();
+} else {
+	auth(getLogin(), getPassword(), start);
+}
 
-auth(prompt('Enter login'), prompt('Enter password'));
+function checkAuth() {
+	return localStorage.getItem('login') && localStorage.getItem('password');
+}
 
-function auth(login, password) {
+function getLogin() {
+	if (!localStorage.getItem('login')) {
+		localStorage.setItem('login', prompt('Enter login'));
+	}
+	return localStorage.getItem('login');
+}
+
+function getPassword() {
+	if (!localStorage.getItem('password')) {
+		localStorage.setItem('password', sha3(prompt('Enter password')).toString());
+	}
+	return localStorage.getItem('password');
+}
+
+function auth(login, password, callback) {
 	gun.get('credentials').put(null);
 	gun.get('credentials').put({
 		login,
-		password: sha3(password).toString()
+		password
 	});
 
 	storage.get('error').on(function (data) {
 		if(!data) {
-			start();
+			callback();
 		} else {
 			console.warn(data);
 		}
