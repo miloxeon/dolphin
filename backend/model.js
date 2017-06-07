@@ -38,14 +38,14 @@ function createUser(schema) {
 	new User(schema).save();
 }
 
-function setData(login, password, data) {
-	User.findOneAndUpdate({
-		login: login,
-		password: password
-	}, {
-		diagrams: 
-	}).exec();
-}
+// function setData(login, password, data) {
+// 	User.findOneAndUpdate({
+// 		login: login,
+// 		password: password
+// 	}, {
+// 		diagrams: 
+// 	}).exec();
+// }
 
 function getData(login, password, callback) {
 
