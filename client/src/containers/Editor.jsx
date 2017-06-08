@@ -1,6 +1,4 @@
 import React, {PropTypes} from 'react';
-import RaisedButton from 'material-ui/RaisedButton';
-import Card from 'material-ui/Card';
 
 
 class Editor extends React.Component {
@@ -40,8 +38,6 @@ class Editor extends React.Component {
   render() {
     return (
       <div>
-        <RaisedButton label="Download diagram" onClick={this.handleDownload} primary />
-        <RaisedButton label="Export diagram" onClick={this.handleExport} primary />
         <div id="diagram"></div>
       </div>
     );

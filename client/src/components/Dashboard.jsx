@@ -1,16 +1,35 @@
 import React, { PropTypes } from 'react';
-import { Card, CardTitle, CardText } from 'material-ui/Card';
+
+import Sidebar from 'grommet/components/Sidebar';
+import Title from 'grommet/components/Title';
+import Box from 'grommet/components/Box';
+import Menu from 'grommet/components/Menu';
+import Anchor from 'grommet/components/Anchor';
+import Animate from 'grommet/components/Animate';
 
 const Dashboard = ({ secretData }) => (
   <div>
-    <Card className="container">
-      <CardTitle
-        title="Dashboard"
-        subtitle="You should get access to this page only after authentication."
-      />
-
-      {secretData && <CardText style={{ fontSize: '16px', color: 'green' }}>{secretData}</CardText>}
-    </Card>
+    <Animate 
+        visible={true}
+        enter={{"animation": "slide-right", "duration": 300}}
+        keep={true}>
+        <Sidebar colorIndex='neutral-1' size='small'>
+          <Box flex='grow'
+            justify='start'>
+            <Menu primary={true}>
+              <Anchor href='#'>
+                First
+              </Anchor>
+              <Anchor href='#'>
+                Second
+              </Anchor>
+              <Anchor href='#'>
+                Third
+              </Anchor>
+            </Menu>
+          </Box>
+        </Sidebar>
+      </Animate>
   </div>
 );
 

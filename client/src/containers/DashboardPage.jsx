@@ -43,6 +43,7 @@ class DashboardPage extends React.Component {
     return (
       <div>
         <Editor diagram={this.state.secretData} />
+        <Dashboard secretData="" />
       </div>
     );
   }
