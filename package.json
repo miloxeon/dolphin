@@ -1,38 +1,41 @@
 {
-  "name": "dolphin",
+  "name": "Dolphin",
   "version": "0.0.1",
   "description": "Diagram tool",
-  "main": "index.html",
+  "main": "index.js",
   "scripts": {
-    "start": "node backend/hello.js",
-    "watch": "webpack --hide-modules",
-    "build": "webpack --env.production"
-  },
-  "repository": {
-    "type": "git",
-    "url": ""
+    "start": "nodemon --use_strict index.js",
+    "bundle": "webpack",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Miloslav Voloskov",
-  "license": "own",
-  "bugs": {
-    "url": ""
-  },
-  "homepage": "",
-  "devDependencies": {
-    "babel-core": "^6.13.2",
-    "babel-loader": "^6.2.4",
-    "babel-preset-es2015": "^6.24.1",
-    "css-loader": "^0.28.3",
-    "style-loader": "^0.18.1",
-    "webpack": "^2.0.0"
-  },
   "dependencies": {
-    "crypto-js": "^3.1.9-1",
-    "deepmerge": "^1.3.2",
+    "bcrypt": "^1.0.2",
+    "body-parser": "^1.17.2",
     "express": "^4.15.3",
-    "gun": "^0.7.8",
-    "mongoose": "^4.10.4",
+    "jsonwebtoken": "^7.4.1",
+    "material-ui": "^0.18.2",
+    "mongoose": "^4.10.5",
+    "passport": "^0.3.2",
+    "passport-local": "^1.0.0",
+    "react": "^15.5.4",
+    "react-dom": "^15.5.4",
+    "react-router": "^3.0.2",
+    "react-tap-event-plugin": "^2.0.1",
+    "validator": "^7.0.0",
+    "redux": "^3.6.0",
     "svg.draggy.js": "^1.1.1",
-    "svg.js": "^2.6.1"
+    "svg.js": "^2.6.1",
+    "deepmerge": "^1.3.2"
+  },
+  "devDependencies": {
+    "babel-core": "^6.24.1",
+    "babel-loader": "^7.0.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "nodemon": "^1.11.0",
+    "webpack": "^2.6.1",
+    "css-loader": "^0.28.3",
+    "style-loader": "^0.18.1"
   }
 }

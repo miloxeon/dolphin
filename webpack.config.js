@@ -1,48 +1,33 @@
-'use strict';
+const path = require('path');
 
-const webpack = require('webpack');
 
-module.exports = (env = {}) => {
+module.exports = {
+  // the entry file for the bundle
+  entry: path.join(__dirname, '/client/src/app.jsx'),
 
-	const isProduction = env.production === true;
+  // the bundle file we will get in the result
+  output: {
+    path: path.join(__dirname, '/client/dist/js'),
+    filename: 'app.js',
+  },
 
-	return {
-		context: __dirname + '/frontend/src',
-		entry: './index.js',
-		output: {
-			path: __dirname + '/frontend/dist',
-			filename: 'bundle.js',
-			libraryTarget: 'var',
-			library: 'dolphin'
-		},
-		module: {
-			rules: [
-				{
-					test: /\.js$/,
-					loader: 'babel-loader',
-					exclude: /node_modules/
-				},
-				{
-					test: /\.css$/, 
-					loader: "style-loader!css-loader"
-				}
-			]
-		},
-		plugins: isProduction ? [new webpack.optimize.UglifyJsPlugin({
-			compress: {
-				warnings: false,
-				drop_console: true
-			}
-		})] : [],
-		watch: !isProduction,
-		devtool: isProduction ? false : 'eval',
-		stats: {
-			colors: true,
-			version: false,
-			hash: false,
-			timings: true,
-			assets: isProduction,
-			chunks: isProduction
-		}
-	}
-}
+  module: {
+
+    // apply loaders to files that meet given conditions
+    loaders: [{
+      test: /\.jsx?$/,
+      include: path.join(__dirname, '/client/src'),
+      loader: 'babel-loader',
+      query: {
+        presets: ["react", "es2015"]
+      }
+    },
+    {
+      test: /\.css$/,
+      loader: "style-loader!css-loader"
+    }],
+  },
+
+  // start Webpack in a watch mode, so Webpack will rebuild the bundle on changes
+  watch: true
+};
