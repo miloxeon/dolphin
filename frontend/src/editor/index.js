@@ -4,33 +4,24 @@
 // todo errors
 
 require('./css/style.css');
+
 import {draw} from './lib/classes';
 import {moveController} from './lib/controllers';
-import {clone} from './lib/tools';
-import {addElement, removeElement, addConnection, removeConnection, move} from './actions';
-import gun from './model'; 
-import {checkAuth, getLogin, getPassword, auth} from './auth';
+import store from './model';
 
-let storage = gun.get('model');
 let diagram = draw.classDiagram();
+rebuild(diagram);
 
-function start() {
-	if (checkAuth()) {
-		load();
-	} else {
-		auth(getLogin(), getPassword(), load);
-	}
+function rebuild(diagram) {
+	diagram.clear();
+	diagram.fromModel(store.getState());
+	bindControllers(diagram);
 }
 
-function load() {
-	storage.get('fixtures').on(function (data) {
-		diagram.clear();
-		if (data) {
-			diagram.fromModel(JSON.parse(data));
-			bindControllers(diagram);
-		}
-	});
-}
+store.subscribe(function () {
+	// rebuild diagram if something happens
+	rebuild(diagram);
+});
 
 function bindControllers(diagram) {
 	diagram.children().forEach(function (child) {
@@ -42,41 +33,16 @@ function bindControllers(diagram) {
 
 		child.on('dragend', function () {
 			// change model on dragend
-			let model = getModel();
-			let new_model = move(model, this);
-			changeModel(new_model);
+			store.dispatch({
+				type: 'MOVE',
+				payload: this
+			});
 		});
 	});
 }
 
-function changeModel(new_model) {
-	storage.get('fixtures').put(JSON.stringify(new_model));
-}
 
-function getModel() {
-	let model;
-	storage.get('fixtures').val(function (data) {
-		model = JSON.parse(data);
-	})
-	return model;
-}
 
-module.exports = {
-	addElement,
-	removeElement,
-	addConnection,
-	removeConnection,
-	getModel,
-	start
-}
+let api = require('./api');
 
-// function unbindControllers(diagram) {
-// 	diagram.children().forEach(function (child) {
-// 		child.off();
-// 	});
-// }
-
-// function rebuild() {
-// 	diagram.clear();
-// 	build();
-// }
+module.exports = api;
