@@ -27,7 +27,7 @@ function addConnection(blueprint) {
 	});
 }
 
-function removeConnection(id){
+function removeConnection(id) {
 	store.dispatch({
 		type: 'REMOVE_CONNECTION',
 		payload: id
