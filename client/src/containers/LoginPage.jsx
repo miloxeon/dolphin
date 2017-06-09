@@ -46,6 +46,7 @@ class LoginPage extends React.Component {
     const email = encodeURIComponent(this.state.user.email);
     const password = encodeURIComponent(this.state.user.password);
     const formData = `email=${email}&password=${password}`;
+    console.log(formData)
 
     // create an AJAX request
     const xhr = new XMLHttpRequest();
@@ -111,7 +112,6 @@ class LoginPage extends React.Component {
       />
     );
   }
-
 }
 
 LoginPage.contextTypes = {

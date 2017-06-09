@@ -4,49 +4,54 @@ import { Card, CardText } from 'material-ui/Card';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 
+import Form from 'grommet/components/Form';
+import FormFields from 'grommet/components/FormFields';
+import FormField from 'grommet/components/FormField';
+import Footer from 'grommet/components/Footer';
+import Button from 'grommet/components/Button';
+import Heading from 'grommet/components/Heading';
+import TextInput from 'grommet/components/TextInput';
+import Box from 'grommet/components/Box';
 
 const LoginForm = ({
-  onSubmit,
+  onSubmit, 
   onChange,
   errors,
   successMessage,
   user
 }) => (
-  <Card className="container">
-    <form action="/" onSubmit={onSubmit}>
-      <h2 className="card-heading">Login</h2>
-
-      {successMessage && <p className="success-message">{successMessage}</p>}
-      {errors.summary && <p className="error-message">{errors.summary}</p>}
-
-      <div className="field-line">
-        <TextField
-          floatingLabelText="Email"
-          name="email"
-          errorText={errors.email}
+  <Box justify="center"
+    align="center"
+    pad='large'
+    margin='large'
+    colorIndex='light-2'
+    size="full">
+    <Form action="/" onSubmit={onSubmit}>
+      <Heading align="center">
+        Hello there!
+      </Heading>
+      <FormFields>
+        <FormField label='Email'
+          error={errors.email}
           onChange={onChange}
-          value={user.email}
-        />
-      </div>
-
-      <div className="field-line">
-        <TextField
-          floatingLabelText="Password"
-          type="password"
-          name="password"
+          value={user.email}>
+          <TextInput name="email" />
+        </FormField>
+        <FormField label='Password'
+          error={errors.password}
           onChange={onChange}
-          errorText={errors.password}
-          value={user.password}
-        />
-      </div>
+          value={user.password}>
+          <TextInput type="password" name="password" />
+        </FormField>
+      </FormFields>
+      <Footer pad={{"vertical": "medium"}}>
+        <Button label='Submit'
+          type='submit'
+          primary={true}/>
+      </Footer>
+    </Form>
 
-      <div className="button-line">
-        <RaisedButton type="submit" label="Log in" primary />
-      </div>
-
-      <CardText>Dont have an account? <Link to={'/signup'}>Create one</Link>.</CardText>
-    </form>
-  </Card>
+  </Box>
 );
 
 LoginForm.propTypes = {
