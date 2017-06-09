@@ -1,5 +1,5 @@
-import React, { PropTypes } from 'react';
-
+import React from 'react';
+import PropTypes from 'prop-types';
 import Sidebar from 'grommet/components/Sidebar';
 import Title from 'grommet/components/Title';
 import Box from 'grommet/components/Box';
