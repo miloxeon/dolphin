@@ -1,6 +1,17 @@
 #diagram {
-  height: 900px;
-  margin: 10px;
+  /*height: 900px;*/
+  /*margin: 10px;*/
   border: 1px solid #c0ffee;
   border-radius: 3px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 99%;
+  min-height: 500px;
+  min-height: 99vh;
+}
+
+.grommetux-toast__container {
+	pointer-events: none;
 }

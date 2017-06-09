@@ -11,4 +11,8 @@ router.get('/dashboard', (req, res) => {
   });
 });
 
+router.get('/diagrams/*', (req, res) => {
+	// extract diagram from database and send
+});
+
 module.exports = router;
