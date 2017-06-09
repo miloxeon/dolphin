@@ -1,67 +1,70 @@
 import React, { PropTypes } from 'react';
-import { Link } from 'react-router';
-import { Card, CardText } from 'material-ui/Card';
-import RaisedButton from 'material-ui/RaisedButton';
-import TextField from 'material-ui/TextField';
-
+import Form from 'grommet/components/Form';
+import FormFields from 'grommet/components/FormFields';
+import FormField from 'grommet/components/FormField';
+import Footer from 'grommet/components/Footer';
+import Button from 'grommet/components/Button';
+import Heading from 'grommet/components/Heading';
+import TextInput from 'grommet/components/TextInput';
+import Box from 'grommet/components/Box';
+import NavAnchor from './NavAnchor.jsx';
 
 const SignUpForm = ({
-  onSubmit,
-  onChange,
-  errors,
-  user,
+	onSubmit, 
+	onChange,
+	errors,
+	user
 }) => (
-  <Card className="container">
-    <form action="/" onSubmit={onSubmit}>
-      <h2 className="card-heading">Sign Up</h2>
-
-      {errors.summary && <p className="error-message">{errors.summary}</p>}
-
-      <div className="field-line">
-        <TextField
-          floatingLabelText="Name"
-          name="name"
-          errorText={errors.name}
-          onChange={onChange}
-          value={user.name}
-        />
-      </div>
-
-      <div className="field-line">
-        <TextField
-          floatingLabelText="Email"
-          name="email"
-          errorText={errors.email}
-          onChange={onChange}
-          value={user.email}
-        />
-      </div>
-
-      <div className="field-line">
-        <TextField
-          floatingLabelText="Password"
-          type="password"
-          name="password"
-          onChange={onChange}
-          errorText={errors.password}
-          value={user.password}
-        />
-      </div>
-
-      <div className="button-line">
-        <RaisedButton type="submit" label="Create New Account" primary />
-      </div>
-
-      <CardText>Already have an account? <Link to={'/login'}>Log in</Link></CardText>
-    </form>
-  </Card>
+	<Box justify="center"
+		align="center"
+		pad='large'
+		margin='large'
+		colorIndex='light-2'
+		size="full">
+		<Form action="/" onSubmit={onSubmit}>
+			<Heading align="center">
+				Hello there!
+			</Heading>
+			<p>
+				Already has an account?&nbsp;
+				<NavAnchor path="/login">
+					Sign in
+				</NavAnchor>
+			</p>
+			<FormFields>
+				<FormField label='Your name'
+					error={errors.name}
+					onChange={onChange}
+					value={user.name}>
+					<TextInput name="name" />
+				</FormField>
+				<FormField label='Email'
+					error={errors.email}
+					onChange={onChange}
+					value={user.email}>
+					<TextInput name="email" />
+				</FormField>
+				<FormField label='Password'
+					error={errors.password}
+					onChange={onChange}
+					value={user.password}>
+					<TextInput type="password" name="password" />
+				</FormField>
+			</FormFields>
+			<Footer pad={{"vertical": "medium"}}>
+				<Button label='Sign up'
+					type='submit'
+					primary/>
+			</Footer>
+		</Form>
+	</Box>
 );
 
 SignUpForm.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
-  onChange: PropTypes.func.isRequired,
-  errors: PropTypes.object.isRequired,
-  user: PropTypes.object.isRequired
+	onSubmit: PropTypes.func.isRequired,
+	onChange: PropTypes.func.isRequired,
+	errors: PropTypes.object.isRequired,
+	user: PropTypes.object.isRequired
 };
 
 export default SignUpForm;
