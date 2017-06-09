@@ -20650,10 +20650,6 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRouter = __webpack_require__(67);
 
-var _Auth = __webpack_require__(76);
-
-var _Auth2 = _interopRequireDefault(_Auth);
-
 var _App = __webpack_require__(349);
 
 var _App2 = _interopRequireDefault(_App);
@@ -20666,25 +20662,9 @@ var _Section = __webpack_require__(358);
 
 var _Section2 = _interopRequireDefault(_Section);
 
-var _Header = __webpack_require__(356);
+var _Header = __webpack_require__(580);
 
 var _Header2 = _interopRequireDefault(_Header);
-
-var _Title = __webpack_require__(165);
-
-var _Title2 = _interopRequireDefault(_Title);
-
-var _Box = __webpack_require__(25);
-
-var _Box2 = _interopRequireDefault(_Box);
-
-var _NavAnchor = __webpack_require__(247);
-
-var _NavAnchor2 = _interopRequireDefault(_NavAnchor);
-
-var _Menu = __webpack_require__(107);
-
-var _Menu2 = _interopRequireDefault(_Menu);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -20693,49 +20673,7 @@ var Base = function Base(_ref) {
   return _react2.default.createElement(
     _App2.default,
     null,
-    _react2.default.createElement(
-      _Header2.default,
-      { pad: 'medium' },
-      _react2.default.createElement(
-        _Title2.default,
-        null,
-        _react2.default.createElement(
-          _reactRouter.IndexLink,
-          { to: '/' },
-          'Dolphin'
-        )
-      ),
-      _Auth2.default.isUserAuthenticated() ? _react2.default.createElement(
-        _Menu2.default,
-        { responsive: true,
-          inline: true,
-          flex: true,
-          direction: 'row',
-          justify: 'end' },
-        _react2.default.createElement(
-          _NavAnchor2.default,
-          { path: '/logout' },
-          'Log out'
-        )
-      ) : _react2.default.createElement(
-        _Menu2.default,
-        { responsive: true,
-          inline: true,
-          flex: true,
-          direction: 'row',
-          justify: 'end' },
-        _react2.default.createElement(
-          _NavAnchor2.default,
-          { path: '/login' },
-          'Login'
-        ),
-        _react2.default.createElement(
-          _NavAnchor2.default,
-          { path: '/signup' },
-          'Sign up'
-        )
-      )
-    ),
+    _react2.default.createElement(_Header2.default, null),
     _react2.default.createElement(
       _Article2.default,
       null,
@@ -59198,6 +59136,95 @@ Heading.defaultProps = {
   tag: 'h1'
 };
 module.exports = exports['default'];
+
+/***/ }),
+/* 580 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactRouter = __webpack_require__(67);
+
+var _Auth = __webpack_require__(76);
+
+var _Auth2 = _interopRequireDefault(_Auth);
+
+var _Header = __webpack_require__(356);
+
+var _Header2 = _interopRequireDefault(_Header);
+
+var _Title = __webpack_require__(165);
+
+var _Title2 = _interopRequireDefault(_Title);
+
+var _Box = __webpack_require__(25);
+
+var _Box2 = _interopRequireDefault(_Box);
+
+var _NavAnchor = __webpack_require__(247);
+
+var _NavAnchor2 = _interopRequireDefault(_NavAnchor);
+
+var _Menu = __webpack_require__(107);
+
+var _Menu2 = _interopRequireDefault(_Menu);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = function () {
+	return _react2.default.createElement(
+		_Header2.default,
+		{ pad: 'medium' },
+		_react2.default.createElement(
+			_Title2.default,
+			null,
+			_react2.default.createElement(
+				_reactRouter.IndexLink,
+				{ to: '/' },
+				'Dolphin'
+			)
+		),
+		_Auth2.default.isUserAuthenticated() ? _react2.default.createElement(
+			_Menu2.default,
+			{ responsive: true,
+				inline: true,
+				flex: true,
+				direction: 'row',
+				justify: 'end' },
+			_react2.default.createElement(
+				_NavAnchor2.default,
+				{ path: '/logout' },
+				'Log out'
+			)
+		) : _react2.default.createElement(
+			_Menu2.default,
+			{ responsive: true,
+				inline: true,
+				flex: true,
+				direction: 'row',
+				justify: 'end' },
+			_react2.default.createElement(
+				_NavAnchor2.default,
+				{ path: '/login' },
+				'Login'
+			),
+			_react2.default.createElement(
+				_NavAnchor2.default,
+				{ path: '/signup' },
+				'Sign up'
+			)
+		)
+	);
+};
 
 /***/ })
 /******/ ]);
