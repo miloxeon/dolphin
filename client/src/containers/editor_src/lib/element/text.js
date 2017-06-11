@@ -118,7 +118,7 @@ function addMethods(element, text, style) {
 
 			addLabel(value.name, 'dolphin_node_method', 1);	// attribute name
 
-			if (value.args) {	// if method has arguments
+			if (value.args.length > 1) {	// if method has arguments
 
 				add.tspan('(');		// open the bracket
 

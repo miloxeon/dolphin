@@ -18,21 +18,21 @@ function validateSignupForm(payload) {
 
   if (!payload || typeof payload.email !== 'string' || !validator.isEmail(payload.email)) {
     isFormValid = false;
-    errors.email = 'Please provide a correct email address.';
+    errors.email = 'Введите корректный электронный адрес.';
   }
 
   if (!payload || typeof payload.password !== 'string' || payload.password.trim().length < 8) {
     isFormValid = false;
-    errors.password = 'Password must have at least 8 characters.';
+    errors.password = 'Пароль должен состоять как минимум из 8 символов.';
   }
 
   if (!payload || typeof payload.name !== 'string' || payload.name.trim().length === 0) {
     isFormValid = false;
-    errors.name = 'Please provide your name.';
+    errors.name = 'Введите имя.';
   }
 
   if (!isFormValid) {
-    message = 'Check the form for errors.';
+    message = 'Проверьте форму и попробуйте еще.';
   }
 
   return {

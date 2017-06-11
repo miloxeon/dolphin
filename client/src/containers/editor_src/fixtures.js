@@ -47,9 +47,6 @@ let element_blueprints = [
 						}, {
 							name: 'wife',
 							type: 'any'
-						}, {
-							name: 'wife',
-							type: 'any'
 						}
 					]
 				}

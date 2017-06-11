@@ -24,16 +24,16 @@ const SignUpForm = ({
 		size="full">
 		<Form action="/" onSubmit={onSubmit}>
 			<Heading align="center">
-				Hello there!
+				Добро пожаловать!
 			</Heading>
 			<p>
-				Already has an account?&nbsp;
+				Уже зарегистрировались?&nbsp;
 				<NavAnchor path="/login">
-					Sign in
+					Войти
 				</NavAnchor>
 			</p>
 			<FormFields>
-				<FormField label='Your name'
+				<FormField label='Ваше имя'
 					error={errors.name}
 					onChange={onChange}
 					value={user.name}>
@@ -45,7 +45,7 @@ const SignUpForm = ({
 					value={user.email}>
 					<TextInput name="email" />
 				</FormField>
-				<FormField label='Password'
+				<FormField label='Пароль'
 					error={errors.password}
 					onChange={onChange}
 					value={user.password}>
@@ -53,7 +53,7 @@ const SignUpForm = ({
 				</FormField>
 			</FormFields>
 			<Footer pad={{"vertical": "medium"}}>
-				<Button label='Sign up'
+				<Button label='Зарегистрироваться'
 					type='submit'
 					primary/>
 			</Footer>

@@ -22,7 +22,7 @@ export default () => (
 				direction='row'
 				justify='end'>
 				<NavAnchor path="/logout">
-					Log out
+					Выход
 				</NavAnchor>
 			</Menu>
 		) : (
@@ -32,10 +32,10 @@ export default () => (
 				direction='row'
 				justify='end'>
 				<NavAnchor path="/login">
-					Login
+					Войти
 				</NavAnchor>
 				<NavAnchor path="/signup">
-					Sign up
+					Регистрация
 				</NavAnchor>
 			</Menu>
 		)}

@@ -10,12 +10,12 @@ import NavButton from './NavButton.jsx';
 const HomePage = () => (
 	<Section align='center'>
 		<Headline>
-			Dolphin is diagrams.
+			Dolphin — это диаграммы.
 		</Headline>
 		<Paragraph align='center'>
-			Dolphin is tiny tool which allows you to create awesome UML Class diagrams. We utilize SVG to make your diagrams look perfect on both screen and print.  
+			Dolphin — это небольшой инструмент, позволяющий вам создавать диаграммы классов UML. Мы используем SVG, чтобы ваши диаграммы выглядели одинаково хорошо и на экране, и при печати.
 		</Paragraph>
-		<NavButton label='Get started'
+		<NavButton label='Начать работу'
 			path='/create'
 			primary={true} />
 

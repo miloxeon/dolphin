@@ -173,32 +173,32 @@ class Editor extends React.Component {
                 <Menu primary>
                   {Auth.isUserAuthenticated() ? (
                     <Anchor href='#' onClick={this.saveDiagram}>
-                      Save
+                      Сохранить
                     </Anchor>
                   ) : (
                     null
                   )}
                   <Anchor href='#' onClick={this.loadDiagram}>
-                    Open
+                    Открыть
                   </Anchor>
                   <Anchor href='#' onClick={this.exportDiagram}>
-                    Export as SVG
+                    Экспорт в SVG
                   </Anchor>
                   <Anchor href='#' onClick={this.downloadDiagram}>
-                    Dowload
+                    Скачать
                   </Anchor>
                 </Menu>
                 <Box pad="small">
                   <Paragraph>
-                    Add element:&nbsp;
+                    Добавить элемент:&nbsp;
                     <Anchor onClick={this.handleOpenAddElementLayer}>
-                      Click here
+                      Нажмите сюда
                     </Anchor>
                     <br />
-                    Delete element: Alt + click<br />
+                    Удалить элемент: Alt + мышь<br />
                     <br />
-                    Connect: Ctrl + drag<br />
-                    Disconnect: Alt + click<br />
+                    Соединение: Ctrl + потянуть<br />
+                    Разорвать: Alt + мышь<br />
                   </Paragraph>
                 </Box>
               </Box>

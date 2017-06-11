@@ -46,7 +46,7 @@ class Create extends React.Component {
         {
           !Auth.isUserAuthenticated() ? (
             <Toast status='warning'>
-              You'll need an account to save diagrams. However, you can still download the diagram to your device.
+              Вам нужно зарегистрироваться, чтобы сохранять диаграммы у нас. Тем не менее, вы можете сохранить диаграмму к себе.
             </Toast>
           ) : (
             null
