@@ -6,7 +6,7 @@ import {default_blueprint, allowed_types} from './model';
 
 export function applyBlueprint (blueprint) {
 	this.blueprint = fillBlueprint(blueprint);
-	this.setId(getHash());
+	this.setId(blueprint.id);
 	this.setRichText({
 		text: blueprint.text,
 		from: {

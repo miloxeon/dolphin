@@ -17,6 +17,7 @@ export function removeElement(model, id) {
 	for (let i = 0; i < new_model.elements.length; i++) {
 		if (new_model.elements[i].id === id) {
 			index = i;
+			new_model.elements.splice(index, 1);
 			break;
 		}
 	}
@@ -27,8 +28,6 @@ export function removeElement(model, id) {
 			connections.push(i);
 		}
 	}
-
-	new_model.elements.splice(index, 1);
 
 	connections.forEach(function (id) {
 		new_model = removeConnection(new_model, id);

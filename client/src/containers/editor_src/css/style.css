@@ -101,6 +101,14 @@
 	stroke-linejoin: round;
 	stroke-linecap: round;
 	shape-rendering: geometricPrecision;
+	cursor: pointer;
+
+	transition: stroke-width .3s;
+}
+
+.dolphin_line:hover {
+	stroke-width: 10;
+	stroke-linecap: butt;
 }
 
 /* Different line styles */
@@ -136,6 +144,7 @@
 .dolphin_line_text {
 	/* All of the line text */
 	letter-spacing: 1.2px;
+	user-select: none;
 }
 
 .dolphin_line_indicator {
@@ -177,7 +186,6 @@
 .dolphin_line_marker {
 	/* Line arrows and diamonds */
 	stroke: black;
-	stroke-width: 1;
 	stroke-linejoin: round;
 	stroke-linecap: round;
 	shape-rendering: geometricPrecision;

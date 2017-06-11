@@ -11,12 +11,22 @@ import {moveController} from './lib/controllers';
 import createStoreFromSavedDiagram from './model';
 import {download} from './lib/download';
 let fixtures = JSON.stringify(require('./fixtures'));
+let Mousetrap = require('mousetrap');
 
-let diagram;
+let diagram = draw.classDiagram();
 let store;
 
+let altKeyDown;
+
+Mousetrap.bind('alt', function () {
+	altKeyDown = true;
+}, 'keydown');
+
+Mousetrap.bind('alt', function () {
+	altKeyDown = false;
+}, 'keyup');
+
 function loadDiagram(diagram_string) {
-	diagram = draw.classDiagram();
 	diagram.clear();
 	store = createStoreFromSavedDiagram(diagram_string);
 	rebuild(diagram);
@@ -36,6 +46,22 @@ function rebuild(diagram) {
 function bindControllers(diagram) {
 	diagram.children().forEach(function (child) {
 		
+		child.on('click', function (e) {
+			if (child.getType() == 'Connection' || child.getType() == 'DiagramNode') {
+				diagram.fire('clicked', {
+					child
+				});
+			}
+		});
+
+		child.on('dragstart', function (e) {
+			if (child.getType() == 'Connection' || child.getType() == 'DiagramNode') {
+				diagram.fire('clicked', {
+					child
+				});
+			}
+		});
+
 		child.on('dragmove', function () {
 			diagram.fire('redraw');
 			diagram.redrawConnections();
@@ -48,6 +74,17 @@ function bindControllers(diagram) {
 				payload: this
 			});
 		});
+	});
+
+	diagram.on('clicked', function (e) {
+    	let child = e.detail.child;
+    	if (altKeyDown) {
+			if(child.getType() == 'DiagramNode') {
+		      api.removeElement(store, child.blueprint.id)
+		    } else {
+		      api.removeConnection(store, child.blueprint.id)
+		    }
+    	}
 	});
 }
 
@@ -64,9 +101,11 @@ function downloadDiagram() {
 	return download(JSON.stringify(store.getState()), 'Dolphin Diagram.dd', 'application/json');
 }
 
-module.exports = Object.assign({}, api(store), {
+module.exports = Object.assign({}, api, {
 	exportDiagram,
 	downloadDiagram,
 	loadDiagram,
-	fixtures
+	fixtures,
+	diagram,
+	store
 });
