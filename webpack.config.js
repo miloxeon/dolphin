@@ -1,54 +1,48 @@
-const path = require('path');
+'use strict';
 
+const webpack = require('webpack');
 
-module.exports = {
-  // the entry file for the bundle
-  entry: path.join(__dirname, '/client/src/app.jsx'),
+module.exports = (env = {}) => {
 
-  // the bundle file we will get in the result
-  output: {
-    path: path.join(__dirname, '/client/dist/js'),
-    filename: 'app.js',
-  },
-  resolve: {
-    extensions: ['.js', '.scss', '.css', '.json']
-  },
-  module: {
+	const isProduction = env.production === true;
 
-    // apply loaders to files that meet given conditions
-    loaders: [
-      {
-        test: /\.jsx?$/,
-        include: path.join(__dirname, '/client/src'),
-        loader: 'babel-loader',
-        query: {
-          presets: ["react", "es2015", "stage-0"]
-        }
-      },
-      {
-        test: /\.css$/,
-        loader: "style-loader!css-loader"
-      },
-      {
-        test: /\.scss$/,
-        use: [
-          {
-            loader: 'style-loader'
-          },
-          {
-            loader: 'css-loader'
-          },
-          {
-            loader: 'sass-loader',
-            options: {
-              includePaths: ['./node_modules']
-            }
-          }
-        ]
-      }
-    ]
-  },
-
-  // start Webpack in a watch mode, so Webpack will rebuild the bundle on changes
-  watch: true
-};
+	return {
+		context: __dirname,
+		entry: './src/base.js',
+		output: {
+			path: __dirname + '/dist',
+			filename: 'bundle.js',
+			libraryTarget: 'var',
+			library: 'dolphin'
+		},
+		module: {
+			rules: [
+				{
+					test: /\.js$/,
+					loader: 'babel-loader',
+					exclude: /node_modules/
+				},
+				{
+					test: /\.css$/, 
+					loader: "style-loader!css-loader"
+				}
+			]
+		},
+		plugins: isProduction ? [new webpack.optimize.UglifyJsPlugin({
+			compress: {
+				warnings: false,
+				drop_console: true
+			}
+		})] : [],
+		watch: !isProduction,
+		devtool: isProduction ? false : 'eval',
+		stats: {
+			colors: true,
+			version: false,
+			hash: false,
+			timings: true,
+			assets: isProduction,
+			chunks: isProduction
+		}
+	}
+}
