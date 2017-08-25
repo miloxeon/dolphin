@@ -1,0 +1,212 @@
+.dolphin_diagram {
+	/* Diagram */
+}
+
+.dolphin_diagram-class {
+	/* Class diagram */
+}
+
+.dolphin_node {
+	/* Diagram node */
+	cursor: pointer;
+	shape-rendering: geometricPrecision;
+}
+
+.dolphin_rect {
+	/* Node rectangle */
+	fill: white;
+	stroke: black;
+	stroke-width: 2;
+	rx: 4;
+	ry: 4;
+}
+
+/* TEXT */
+
+.dolphin_text {
+	/* All of the node text */
+	fill: black;
+	font-family: 'Verdana', sans-serif;
+	font-size: 12px;
+	line-height: 1.25;
+	font-style: normal;
+	font-weight: normal;
+	text-rendering: optimizeLegibility;
+}
+
+.dolphin_node_type {
+	/* Node type, for example: <interface> */
+	font-size: 10px;
+	font-style: italic;
+	text-anchor: middle;
+}
+
+.dolphin_node_name {
+	/* Node name, for example: MyClass */
+	font-weight: bold;
+	text-anchor: middle;
+}
+
+.dolphin_node_scope {
+	/* Node scope symbols: + - ~ and so on */
+	font-family: 'Courier New', monospace;
+	fill: #B90690;
+}
+
+.dolphin_node_datatype {
+	/* Datatype: String, Int and so on */
+	fill: blue;
+	font-style: italic;
+}
+
+.dolphin_node_attribute {
+	/* Node attribute name (variable name) */
+}
+
+.dolphin_node_symbol {
+	/* Symbols in attribute and method name: =, : and so on */
+}
+
+.dolphin_node_value {
+	/* Variable assigned value: i = 10 (10 is it) */
+	fill: blue;
+}
+
+.dolphin_node_value-string {
+	/* Separate style for string values like 'hello' */
+	fill: #036A07;
+}
+
+.dolphin_node_value-int {
+	/* Separate style for integers */
+}
+
+.dolphin_node_method {
+	/* Method name */
+	fill: #0000A2;
+}
+
+.dolphin_node_passed {
+	/* Special style for passed parameters */
+}
+
+
+/* LINE */
+
+.dolphin_line {
+	/* A line */
+	fill: none;
+	stroke: black;
+	stroke-width: 1.5;
+	stroke-linejoin: round;
+	stroke-linecap: round;
+	shape-rendering: geometricPrecision;
+	cursor: pointer;
+
+	transition: stroke-width .3s;
+}
+
+.dolphin_line:hover {
+	stroke-width: 10;
+	stroke-linecap: butt;
+}
+
+/* Different line styles */
+.dolphin_line-association {
+	stroke-dasharray: none;
+}
+
+.dolphin_line-inheritance {
+	stroke-dasharray: none;	
+}
+
+.dolphin_line-implementation {
+	stroke-dasharray: 5 5;
+}
+
+.dolphin_line-dependency {
+	stroke-dasharray: 5 5;
+}
+
+.dolphin_line-aggregation {
+	stroke-dasharray: none;	
+}
+
+.dolphin_line-composition {
+	stroke-dasharray: none;	
+}
+
+.dolphin_line-dashed {
+	/* Dashed line (implementation and dependency) */
+	stroke-dasharray: 5 7;
+}
+
+.dolphin_line_text {
+	/* All of the line text */
+	letter-spacing: 1.2px;
+	user-select: none;
+}
+
+.dolphin_line_indicator {
+	/* Quantity indicator: 0..1, *, 5 and so on */
+	font-size: 9px;
+}
+
+.dolphin_line_indicator-from {
+	/* Indicator near the 'from' class */
+}
+
+.dolphin_line_indicator-to {
+	/* Indicator near the 'to' class */
+	text-anchor: end;
+}
+
+.dolphin_line_role {
+	/* Class roles: extendedFoo, wrappedBar and so on. They are at the ends of the line */
+	/*letter-spacing: initial;*/
+}
+
+.dolphin_line_role-from {
+	/* Role near the 'from' class */
+}
+
+.dolphin_line_role-to {
+	/* Role near the 'to' class */
+	text-anchor: end;
+}
+
+.dolphin_line_action {
+	/* Text in the middle of the line */
+	text-anchor: middle;
+	font-family: 'Tahoma', sans-serif;
+	fill: grey;
+	font-style: italic;
+}
+
+.dolphin_line_marker {
+	/* Line arrows and diamonds */
+	stroke: black;
+	stroke-linejoin: round;
+	stroke-linecap: round;
+	shape-rendering: geometricPrecision;
+}
+
+.dolphin_line_marker-arrow {
+	/* > non-filled arrow */
+	fill: none;
+}
+
+.dolphin_line_marker-arrow_filled {
+	/* ► filled arrow */
+	fill: white;
+}
+
+.dolphin_line_marker-diamond {
+	/* <> non-filled diamond */
+	fill: white;
+}
+
+.dolphin_line_marker-diamond_filled {
+	/* ♦ filled diamond */
+	fill: black;
+}
