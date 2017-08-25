@@ -5,7 +5,6 @@ export function Store(initial_state) {
 	this.getState = getState;
 	this.setState = setState;
 	this.subscribe = subscribe;
-	this.setState_silent = setState_silent;
 	this.__onUpdate__ = [];
 }
 

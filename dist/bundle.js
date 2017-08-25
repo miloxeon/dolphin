@@ -307,7 +307,7 @@ eval("var __WEBPACK_AMD_DEFINE_RESULT__;/*!\n* svg.js - A lightweight library fo
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n\tvalue: true\n});\nexports.Store = Store;\nfunction Store(initial_state) {\n\tthis.state = initial_state || {};\n\tthis.getState = getState;\n\tthis.setState = setState;\n\tthis.subscribe = subscribe;\n\tthis.setState_silent = setState_silent;\n\tthis.__onUpdate__ = [];\n}\n\nfunction getState() {\n\treturn this.state;\n}\n\nfunction setState(new_state) {\n\tthis.state = new_state;\n\tthis.__onUpdate__.forEach(function (callback) {\n\t\tcallback(new_state);\n\t});\n}\n\nfunction subscribe(callback) {\n\tthis.__onUpdate__.push(callback);\n\tcallback(this.state);\n}\n\n//////////////////\n// WEBPACK FOOTER\n// ./src/store.js\n// module id = 56\n// module chunks = 0\n\n//# sourceURL=webpack:///./src/store.js?");
+eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n\tvalue: true\n});\nexports.Store = Store;\nfunction Store(initial_state) {\n\tthis.state = initial_state || {};\n\tthis.getState = getState;\n\tthis.setState = setState;\n\tthis.subscribe = subscribe;\n\tthis.__onUpdate__ = [];\n}\n\nfunction getState() {\n\treturn this.state;\n}\n\nfunction setState(new_state) {\n\tthis.state = new_state;\n\tthis.__onUpdate__.forEach(function (callback) {\n\t\tcallback(new_state);\n\t});\n}\n\nfunction subscribe(callback) {\n\tthis.__onUpdate__.push(callback);\n\tcallback(this.state);\n}\n\n//////////////////\n// WEBPACK FOOTER\n// ./src/store.js\n// module id = 56\n// module chunks = 0\n\n//# sourceURL=webpack:///./src/store.js?");
 
 /***/ })
 /******/ ]);
