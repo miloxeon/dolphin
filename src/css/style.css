@@ -1,5 +1,6 @@
 .dolphin_diagram {
 	/* Diagram */
+	user-select: none;
 }
 
 .dolphin_diagram-class {

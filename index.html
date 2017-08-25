@@ -11,8 +11,12 @@
 
 			body {
 				height: 99%;
-				display: flex;
 				margin: 0;
+			}
+
+			.container {
+				height: 100%;
+				display: flex;
 			}
 
 			#editor,
@@ -34,8 +38,13 @@
 		<script src="dist/ace.js"></script>
 	</head>
 	<body>
-		<div id="editor"></div>
-		<div id="diagram"></div>
+		<!-- <p>
+			Element dragging will not affect 
+		</p> -->
+		<div class="container">
+			<div id="editor"></div>
+			<div id="diagram"></div>
+		</div>
 
 		<script src="dist/bundle.js"></script>
 		<script>
