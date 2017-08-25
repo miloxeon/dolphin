@@ -22,13 +22,13 @@ Initially I thought this tool as something like typical React+Redux web app and 
 I had several breaking changes during the development.
 
  - __Initial: “Functional appoach to SVG”__  
-I just wanted this tool to use pure functions, but this ended up to be impossible because each and every method of svg.js has direct side effects on DOM. It just wasn't _meant to be_. You can't just make an SVG element and render it when you want it to be rendered, like in React. The element renders instantly when you create it, and that kind of behavior made me to stop coding in functional style. Functional style and svg.js are incompatible.
+I just wanted this tool to use pure functions, but this ended up to be impossible because each and every method of SVG.js has direct side effects on DOM. It just wasn't _meant to be_. You can't just make an SVG element and render it when you want it to be rendered, like in React. The element renders instantly when you create it, and that kind of behavior made me to stop coding in functional style. Functional style and SVG.js are incompatible.
 
  - __Change 1: Moving to OOP__  
-Since svg.js is appeared to be object-oriented, it seemed nice to build the components (diagram element, connection) as svg.js classes. I did it and it was good and easy. It wasn't functional, but it definetely was better than my old approach.
+Since SVG.js is appeared to be object-oriented, it seemed nice to build the components (diagram element, connection) as SVG.js classes. I did it and it was good and easy. It wasn't functional, but it definetely was better than my old approach.
 
  - __Change 2: Moving to CSS__  
-I've done terrible mistake using svg.js styling, and the code was all messed up very quickly. After 500 lines of crappy code (oh my god) when things came to style merging, I realized that I was recreating browser CSS engine and then decided to just attach some classes to the elements and make everything else in CSS. That was like magic.
+I've done terrible mistake using SVG.js styling, and the code was all messed up very quickly. After 500 lines of crappy code (oh my god) when things came to style merging, I realized that I was recreating browser CSS engine and then decided to just attach some classes to the elements and make everything else in CSS. That was like magic.
 
  - __Change 3: Redux falls into place__  
 Tools without undo function are awful. That's why I used Redux: I had my undo and redo implemented easily. It was good at the beginning, but then...
@@ -44,6 +44,7 @@ I had my UI done very quickly.
 UI is ready, diagram editor is ready, so let's just put it together...  
 ...  
 __Oh no! React doesn't allow side effects!__   
+... 
 After hours of messing around, I managed to put them together. Don't repeat this at home.
 
  - __Change 6: Gun authentication and why it's awful__  
