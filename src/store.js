@@ -4,7 +4,8 @@ export function Store(initial_state) {
 	this.state = initial_state || {};
 	this.getState = getState;
 	this.setState = setState;
-	this.onUpdate = function () {}
+	this.subscribe = subscribe;
+	this.__onUpdate__ = [];
 }
 
 function getState() {
@@ -13,5 +14,11 @@ function getState() {
 
 function setState(new_state) {
 	this.state = new_state;
-	this.onUpdate();
+	this.__onUpdate__.forEach(function (callback) {
+		callback();
+	});
+}
+
+function subscribe(callback) {
+	this.__onUpdate__.push(callback);
 }

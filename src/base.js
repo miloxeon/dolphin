@@ -11,7 +11,7 @@ import {Store} from './store';
 let diagram = draw.classDiagram();
 let model = clone(mock_model);
 let store = new Store(model);
-store.onUpdate = rebuild;
+store.subscribe(rebuild);
 
 rebuild();
 
