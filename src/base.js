@@ -14,7 +14,7 @@ let store = new Store(model);
 
 store.subscribe(rebuild);
 
-rebuild();
+// rebuild();
 
 diagram.on('redraw', diagram.redrawConnections);
 diagram.on('rebuild', function (e) {
@@ -38,9 +38,9 @@ function bindControllers(diagram) {
 	});
 }
 
-function rebuild() {
+function rebuild(state) {
 	diagram.clear();
-	diagram.fromModel(store.getState());
+	diagram.fromModel(state);
 	bindControllers(diagram);
 }
 

@@ -57,6 +57,10 @@
 			editor.on("change", function (e) {
 				dolphin.store.setState(JSON.parse(editor.getValue()));
 			});
+
+			// dolphin.store.subscribe(function (state) {
+				// editor.setValue(JSON.stringify(state, null, '\t'));
+			// });
 		</script>
 	</body>
 </html>
