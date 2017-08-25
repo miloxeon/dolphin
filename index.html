@@ -42,6 +42,8 @@
 			var editor = ace.edit("editor");
 			editor.setTheme("ace/theme/github");
 			editor.getSession().setMode("ace/mode/json");
+			editor.$blockScrolling = Infinity;
+
 			editor.setValue(JSON.stringify(dolphin.store.getState(), null, '\t'));
 			editor.on("change", function (e) {
 				dolphin.store.setState(JSON.parse(editor.getValue()));

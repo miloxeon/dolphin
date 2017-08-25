@@ -3,7 +3,7 @@
 // classes declarations
 
 let SVG = require('svg.js');
-let draggy = require('svg.draggy.js');
+// let draggy = require('svg.draggy.js');
 
 import {getHash} from './tools';
 
@@ -33,8 +33,8 @@ SVG.ClassDiagramNode = SVG.invent({
 		classDiagramNode: function (blueprint) {
 			return this.put(new SVG.ClassDiagramNode)
 				.applyBlueprint(blueprint)
-				.addClass('dolphin_node')
-				.draggy();
+				.addClass('dolphin_node');
+				// .draggy();
 		}
 	}
 });
