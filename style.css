@@ -1,0 +1,28 @@
+html {
+	height: 100%;
+}
+
+body {
+	height: 99%;
+	margin: 0;
+}
+
+.container {
+	height: 100%;
+	display: flex;
+}
+
+#editor,
+#diagram {
+	height: 100%;
+}
+
+#editor {
+	width: 30%;
+	min-width: 400px;
+	border-right: 1px solid black;
+}
+
+#diagram {
+	width: 70%;
+}
