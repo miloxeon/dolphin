@@ -1,4 +1,4 @@
-<p align="center"><a href="http://miloslav.website/dolphin" target="_blank"><img width="100"src="http://miloslav.website/dolphin/media/logo.svg"></a></p>
+<p align="center"><a href="https://dolphin.js.org" target="_blank"><img width="100"src="http://miloslav.website/dolphin/media/logo.svg"></a></p>
 <p align="center"><h1 align="center">Dolphin</h1></p>
 
 <br>
