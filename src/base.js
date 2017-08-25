@@ -59,3 +59,7 @@ function move(model, node) {
 
 	return new_model;
 }
+
+module.exports = {
+	store
+}

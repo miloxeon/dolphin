@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<title>Dolphin blueprints</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<style>
+			html {
+				height: 100%;
+			}
+
+			body {
+				height: 99%;
+				display: flex;
+				margin: 0;
+			}
+
+			#editor,
+			#diagram {
+				height: 100%;
+			}
+
+			#editor {
+				width: 30%;
+				border-right: 1px solid black;
+			}
+
+			#diagram {
+				width: 70%;
+			}
+
+		</style>
+		<script src="dist/ace.js"></script>
+	</head>
+	<body>
+		<div id="editor"></div>
+		<div id="diagram"></div>
+
+		<script src="dist/bundle.js"></script>
+		<script>
+			var editor = ace.edit("editor");
+			editor.setTheme("ace/theme/github");
+			editor.getSession().setMode("ace/mode/json");
+		</script>
+	</body>
+</html>
