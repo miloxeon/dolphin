@@ -1,0 +1,96 @@
+.dolphin_rect {
+	/* Node rectangle */
+}
+
+/* TEXT */
+
+.dolphin_text {
+	/* All of the node text */
+}
+
+.dolphin_node_type {
+	/* Node type, for example: <interface> */
+}
+
+.dolphin_node_name {
+	/* Node name, for example: MyClass */
+}
+
+.dolphin_node_scope {
+	/* Node scope symbols: + - ~ and so on */
+}
+
+.dolphin_node_datatype {
+	/* Datatype: String, Int and so on */
+}
+
+.dolphin_node_attribute {
+	/* Node attribute name (variable name) */
+}
+
+.dolphin_node_symbol {
+	/* Symbols in attribute and method name: =, : and so on */
+}
+
+.dolphin_node_value {
+	/* Variable assigned value: i = 10 (10 is it) */
+}
+
+.dolphin_node_value-string {
+	/* Separate style for string values like 'hello' */
+}
+
+.dolphin_node_value-int {
+	/* Separate style for integers */
+}
+
+.dolphin_node_method {
+	/* Method name */
+}
+
+.dolphin_node_passed {
+	/* Special style for passed parameters */
+}
+
+
+/* LINE */
+
+.dolphin_line {
+	/* A line */
+}
+
+.dolphin_line-dashed {
+	/* Dashed line (implementation and dependency) */
+}
+
+.dolphin_line_text {
+	/* All of the line text */
+}
+
+.dolphin_line_indicator {
+	/* Quantity indicator: 0..1, *, 5 and so on */
+}
+
+.dolphin_line_role {
+	/* Class roles: extendedFoo, wrappedBar and so on. They are at the ends of the line */
+}
+
+.dolphin_line_action {
+	/* Text in the middle of the line */
+}
+
+.dolphin_line_arrow {
+	/* > non-filled arrow */
+}
+
+.dolphin_line_solid-arrow {
+	/* ► filled arrow */
+}
+
+.dolphin_line_diamond {
+	/* non-filled diamond */
+}
+
+.dolphin_line_filled-diamond {
+	/* ♦ filled diamond */
+}
