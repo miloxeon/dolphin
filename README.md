@@ -19,7 +19,7 @@ Creating Dolphin was such an educational experience for me, and I've learned a l
 
 Initially I thought this tool as something like typical React+Redux web app and was coding it accordingly. As the academic deadline came closer and closer, and I had absolutely no time to have a rest, so soon I threw designing away and went to raw coding. That was awful mistake that lead to huge overhead and complete loss of sleep. I was adding more and more tools that I had never used before, and very soon I had cool Webpack config, React+Grommet UI, co-op editing with Gun.js and much more, but the code was completely messed up. That wasn't great, so I decided to calm down and rewrite the UI and the data storage (the hardest parts because I couldn't use pure functions), and that latest version is the one you may see now.
 
-I had several breaking changes during the development.
+I also learned a lot about how SVG works and how to manipulate it.
 
  - __Initial: “Functional appoach to SVG”__  
 I just wanted this tool to use pure functions, but this ended up to be impossible because each and every method of SVG.js has direct side effects on DOM. It just wasn't _meant to be_. You can't just make an SVG element and render it when you want it to be rendered, like in React. The element renders instantly when you create it, and that kind of behavior made me to stop coding in functional style. Functional style and SVG.js are incompatible.
@@ -60,7 +60,38 @@ _coming soon_
 _coming soon_
 
 ## Good parts
-_coming soon_
+ - __Print quality is superior.__ I used [Verdana](https://en.wikipedia.org/wiki/Verdana) as main typeface for diagrams, because Verdana is almost the most readable [_safe_ typeface](https://www.w3schools.com/cssref/css_websafe_fonts.asp) for both screen and print. The lines are also look good because it's all SVG and [Bezier curves](https://en.wikipedia.org/wiki/B%C3%A9zier_curve) is very good choice for smooth, curvy lines.
+ - __It's SVG,__ so you may print really huge diagrams without any quality loss.
+ - __Full UML “Class” notation support.__ IBM has pretty straightforward [recommendations](https://www.ibm.com/developerworks/rational/library/content/RationalEdge/sep04/bell/index.html) for what features should UML editor support. The actual supported features are mentioned below.
+ - __Auto-resize and auto alignment.__
+
+## UML support
+### Diagram element
+ - Type (normal or _&lt;interface&gt;_, but data model allows pretty much every string to be there)
+ - Name
+ - Attribute
+ - Method
+#### Attribute
+ - Scope (`+` public, `-` private, `#` protected, `/` derived, `~` package)
+ - Data type
+ - Name
+ - Value
+#### Method
+ - Scope
+ - Returned data type
+ - Name
+ - Arguments
+#### Argument
+ - Data type
+ - Name
+ - Default value
+ 
+### Connection
+ - Type (Association, Inheritance, Implementation, Dependency, Aggregation, Composition)
+ - Name
+ - Multiplicity
+ - Roles
+
 
 ## Tools used
  - [Redux](http://redux.js.org/)
