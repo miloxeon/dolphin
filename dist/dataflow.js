@@ -13,6 +13,7 @@ syncModels("diagram -> editor");
 
 // create data flow
 editor.on("change", function (e) {
+	disableWrongModelWarning();
 	syncModels("editor -> diagram");
 });
 
@@ -33,12 +34,29 @@ function syncModels(strategy) {
 
 			case "editor -> diagram":
 				try {
-					store.setState(JSON.parse(editorModel));
-				} catch (e) {}
+					var editorState = JSON.parse(editorModel);
+					store.setState(editorState);
+				} catch (e) {
+					enableWrongModelWarning();
+				}
 				break;
 
 			default:
 				throw new Error("Unknown model syncing strategy");
 		}
+	}
+}
+
+function enableWrongModelWarning() {
+	var overlay = document.getElementById('overlay');
+	if (overlay.hidden) {
+		overlay.hidden = false;
+	}
+}
+
+function disableWrongModelWarning() {
+	var overlay = document.getElementById('overlay');
+	if (!overlay.hidden) {
+		overlay.hidden = true;
 	}
 }
