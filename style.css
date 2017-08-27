@@ -61,6 +61,7 @@ body {
 	right: 20px;
 	bottom: 55px;
 	cursor: pointer;
+	font-family: monospace;
 }
 
 #jsorg {
