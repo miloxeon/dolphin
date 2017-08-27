@@ -15,7 +15,7 @@ Consider Dolphin as pretty straightforward example of how [MVC](https://en.wikip
 Creating Dolphin was such an educational experience for me, and I've learned a lot.
 
 ## Core concepts and the process
-[Functional programming](https://en.wikipedia.org/wiki/Functional_programming) in JavaScript [is maybe an antipattern](https://hackernoon.com/functional-programming-in-javascript-is-an-antipattern-58526819f21e), but functional _style_ is great. Since quick prototyping with completely new tools may produce loads of errors, pure functions may help you a lot on debugging. That's why I decided to make use of them.
+[Functional programming](https://en.wikipedia.org/wiki/Functional_programming) in JavaScript [is maybe an antipattern](https://hackernoon.com/functional-programming-in-javascript-is-an-antipattern-58526819f21e), but _functional style_ is great. Since quick prototyping with completely new tools may produce loads of errors, pure functions may help you a lot on debugging. That's why I decided to make use of them.
 
 Initially I thought this tool as something like typical React+Redux web app and was coding it accordingly. As the academic deadline came closer and closer, and I had absolutely no time to have a rest, so soon I threw designing away and went to raw coding. That was awful mistake that lead to huge overhead and complete loss of sleep. I was adding more and more tools that I had never used before, and very soon I had cool Webpack config, React+Grommet UI, co-op editing with Gun.js and much more, but the code was completely messed up. That wasn't great, so I decided to calm down and rewrite the UI and the data storage (the hardest parts because I couldn't use pure functions), and that latest version is the one you may see now.
 
@@ -47,12 +47,24 @@ After hours of messing around, I managed to put them together. Don't repeat this
 Pretty much everyone in the network may freely subscribe to your Gun.js instance and listen to your data. Gun.js allows it _by design_. As Gun [issues](https://github.com/amark/gun/issues?q=authentication) mention, it's important to finally build that goddamn authentication wrapper for Gun.js. it may be good idea to create symmetrical [SJCL](https://github.com/bitwiseshiftleft/sjcl) wrapper for Gun.js.
 
 ## Lessons learned
-_coming soon_
+ - __Don't break your own tools.__  
+There's an _idea_ behind every framework. If something matches the idea, then it will be a pleasure to implement on top of that framework. If it's not, then it does not _meant to be_.
+
+ - __API and data model comes first.__  
+Actual implementation doesn't matter as long as the API and data model are not defined and thought out.
+
+ - __Design is not obsolete.__  
+If you want to build really good, sustainable software, you need to learn and use UML or other designing tools.
+
+ - __Design patterns are great.__
 
 ## Good parts
  - __Print quality is superior.__ I used [Verdana](https://en.wikipedia.org/wiki/Verdana) as main typeface for diagrams, because Verdana is almost the most readable [_safe_ typeface](https://www.w3schools.com/cssref/css_websafe_fonts.asp) for both screen and print. The lines are also look good because it's all SVG and [Bezier curves](https://en.wikipedia.org/wiki/B%C3%A9zier_curve) is very good choice for smooth, curvy lines.
+ 
  - __It's SVG,__ so you may print really huge diagrams without any quality loss.
+ 
  - __Full UML “Class” notation support.__ IBM has pretty straightforward [recommendations](https://www.ibm.com/developerworks/rational/library/content/RationalEdge/sep04/bell/index.html) for what features should UML editor support. The actual supported features are mentioned below.
+ 
  - __Auto-resize and auto alignment.__
 
 ## UML support
@@ -61,16 +73,19 @@ _coming soon_
  - Name
  - Attribute
  - Method
+ 
 #### Attribute
  - Scope (`+` public, `-` private, `#` protected, `/` derived, `~` package)
  - Data type
  - Name
  - Value
+ 
 #### Method
  - Scope
  - Returned data type
  - Name
  - Arguments
+ 
 #### Argument
  - Data type
  - Name
