@@ -67,6 +67,8 @@ If you want to build really good, sustainable software, you need to learn and us
  
  - __Auto-resize and auto alignment.__
 
+ - __Theming in CSS.__ You may see the theme format [here](https://github.com/uyouthe/dolphin/blob/master/src/css/style_sample.css).
+
 ## UML support
 ### Diagram element
  - Type (normal or _&lt;interface&gt;_, but data model allows pretty much every string to be there)
