@@ -1,4 +1,4 @@
-<p align="center"><a href="https://dolphin.js.org" target="_blank"><img width="256" height="256" src="https://github.com/uyouthe/dolphin/blob/master/media/logo.png"></a></p>
+<p align="center"><a href="https://dolphin.js.org" target="_blank"><img width="256" height="256" src="https://dolphin.js.org/media/logo.svg"></a></p>
 <p align="center"><h1 align="center">Dolphin</h1></p>
 
 <br>
