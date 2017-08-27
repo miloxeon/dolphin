@@ -65,8 +65,15 @@ _coming soon_
 ## Tools used
  - [Redux](http://redux.js.org/)
  - [Gun.js](http://gun.js.org/)
- - [SVG.js](http://svgjs.com/) ([very good community](https://github.com/svgdotjs/svg.js/issues/684), thanks [@Fuzzyma](https://github.com/Fuzzyma) and others)
+ - [SVG.js](http://svgjs.com/) ([very good community](https://github.com/svgdotjs/svg.js/issues/684)
  - [React](https://facebook.github.io/react/)
  - [Grommet](https://grommet.github.io/)
  - [Webpack](https://webpack.github.io/)
  - [Ace](https://ace.c9.io/)
+
+## Acknowledgements & thanks
+ - [@condorcet](https://github.com/condorcet) - graduation supervisor
+ - [@ierhyna](https://github.com/ierhyna) and the whole [Russian FreeCodeCamp community](https://vk.com/freecodecamprussia)
+ - [@Fuzzyma](https://github.com/Fuzzyma)
+ - [@RmiTtro](https://github.com/RmiTtro)
+ - [@schatty](https://github.com/schatty)
