@@ -56,9 +56,17 @@ body {
 	display: none !important;
 }
 
+#print-button {
+	position: absolute;
+	right: 20px;
+	bottom: 20px;
+	cursor: pointer;
+}
+
 @media print {
 	#editor,
-	#ribbon {
+	#ribbon,
+	#print-button {
 		display: none;
 	}
 }
