@@ -59,13 +59,30 @@ body {
 #print-button {
 	position: absolute;
 	right: 20px;
-	bottom: 20px;
+	bottom: 55px;
 	cursor: pointer;
+}
+
+#jsorg {
+	position: absolute;
+	right: 20px;
+	bottom: 20px;
+	height: 25px;
+
+	display: flex;
+	align-items: center;
+
+	color: black;
+	font-family: monospace;
+	text-decoration: none;
+	font-weight: bold;
+	letter-spacing: -.9px;
 }
 
 @media print {
 	#editor,
 	#ribbon,
+	#jsorg,
 	#print-button {
 		display: none;
 	}
