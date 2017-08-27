@@ -114,4 +114,5 @@ If you want to build really good, sustainable software, you need to learn and us
  - [@ierhyna](https://github.com/ierhyna) and the whole [Russian FreeCodeCamp community](https://vk.com/freecodecamprussia)
  - [@Fuzzyma](https://github.com/Fuzzyma)
  - [@RmiTtro](https://github.com/RmiTtro)
+ - [js.org](https://js.org/) - domain provider
  - [@schatty](https://github.com/schatty)
