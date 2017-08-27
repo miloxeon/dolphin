@@ -55,3 +55,10 @@ body {
 [hidden] {
 	display: none !important;
 }
+
+@media print {
+	#editor,
+	#ribbon {
+		display: none;
+	}
+}
