@@ -3,7 +3,7 @@
 
 <br>
 
-> _If what you're doing is unnecessary difficult, then you maybe doing it wrong._  
+> _If what you're doing is unnecessarily difficult, then you maybe doing it wrong._  
 
 <br>
 
