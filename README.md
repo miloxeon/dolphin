@@ -103,7 +103,7 @@ If you want to build really good, sustainable software, you need to learn and us
 ## Tools used
  - [Redux](http://redux.js.org/)
  - [Gun.js](http://gun.js.org/)
- - [SVG.js](http://svgjs.com/) ([very good community](https://github.com/svgdotjs/svg.js/issues/684))
+ - [SVG.js](http://svgjs.dev/) ([very good community](https://github.com/svgdotjs/svg.js/issues/684))
  - [React](https://facebook.github.io/react/)
  - [Grommet](https://grommet.github.io/)
  - [Webpack](https://webpack.github.io/)
