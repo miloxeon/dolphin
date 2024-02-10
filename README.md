@@ -67,7 +67,7 @@ If you want to build really good, sustainable software, you need to learn and us
  
  - __Auto-resize and auto alignment.__
 
- - __Theming in CSS.__ You may see the theme format [here](https://github.com/uyouthe/dolphin/blob/master/src/css/style_sample.css).
+ - __Theming in CSS.__ You may see the theme format [here](https://github.com/miloxeon/dolphin/blob/master/src/css/style_sample.css).
 
 ## UML support
 ### Diagram element
@@ -99,20 +99,10 @@ If you want to build really good, sustainable software, you need to learn and us
  - Multiplicity
  - Roles
 
-
-## Tools used
- - [Redux](http://redux.js.org/)
- - [Gun.js](http://gun.js.org/)
- - [SVG.js](http://svgjs.dev/) ([very good community](https://github.com/svgdotjs/svg.js/issues/684))
- - [React](https://facebook.github.io/react/)
- - [Grommet](https://grommet.github.io/)
- - [Webpack](https://webpack.github.io/)
- - [Ace](https://ace.c9.io/)
-
 ## Acknowledgements & thanks
  - [@condorcet](https://github.com/condorcet) - graduation supervisor
- - [@ierhyna](https://github.com/ierhyna) and the whole [Russian FreeCodeCamp community](https://vk.com/freecodecamprussia)
+ - [@ierhyna](https://github.com/ierhyna)
  - [@Fuzzyma](https://github.com/Fuzzyma)
  - [@RmiTtro](https://github.com/RmiTtro)
- - [js.org](https://js.org/) — domain provider
  - [@schatty](https://github.com/schatty)
+ - [js.org](https://js.org/) — domain provider
