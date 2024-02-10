@@ -100,7 +100,7 @@ If you want to build really good, sustainable software, you need to learn and us
  - Roles
 
 ## Acknowledgements & thanks
- - [@condorcet](https://github.com/condorcet) - graduation supervisor
+ - [@condorcet](https://github.com/condorcet) — graduation supervisor
  - [@ierhyna](https://github.com/ierhyna)
  - [@Fuzzyma](https://github.com/Fuzzyma)
  - [@RmiTtro](https://github.com/RmiTtro)
